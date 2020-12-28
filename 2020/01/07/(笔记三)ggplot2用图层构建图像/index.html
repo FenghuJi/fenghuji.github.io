@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>(笔记三)ggplot2用图层构建图像 | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ggplot2," />
+  
+
+  <meta name="description" content="本文讲解如何手动创建一个图形对象。图形最初不会显示，直到最后一个图层被添加后才会显示。 1.创建绘图对象1p &lt;- ggplot(diamonds,aes(carat, price, color &#x3D; cut) 这个图形对象在加上图层之间无法显示，因此现在什么也看不见。 2. 图层最简易的图层莫过于只设定一个几何对象。如果给图形对象添加一个点几何对象(point geom)，就会得到一个散点图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(笔记三)ggplot2用图层构建图像">
+<meta property="og:url" content="https://fenghuji.github.io/2020/01/07/(%E7%AC%94%E8%AE%B0%E4%B8%89)ggplot2%E7%94%A8%E5%9B%BE%E5%B1%82%E6%9E%84%E5%BB%BA%E5%9B%BE%E5%83%8F/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="本文讲解如何手动创建一个图形对象。图形最初不会显示，直到最后一个图层被添加后才会显示。 1.创建绘图对象1p &lt;- ggplot(diamonds,aes(carat, price, color &#x3D; cut) 这个图形对象在加上图层之间无法显示，因此现在什么也看不见。 2. 图层最简易的图层莫过于只设定一个几何对象。如果给图形对象添加一个点几何对象(point geom)，就会得到一个散点图">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/1.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/2.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/3.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/4.png">
+<meta property="article:published_time" content="2020-01-07T08:33:40.000Z">
+<meta property="article:modified_time" content="2020-01-07T08:33:40.000Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="ggplot2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%88%9B%E5%BB%BA%E7%BB%98%E5%9B%BE%E5%AF%B9%E8%B1%A1"><span class="toc-text">1.创建绘图对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9B%BE%E5%B1%82"><span class="toc-text">2. 图层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE"><span class="toc-text">3. 数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%9B%BE%E5%BD%A2%E5%B1%9E%E6%80%A7%E6%98%A0%E5%B0%84"><span class="toc-text">4. 图形属性映射</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%9B%BE%E5%92%8C%E5%9B%BE%E5%B1%82"><span class="toc-text">4.1 图和图层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E8%AE%BE%E5%AE%9A%E5%92%8C%E6%98%A0%E5%B0%84"><span class="toc-text">4.2 设定和映射</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%88%86%E7%BB%84"><span class="toc-text">4.3 分组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1"><span class="toc-text">5. 几何对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%BB%9F%E8%AE%A1%E5%8F%98%E6%8D%A2"><span class="toc-text">6.统计变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%95%B4%E5%90%88%E7%A4%BA%E4%BE%8B"><span class="toc-text">7. 整合示例</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-(笔记三)ggplot2用图层构建图像" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">(笔记三)ggplot2用图层构建图像</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.01.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/R/">R</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>本文讲解如何手动创建一个图形对象。图形最初不会显示，直到最后一个图层被添加后才会显示。</p>
+<h2 id="1-创建绘图对象"><a href="#1-创建绘图对象" class="headerlink" title="1.创建绘图对象"></a>1.创建绘图对象</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- ggplot(diamonds,aes(carat, price, color = cut)</span><br></pre></td></tr></table></figure>
+<p>这个图形对象在加上图层之间无法显示，因此现在什么也看不见。</p>
+<h2 id="2-图层"><a href="#2-图层" class="headerlink" title="2. 图层"></a>2. 图层</h2><p>最简易的图层莫过于只设定一个几何对象。如果给图形对象添加一个点几何对象(point geom)，就会得到一个散点图。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- p + layer(geom = <span class="string">&quot;point&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>我们使用<code>+</code>来添加图层的。该图层使用了默认的数据集和图形属性映射，并使用了另外两个可选参数的默认值：统计变换和位置调整。下面的图层设定列出了更多可选参数选项。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layer(geom, geom_paraps, stat, stat_params, data, mapping, position)</span><br></pre></td></tr></table></figure>
+<p>但这过于繁琐，我们可以使用快捷函数来绘图，快捷函数都以<code>geom_</code>或者<code>stat_</code>开头:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- p + geom_histogram(binwidth = <span class="number">2</span>, fill = <span class="string">&quot;steelblue&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>快捷函数的用法为：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">geom_XXX(mapping, data,..., stat, position)</span><br><span class="line">stat_XXX(mapping, data,..., stat, position)</span><br></pre></td></tr></table></figure>
+<p>它们的参数定义了图层的各个组件：</p>
+<ul>
+<li>mapping（可选）: 一组图形属性映射，通过aes()函数来设定</li>
+<li>data(可选)：一个数据集，它会修改默认的数据集，大部分情况下该参数被省略掉，默认数据集被调用</li>
+<li>… : geom或者stat的参数，比如直方图组距(binwidth)或者loess光滑曲线的带宽(bandwidth)。</li>
+<li>geom或者stat(可选)：可以修改geom默认的stat值，或者stat默认的geom值，它们时一组字符串，包含了将要使用的几何对象或者统计变化方法，使用默认值会得到标准图形，修改默认值会得到一些新奇的图形。</li>
+<li>position(可选)：选择一种调整对象重合的方式。</li>
+</ul>
+<p>参数data和mapping在ggplot()函数和图层函数的位置时相反的，因为我们在图形对象中一般线设定数据集，而在图层函数中大多时设定图形属性而不是数据集。</p>
+<p>图层可以添加到ggplot()对象或者qplot()对象：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">qplot(sleep_rem/sleep_total,awake,data = msleep) + geom_smooth()</span><br><span class="line"><span class="comment">#等价于</span></span><br><span class="line">qplot(sleep_rem/sleep_total,awake,data = msleep,geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>))</span><br><span class="line"><span class="comment">#等价于</span></span><br><span class="line">ggplot(msleep,aes(sleep_rem/sleep_total,awake)) + geom_point() + geom_smooth()</span><br></pre></td></tr></table></figure>
+<p>图层是普通的R对象，所以可以存储到变量里取，这有利于代码避繁就简，例如一组图形可以先用不同的数据来初始化，然后加上相同的图层，如果后面想修改图层，只需要修改一个地方即可。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个带有半透明深蓝色回归线的图层,bestfit可以添加到不同的图形上</span></span><br><span class="line">library(scales)</span><br><span class="line">bestfit &lt;- geom_smooth(method = <span class="string">&quot;lm&quot;</span>, se= <span class="built_in">F</span>,color = alpha(<span class="string">&quot;steelblue&quot;</span>,<span class="number">0.5</span>),size = <span class="number">2</span>)</span><br><span class="line">qplot(sleep_rem,sleep_total,data = msleep) + bestfit</span><br><span class="line">qplot(bodywt,brainwt,data = msleep,<span class="built_in">log</span> = <span class="string">&quot;xy&quot;</span>) + bestfit</span><br></pre></td></tr></table></figure>
+<h2 id="3-数据"><a href="#3-数据" class="headerlink" title="3. 数据"></a>3. 数据</h2><p>ggplot2对于数据集要求和简单:必须是一个数据框(data frame)。那么对于同一个绘图方式，我们可以使用<code>%+%</code>添加新的数据集来代替原来的数据集。新数据集的值和维度可以随意更改，如果变量从离散型变为连续或者反过来，那么也需要修改相应的默认维度。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- ggplot(mtcars,aes(mpg,wt,color=cyl)) + geom_point()</span><br><span class="line">mtcars &lt;- transform(mtcars,mpg = mpg ^ <span class="number">2</span>)</span><br><span class="line">p %+% mtcars</span><br></pre></td></tr></table></figure>
+<p>绘图数据是以副本而不是引用的形式存储到图形对象的。这样有两个好处：</p>
+<ul>
+<li>数据改变，绘图不会改变</li>
+<li>ggplot2的对象都是自含型(self-contained)的，所以可以被存储到(save())磁盘上，并可以被加载(load())</li>
+</ul>
+<h2 id="4-图形属性映射"><a href="#4-图形属性映射" class="headerlink" title="4. 图形属性映射"></a>4. 图形属性映射</h2><p>aes() 函数用来将数据变量映射到图形中变为图形属性。aes()函数有一系列的图形属性参数：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aes(x = weight, y = height, color = <span class="built_in">sqrt</span>(age))</span><br></pre></td></tr></table></figure>
+<p>每个aes()函数里的变量都必须包含于默认数据集或者图层数据集中，这是保证ggplot2对象是自含型的重要方式之一，这样方便存储和重复使用。</p>
+<h3 id="4-1-图和图层"><a href="#4-1-图和图层" class="headerlink" title="4.1 图和图层"></a>4.1 图和图层</h3><p>我们用<code>+</code>添加图层或者修改属性。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- ggplot(mtcars, aes(x = mpg, y =wt))</span><br><span class="line">p + geom_point()</span><br><span class="line"><span class="comment">## 修改默认映射</span></span><br><span class="line">p + geom_point(aes(color = factor(cyl)))  <span class="comment"># 修改颜色</span></span><br><span class="line">p + geom_point(aes(y = disp)) <span class="comment"># 修改y坐标</span></span><br></pre></td></tr></table></figure>
+<p>图形默认aes(mpg,wt)的结合法则，其图形属性可以添加，修改和删除默认映射：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">aes(color = cyl)      <span class="comment"># aes(mpg, wt ,color = cyl) 添加</span></span><br><span class="line">aes(y = disp)         <span class="comment"># aes(mpg, disp) 修改</span></span><br><span class="line">aes(y = <span class="literal">NULL</span>)         <span class="comment"># aes(mpg) 删除</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-2-设定和映射"><a href="#4-2-设定和映射" class="headerlink" title="4.2 设定和映射"></a>4.2 设定和映射</h3><p>也可以在图层参数中将某个图形属性设为一个单一值，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p &lt;-  p + geom_point(color &#x3D; &quot;darkblue&quot;)</span><br></pre></td></tr></table></figure>
+<p>这里实际上是先创建了一个只含有”darkblue”字符的向量，然后将color映射到这个新变量。因为这个新变量的值是离散的，所以默认的颜色标度将用色轮上等间距的颜色，并且此处新变量只有一个值。</p>
+<h3 id="4-3-分组"><a href="#4-3-分组" class="headerlink" title="4.3 分组"></a>4.3 分组</h3><p>在ggplot2里，几何对象大致分为个体(individual)几何对象和群组(collective)几何对象两大类。个体几何对象对数据框的每一条数据绘制一个可以区别于其他个体的图形对象。点几何对象用点来表示每一条观测，而群组几何对象用来表示多条观测，它们可以是某个统计摘要的结果，或者是几何对象的基础展示，如多边形。</p>
+<p>我们用nlme包的纵向数据集Oxboys介绍分组。该数据记录了26名男孩(Subject)在9个不同时期(Occasion)测得的身高(height)和中心化后的年龄。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每个男孩的成长轨迹,我们无法分辨每条轨迹对应哪个男孩</span></span><br><span class="line">p &lt;- ggplot(Oxboys, aes(age,height,group = Subject)) + geom_line()</span><br><span class="line"><span class="comment"># 根据所有男孩的年龄和身高在图中加一条光滑线段,仍然很丑</span></span><br><span class="line">p + geom_smooth(aes(group = Subject),method = <span class="string">&quot;lm&quot;</span>,se = <span class="built_in">F</span>)</span><br><span class="line"><span class="comment"># 基于整体的一条光滑线段</span></span><br><span class="line">p + geom_smooth(aes(group = <span class="number">1</span>),method = <span class="string">&quot;lm&quot;</span>,size = <span class="number">2</span>, se = <span class="built_in">F</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/1.png"/>
+</div>
+
+<p><strong>修改默认分组</strong><br>绘制各个时期(Occasion)身高(height)的箱线图：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Occasion是一个离散变量，默认分组就是Occasion</span></span><br><span class="line">boysbox &lt;- ggplot(Oxboys, aes(Occasion,height)) + geom_boxplot()</span><br><span class="line"><span class="comment"># 添加个体轨迹，用aes(group = Subject)修改第一层的默认分组</span></span><br><span class="line">boysbox + geom_line(aes(group = Subject),color = <span class="string">&quot;#3366FF&quot;</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/2.png"/>
+</div>
+
+<h2 id="5-几何对象"><a href="#5-几何对象" class="headerlink" title="5. 几何对象"></a>5. 几何对象</h2><p>几何对象就是geom,执行着图形的实际渲染，控制生成的图像类型。不同的几何对象在于其参数化的方式不同。如瓦块几何对象(tile geom)设定的是其中心位置，长和宽，而矩形几何对象(rect geom)设定的是它的上(ymax)，下（ymin),左(xmin)和右(right)位置。</p>
+<h2 id="6-统计变换"><a href="#6-统计变换" class="headerlink" title="6.统计变换"></a>6.统计变换</h2><p>统计变换即stat,对数据进行统计变化或者以某种方式对信息汇总。<br>ggplot的统计变换有:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin</td>
+<td>计算封箱数据</td>
+</tr>
+<tr>
+<td>bin2d</td>
+<td>计算矩形封箱内的观测值个数</td>
+</tr>
+<tr>
+<td>bindot</td>
+<td>计算点直方图的封箱数据</td>
+</tr>
+<tr>
+<td>binhex</td>
+<td>计算六边形热图的封箱数据</td>
+</tr>
+<tr>
+<td>boxplot</td>
+<td>计算组成箱线图的各种元素值</td>
+</tr>
+<tr>
+<td>contour</td>
+<td>三维数据的等高线</td>
+</tr>
+<tr>
+<td>density</td>
+<td>一维密度估计</td>
+</tr>
+<tr>
+<td>density2d</td>
+<td>二维密度估计</td>
+</tr>
+<tr>
+<td>function</td>
+<td>添加新函数</td>
+</tr>
+<tr>
+<td>identity</td>
+<td>不对数据进行统计变换</td>
+</tr>
+<tr>
+<td>qq</td>
+<td>计算qq图的相关值</td>
+</tr>
+<tr>
+<td>quantile</td>
+<td>计算连续的分位数</td>
+</tr>
+<tr>
+<td>smooth</td>
+<td>添加光滑曲线</td>
+</tr>
+<tr>
+<td>spoke</td>
+<td>将角度和半径转换成xend和yend</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>计算单一值二的频数，有助于解决散点图重叠问题</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>对每个x对应的y做统计描述</td>
+</tr>
+<tr>
+<td>summary2d</td>
+<td>对2维矩阵封箱设定函数</td>
+</tr>
+<tr>
+<td>summaryhex</td>
+<td>对2维六边形封箱设定函数</td>
+</tr>
+<tr>
+<td>unique</td>
+<td>删除重复值</td>
+</tr>
+<tr>
+<td>ydensity</td>
+<td>小提琴图，计算1维y轴方向的和密度函数估计值</td>
+</tr>
+</tbody></table>
+<p>示例：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克拉密度直方图</span></span><br><span class="line">ggplot(diamonds, aes(carat)) + geom_histogram(aes(y= ..density..), binwidth = <span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/3.png"/>
+</div>
+
+<h2 id="7-整合示例"><a href="#7-整合示例" class="headerlink" title="7. 整合示例"></a>7. 整合示例</h2><p>基于直方图的统计变换，但使用了不同的几何对象来展示结果：面积，点。我们使用gridExtra包来让这些图画在一起:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">library(gridExtra)</span><br><span class="line">d &lt;- ggplot(diamonds,aes(carat)) + xlim(<span class="number">0</span>,<span class="number">3</span>)</span><br><span class="line">p1 &lt;- d + stat_bin(aes(ymax= ..count..),binwidth = <span class="number">0.1</span>,geom=<span class="string">&quot;area&quot;</span>)</span><br><span class="line">p2 &lt;- d + stat_bin(aes(size = ..density..),binwidth = <span class="number">0.1</span>,geom = <span class="string">&quot;point&quot;</span>,position = <span class="string">&quot;identity&quot;</span>)</span><br><span class="line">grid.arrange(p1, p2, ncol = <span class="number">2</span>, nrow = <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%89/4.png"/>
+</div>
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/01/07/(%E7%AC%94%E8%AE%B0%E4%BA%8C)ggplot2%E8%AF%AD%E6%B3%95%E7%AA%81%E7%A0%B4/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2020/01/08/%E8%B5%B0%E5%90%912020%E5%B9%B4%EF%BC%8C%E7%BB%99%E8%87%AA%E5%B7%B1%E4%B8%80%E4%BA%9B%E5%AF%84%E8%AF%AD/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

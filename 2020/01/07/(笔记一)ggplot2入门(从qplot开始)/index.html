@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>(笔记一)ggplot2入门(从qplot开始) | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ggplot2," />
+  
+
+  <meta name="description" content="简介qplot()是学习ggplot2时第一个函数，可以帮助我们快速入门ggplot2并且学习一些专用的术语。可以学习到的有：  如何将变量映射到图形属性（如颜色，大小，形状）之上 如何指定不同的几何对象来创建不同类型的图形，并合并在一张图上 分面的运行，将数据拆分为子集 如何设定基本选项来调整图形的外观 qplot()和plot()之间的一些重要区别  数据集数据集使用的diamonds数据集，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(笔记一)ggplot2入门(从qplot开始)">
+<meta property="og:url" content="https://fenghuji.github.io/2020/01/07/(%E7%AC%94%E8%AE%B0%E4%B8%80)ggplot2%E5%85%A5%E9%97%A8(%E4%BB%8Eqplot%E5%BC%80%E5%A7%8B)/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="简介qplot()是学习ggplot2时第一个函数，可以帮助我们快速入门ggplot2并且学习一些专用的术语。可以学习到的有：  如何将变量映射到图形属性（如颜色，大小，形状）之上 如何指定不同的几何对象来创建不同类型的图形，并合并在一张图上 分面的运行，将数据拆分为子集 如何设定基本选项来调整图形的外观 qplot()和plot()之间的一些重要区别  数据集数据集使用的diamonds数据集，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/1.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/2.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/3.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/4.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/5.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/6.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/7.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/8.png">
+<meta property="article:published_time" content="2020-01-07T06:33:40.000Z">
+<meta property="article:modified_time" content="2020-01-07T06:33:40.000Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="ggplot2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E9%A2%9C%E8%89%B2%EF%BC%8C%E5%A4%A7%E5%B0%8F%EF%BC%8C%E5%BD%A2%E7%8A%B6%E5%92%8C%E5%85%B6%E4%BB%96%E5%9B%BE%E5%BD%A2%E5%B1%9E%E6%80%A7"><span class="toc-text">2.4 颜色，大小，形状和其他图形属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-1-%E5%9B%BE%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%B9%B3%E6%BB%91%E6%9B%B2%E7%BA%BF"><span class="toc-text">2.5.1 图中添加平滑曲线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-%E5%88%86%E9%9D%A2"><span class="toc-text">2.6 分面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="toc-text">2.7 其他选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-qplot%E5%92%8Cplot%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">2.8 qplot和plot函数的区别</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-(笔记一)ggplot2入门(从qplot开始)" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">(笔记一)ggplot2入门(从qplot开始)</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.01.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/R/">R</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>qplot()是学习ggplot2时第一个函数，可以帮助我们快速入门ggplot2并且学习一些专用的术语。<br>可以学习到的有：</p>
+<ul>
+<li>如何将变量映射到<strong>图形属性</strong>（如颜色，大小，形状）之上</li>
+<li>如何指定不同的<strong>几何对象</strong>来创建不同类型的图形，并合并在一张图上</li>
+<li><strong>分面</strong>的运行，将数据拆分为子集</li>
+<li>如何设定基本选项来调整图形的外观</li>
+<li>qplot()和plot()之间的一些重要区别</li>
+</ul>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>数据集使用的diamonds数据集，包含了约54000颗钻石的价格和质量信息，数据已经放在ggplot2包中，涵盖了反映钻石质量的克拉重量(carat)，切工(cut)，颜色(color)和净度(clarity)和五个物理指标–深度(depth)，钻石宽度(table)，x，y，z。我们可以查看：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">head(diamonds)</span><br><span class="line"><span class="comment"># # A tibble: 6 x 10</span></span><br><span class="line"><span class="comment">#   carat cut       color clarity depth table price     x     y     z</span></span><br><span class="line"><span class="comment"># 1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43</span></span><br><span class="line"><span class="comment"># 2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31</span></span><br><span class="line"><span class="comment"># 3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31</span></span><br><span class="line"><span class="comment"># 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63</span></span><br><span class="line"><span class="comment"># 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75</span></span><br><span class="line"><span class="comment"># 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</span></span><br></pre></td></tr></table></figure>
+<p>我们使用其子集<code>dsmall</code>来进行作图</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1410</span>)</span><br><span class="line">dsmall &lt;- diamonds[sample(nrow(diamonds),<span class="number">100</span>),]</span><br></pre></td></tr></table></figure>
+<h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><p>和plot类似，qplot的前两个参数是x和y，代表图中的x和y坐标，此外还有一个可选的data参数，如绘制散点图，展现钻石价格和重量之间的关系：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data=diamonds)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/1.png"/>
+</div>
+
+<p>我们看到变量之间有很强的相关性和一些异常值，关系似乎是指数相关，我们绘制log转化后的图：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(<span class="built_in">log</span>(carat), <span class="built_in">log</span>(price), data = diamonds)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/2.png"/>
+</div>
+
+<p>函数的参数可以时已有变量的组合，如钻石的体积(用x<em>y</em>z近似)和重量间的关系：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, x*y*z, data = diamonds)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/3.png"/>
+</div>
+
+<h2 id="2-4-颜色，大小，形状和其他图形属性"><a href="#2-4-颜色，大小，形状和其他图形属性" class="headerlink" title="2.4 颜色，大小，形状和其他图形属性"></a>2.4 颜色，大小，形状和其他图形属性</h2><p>在plot中，用户需要将数据的分类变量转化为plot能理解的类型(如”red”,”yellow”,”green”)，qplot可以自动完成并生成图例：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat,price,data = dsmall, colour = color,shape = cut)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/4.png"/>
+</div>
+数据较多时，使用`alpha参数设置透明度`,分母表示经过多少次重叠后颜色不透明：
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat,price,data = diamonds, alpha = I(<span class="number">1</span>/<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+## 2.5 集合对象
+通过修改几何对象(geom)，qplot可以画出任何一种类型的图形：
+- `geom = "point"`,绘制散点图
+- `geom = "smooth"`,绘制拟合平滑曲线，并展示曲线和标准误
+- `geom = "boxplot"`，绘制箱线图
+- `geom = "path"`和`geom = "line"`,在数据点之间连线，探索时间和其他变量的关系
+- `geom = "histogram"`，绘制直方图，"density"则为密度图，"freqpoly"为频率多边形
+- `geom = "bar"`,绘制条形图 
+
+<h3 id="2-5-1-图中添加平滑曲线"><a href="#2-5-1-图中添加平滑曲线" class="headerlink" title="2.5.1 图中添加平滑曲线"></a>2.5.1 图中添加平滑曲线</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data = dsmall, geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>))</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/5.png"/>
+</div>
+使用`se = FALSE` 和 `method`参数选择不同平滑器，`method = "losse"`使用的是局部回归，曲线的平滑程度由span控制，取值范围从0（很不平滑）到1（很平滑）。当数据较多时，内存消耗较大，可以使用`method = "gam",formula = y ~s(x)`来调用mgcv包拟合一个广义可加模型。大数据，使用 `y ~ s(x,bs ="cs")`。
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">library(mgcv)</span><br><span class="line">qplot(carat, price, data = dsmall, geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>),method = <span class="string">&quot;gam&quot;</span>,formula = y~s(x,bs =<span class="string">&quot;cs&quot;</span>))</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/6.png"/>
+</div>
+载splines包以使用自然样条：`formula = y ~ ns(x,2)`，其中第二个参数是自由度，自由度越大，曲线波动越大。
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">library(splines)</span><br><span class="line">qplot(carat, price, data = dsmall, geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>),method = <span class="string">&quot;lm&quot;</span>,formula = y~ns(x,<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+### 2.5.2 多种类型绘图
+- 扰动点图，直方图，密度图，条形图
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 扰动点图：</span></span><br><span class="line">qplot(color, price/carat, data = diamonds, geom = <span class="string">&quot;jitter&quot;</span>,alpha = I(<span class="number">1</span>/<span class="number">200</span>))</span><br><span class="line"><span class="comment"># 直方图和密度图</span></span><br><span class="line">qplot(carat, data = diamonds, geom = <span class="string">&quot;histogram&quot;</span>, binwidth = <span class="number">0.01</span>, xlim = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">3</span>))</span><br><span class="line">qplot(carat, data = diamonds, geom = <span class="string">&quot;density&quot;</span>, fill = color)</span><br><span class="line"><span class="comment"># 条形图</span></span><br><span class="line">qplot(color, data = diamonds, geom = <span class="string">&quot;bar&quot;</span>)</span><br><span class="line"><span class="comment">## 按重量加劝的钻石颜色的条形图</span></span><br><span class="line">qplot(color, data = diamonds, geom = <span class="string">&quot;bar&quot;</span>, weight = carat) + scale_y_continuous(<span class="string">&quot;carat&quot;</span>)</span><br></pre></td></tr></table></figure>
+- 时间序列中的线条图和路径图
+线条图和路径图常用于可视化时间序列数据，线条图将点从左到右进行连接，路径图则按照点在数据集中的顺序对其连接（线条图等价于数据按x排序然后绘制路径图）。线条图的x轴一般时时间，展示了单个变量随时间变化的顺序，路径图则展示了两个变量随时间联动的情况，时间反映在点的顺序上。使用`ecomomics`数据集展示。
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 失业人口比例随时间变化</span></span><br><span class="line">qplot(date,unemploy/pop, data = economics, geom =<span class="string">&quot;line&quot;</span>)</span><br><span class="line"><span class="comment">## 失业星期数随时间变化</span></span><br><span class="line">qplot(date,uempmed, data = economics, geom =<span class="string">&quot;line&quot;</span>)</span><br><span class="line"><span class="comment"># 将上述两个时间序列绘在一起，形成路径图，将年份映射到colour属性上</span></span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/7.png"/>
+</div>
+可以看出来失业率和事业时间是高度相关的。
+
+<h2 id="2-6-分面"><a href="#2-6-分面" class="headerlink" title="2.6 分面"></a>2.6 分面</h2><p>分面将数据分割成若干子集，然后创建一个图形矩阵，将每一个子集绘制到图形矩阵的窗格中，所有子图采用相同的图形类型，并进行了一定的设计，使得它们之间易于比较。<br>qplot()默认的分面方法是将图形拆分为若干窗格，可通过形如<code>row_var ~ col_var</code>的表达式指定。如果只想指定一行或者一列，可以使用<code>.</code>作占位符，如<code>row_var ~ .</code>，会创建一个单列多行的图形矩阵。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 以颜色为条件的比例直方图</span></span><br><span class="line"><span class="comment">## ..density.. 告诉ggplot2将密度而不是频数映射到y轴</span></span><br><span class="line">qplot(carat, ..density.., data = diamonds, facets =  color ~ .,geom = <span class="string">&quot;histogram&quot;</span>,binwidth = <span class="number">0.1</span>, xlim = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/8.png"/>
+</div>
+
+<h2 id="2-7-其他选项"><a href="#2-7-其他选项" class="headerlink" title="2.7 其他选项"></a>2.7 其他选项</h2><ul>
+<li>xlim,ylim: x和y轴的显示区间，如xlim = c(0,20)</li>
+<li>log: log = “x”告诉x轴取对数</li>
+<li>main: 图形标题</li>
+<li>xlab,ylab： x和y轴的标签文字</li>
+</ul>
+<h2 id="2-8-qplot和plot函数的区别"><a href="#2-8-qplot和plot函数的区别" class="headerlink" title="2.8 qplot和plot函数的区别"></a>2.8 qplot和plot函数的区别</h2><ul>
+<li>qplot不是泛型反数：不同的R对象传给qplot时，并不会匹配默认的函数调用，关于泛型函数，可以查看<a target="_blank" rel="noopener" href="http://hugoji.cn/2020/01/04/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BC%96%E7%A8%8BS3%E7%B1%BB/">这篇文章</a>查看。</li>
+<li>一般而言，可以将一个变量传递给感兴趣的图形属性，这样该变量将进行标度转换并显示在图例上。如果想对其赋值可以使用I()函数:<code>colour = I(&quot;red&quot;)</code>，将点的颜色设为红色。</li>
+<li>ggplot2的参数更易懂，(colour,shape,size)比基础绘图的(col,pch,ex)更容易记忆理解</li>
+<li>基础绘图中可以使用<code>points()</code>,<code>lines()</code>和<code>text()</code>添加元素，在ggplot2中需要添加额外图层</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/01/06/R%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98memoise/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2020/01/07/(%E7%AC%94%E8%AE%B0%E4%BA%8C)ggplot2%E8%AF%AD%E6%B3%95%E7%AA%81%E7%A0%B4/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

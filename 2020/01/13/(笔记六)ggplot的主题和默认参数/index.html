@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>(笔记六)ggplot的主题和默认参数 | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ggplot2," />
+  
+
+  <meta name="description" content="这一节介绍了主题设置，修改参数默认值以及将R的图形转化到LATEX，Word以及其它展示或者文字处理软件中去。 1.主题主题的控制包括标题，坐标轴标签，图例标签等文字调整，以及网格线，背景，轴须得颜色搭配 主题可以通过对许多参数得控制使图形由粗糙变得美观  使用内置主题，图形每个元素得效果保持着视觉得一致性。默认主题为灰色背景，白色网格。 修改内置主题的某些元素。通过调整和组合这些参数，比如文本的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(笔记六)ggplot的主题和默认参数">
+<meta property="og:url" content="https://fenghuji.github.io/2020/01/13/(%E7%AC%94%E8%AE%B0%E5%85%AD)ggplot%E7%9A%84%E4%B8%BB%E9%A2%98%E5%92%8C%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="这一节介绍了主题设置，修改参数默认值以及将R的图形转化到LATEX，Word以及其它展示或者文字处理软件中去。 1.主题主题的控制包括标题，坐标轴标签，图例标签等文字调整，以及网格线，背景，轴须得颜色搭配 主题可以通过对许多参数得控制使图形由粗糙变得美观  使用内置主题，图形每个元素得效果保持着视觉得一致性。默认主题为灰色背景，白色网格。 修改内置主题的某些元素。通过调整和组合这些参数，比如文本的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E5%85%AD/1.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E5%85%AD/2.png">
+<meta property="article:published_time" content="2020-01-13T06:32:40.000Z">
+<meta property="article:modified_time" content="2020-01-13T06:32:40.000Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="ggplot2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E5%85%AD/1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%BB%E9%A2%98"><span class="toc-text">1.主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="toc-text">内置主题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98%E5%85%83%E7%B4%A0%E5%92%8C%E5%85%83%E7%B4%A0%E5%87%BD%E6%95%B0"><span class="toc-text">主题元素和元素函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E5%BA%A6%E5%92%8C%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1"><span class="toc-text">2.自定义标度和几何对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A0%87%E5%BA%A6"><span class="toc-text">2.1 标度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1%E5%92%8C%E7%BB%9F%E8%AE%A1%E5%8F%98%E5%8C%96"><span class="toc-text">2.2 几何对象和统计变化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AD%98%E5%82%A8%E8%BE%93%E5%87%BA"><span class="toc-text">3.存储输出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%A1%B5%E5%A4%9A%E5%9B%BE"><span class="toc-text">一页多图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E5%9B%BE"><span class="toc-text">子图</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-(笔记六)ggplot的主题和默认参数" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">(笔记六)ggplot的主题和默认参数</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.01.13</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/R/">R</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>这一节介绍了主题设置，修改参数默认值以及将R的图形转化到LATEX，Word以及其它展示或者文字处理软件中去。</p>
+<h2 id="1-主题"><a href="#1-主题" class="headerlink" title="1.主题"></a>1.主题</h2><p>主题的控制包括标题，坐标轴标签，图例标签等文字调整，以及网格线，背景，轴须得颜色搭配</p>
+<p>主题可以通过对许多参数得控制使图形由粗糙变得美观</p>
+<ul>
+<li>使用内置主题，图形每个元素得效果保持着视觉得一致性。默认主题为灰色背景，白色网格。</li>
+<li>修改内置主题的某些元素。通过调整和组合这些参数，比如文本的大小和颜色，背景，网格线颜色，文本方向等，可以获得自己独有的主题。</li>
+</ul>
+<h3 id="内置主题"><a href="#内置主题" class="headerlink" title="内置主题"></a>内置主题</h3><p>内置主题有theme_grey()，theme_bw()，theme_classic()，主题设置有两种方式:</p>
+<ul>
+<li>全局设置： 使用<code>theme_set(theme_grey())</code>或<code>theme_set(theme_bw())</code>，theme_set()返回先前的主题，可存储以备后用。</li>
+<li>局部设置：图形绘制后使用<code> + theme_grey()</code>的方式等</li>
+</ul>
+<h3 id="主题元素和元素函数"><a href="#主题元素和元素函数" class="headerlink" title="主题元素和元素函数"></a>主题元素和元素函数</h3><p>主题元素有：</p>
+<table>
+<thead>
+<tr>
+<th align="left">主题元素</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">axix.line</td>
+<td>segment</td>
+<td>直线和坐标轴</td>
+</tr>
+<tr>
+<td align="left">axis.text.x</td>
+<td>text</td>
+<td>x轴标签</td>
+</tr>
+<tr>
+<td align="left">axis.text.y</td>
+<td>text</td>
+<td>y轴标签</td>
+</tr>
+<tr>
+<td align="left">axis.ticks</td>
+<td>segment</td>
+<td>轴须标签</td>
+</tr>
+<tr>
+<td align="left">axis.title.x</td>
+<td>text</td>
+<td>水平轴标题</td>
+</tr>
+<tr>
+<td align="left">axis.title.y</td>
+<td>text</td>
+<td>竖直轴标题</td>
+</tr>
+<tr>
+<td align="left">legend.background</td>
+<td>rect</td>
+<td>图例背景</td>
+</tr>
+<tr>
+<td align="left">legend.key</td>
+<td>rect</td>
+<td>图例符号</td>
+</tr>
+<tr>
+<td align="left">legend.text</td>
+<td>text</td>
+<td>图例标签</td>
+</tr>
+<tr>
+<td align="left">legend.title</td>
+<td>text</td>
+<td>图例标题</td>
+</tr>
+<tr>
+<td align="left">panel.background</td>
+<td>rect</td>
+<td>面板背景</td>
+</tr>
+<tr>
+<td align="left">panel.border</td>
+<td>rect</td>
+<td>面板边界</td>
+</tr>
+<tr>
+<td align="left">panel.grid.major</td>
+<td>line</td>
+<td>主网格线</td>
+</tr>
+<tr>
+<td align="left">panel.grid.minor</td>
+<td>line</td>
+<td>次网格线</td>
+</tr>
+<tr>
+<td align="left">plot.background</td>
+<td>rect</td>
+<td>整个图形背景</td>
+</tr>
+<tr>
+<td align="left">plot.title</td>
+<td>text</td>
+<td>图形标题</td>
+</tr>
+<tr>
+<td align="left">strip.background</td>
+<td>rect</td>
+<td>分面标签背景</td>
+</tr>
+<tr>
+<td align="left">strip.text.x</td>
+<td>text</td>
+<td>水平条纹文本</td>
+</tr>
+<tr>
+<td align="left">strip.text.y</td>
+<td>text</td>
+<td>竖直条纹文本</td>
+</tr>
+</tbody></table>
+<p>元素(element)有四个类型：文本(text)，线条（lines），矩形（rectangle），空白（blank），功能为：</p>
+<ul>
+<li>element_text()：绘制标签和标题，控制字体family，face，color，size，hjust，vjust，angle，linehight。</li>
+<li>element_line()：绘制线条或线段，控制color，size，linetype</li>
+<li>element_rect()：背景使用的矩形，控制填充颜色，边界颜色，size，linetype</li>
+<li>element_blank()：空主题，对元素不分配相应的绘图空间，删去不感兴趣的绘图元素，比如color=NA，fill=NA让某些元素不可见。<br>示例：<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">install.packages(<span class="string">&quot;ggplot2movies&quot;</span>)</span><br><span class="line">library(ggplot2movies)</span><br><span class="line">hgram &lt;- qplot(rating,data = movies,binwidth =<span class="number">1</span>)</span><br><span class="line">custom_plot &lt;- hgram + labs(title = <span class="string">&quot;This is a histogram&quot;</span>) + </span><br><span class="line">     theme(plot.title = element_text(size = <span class="number">20</span>,color = <span class="string">&quot;red&quot;</span>), </span><br><span class="line">           panel.grid.major = element_line(color=<span class="string">&quot;red&quot;</span>,size=<span class="number">2</span>,linetype = <span class="string">&quot;dotted&quot;</span>), </span><br><span class="line"> plot.background = element_rect(fill = <span class="string">&quot;grey80&quot;</span>,color = <span class="literal">NA</span>,line))</span><br><span class="line"></span><br><span class="line">grid.arrange(hgram,custom_plot,nrow=<span class="number">1</span>,ncol=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E5%85%AD/1.png"/>
+</div>
+
+</li>
+</ul>
+<p>使用theme_get()可以得到当前的主题，使用theme()可在一幅图中对某些元素进行局部的修改，使用theme_update()可以为后面的图形绘制进行全局性的修改.</p>
+<h2 id="2-自定义标度和几何对象"><a href="#2-自定义标度和几何对象" class="headerlink" title="2.自定义标度和几何对象"></a>2.自定义标度和几何对象</h2><p>为保证新主题的整体连续型，可能需要调整一些标度和几何对象的默认设置，下文中的函数可避免每次添加标度或几何对象时都不得不手动设置参数。</p>
+<h3 id="2-1-标度"><a href="#2-1-标度" class="headerlink" title="2.1 标度"></a>2.1 标度</h3><p>如果需要改变默认标度的显示方法，要重新定义ggplot2中的相应图形属性标度函数。该函数的命名方法通常是<code>scale_aesthetics_continuous</code>或者<code>scale_aesthetics_discrete</code>，需将函数命名中的aesthetics替换成相应的图形属性，比如color,fill,size等等。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p &lt;- qplot(mpg,wt,data = mtcars, color = factor(cyl))</span><br><span class="line">scale_color_discrete &lt;- scale_color_brewer</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-几何对象和统计变化"><a href="#2-2-几何对象和统计变化" class="headerlink" title="2.2 几何对象和统计变化"></a>2.2 几何对象和统计变化</h3><p>类似update_geom_defaults()和update_stat_defaults()，我们也可以自定义几何对象和统计变换。设置后只影响后续绘制的图形而不是所有图形。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#改变默认颜色和将默认直方图改成密度直方图</span></span><br><span class="line">update_geom_defaults(<span class="string">&quot;point&quot;</span>,aes(color=<span class="string">&quot;darkblue&quot;</span>))</span><br><span class="line">p1 &lt;- qplot(mpg,wt,data=mtcars)</span><br><span class="line">update_stat_defaults(<span class="string">&quot;bin&quot;</span>,aes(y=..density..))</span><br><span class="line">qplot(rating,data = movies,geom = <span class="string">&quot;histogram&quot;</span>,binwidth=<span class="number">1</span>)</span><br><span class="line">grid.arrange(p1,p2,nrow=<span class="number">1</span>,ncol=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<div style="text-align: center">
+<img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E5%85%AD/2.png"/>
+</div>
+
+<h2 id="3-存储输出"><a href="#3-存储输出" class="headerlink" title="3.存储输出"></a>3.存储输出</h2><p>使用``ggsave()`存储图形，有如下参数</p>
+<ul>
+<li>path:输出路径</li>
+<li>width,height,scale(宽高，或图形相对屏幕展示的尺寸)</li>
+<li>dpi(分辨率，默认为300)</li>
+</ul>
+<h2 id="一页多图"><a href="#一页多图" class="headerlink" title="一页多图"></a>一页多图</h2><h3 id="子图"><a href="#子图" class="headerlink" title="子图"></a>子图</h3><p>把子图嵌入主图的顶部，为达到这个效果，我们首先需要绘制主图，然后在更小的视觉窗口绘制子图，viewport()函数可创建视图窗口，参数x,y,width,height控制窗口的大小和位置。默认的测量单位是”npc”，范围从0到1，(0,0)代表左下角，(1,1)代表右上角。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">library(grid)</span><br><span class="line"><span class="comment"># 占据整个图形设备的视图窗口</span></span><br><span class="line">vp1 &lt;- viewport(width =<span class="number">1</span>,height = <span class="number">1</span>,x=<span class="number">.5</span>,y=<span class="number">0.5</span>)</span><br><span class="line">vp1 &lt;- viewport()</span><br><span class="line"><span class="comment"># 只占了一般的宽和高的，定位在图形中间的</span></span><br><span class="line">vp2 &lt;- viewport(width=<span class="number">0.5</span>,height = <span class="number">0.5</span>,x =<span class="number">0.5</span>,y=<span class="number">0.5</span>)</span><br><span class="line">vp2 &lt;- viewport(width=<span class="number">.5</span>,height = <span class="number">.5</span>)</span><br><span class="line"><span class="comment"># 2cm x 3cm的视图窗口，定位在图形设备中心</span></span><br><span class="line">vp3 &lt;- viewport(width = unit(<span class="number">2</span>,<span class="string">&quot;cm&quot;</span>),height = unit(<span class="number">3</span>,<span class="string">&quot;cm&quot;</span>))</span><br><span class="line"><span class="comment"># 使用just控制图形放在哪个边角</span></span><br><span class="line">v4 &lt;- viewport(x=<span class="number">0.5</span>, y=<span class="number">0.5</span>,w=<span class="number">0.4</span>, h=<span class="number">0.9</span>,just=<span class="string">&quot;left&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>假设c是绘图，v4为视图位置，嵌入代码为：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="built_in">c</span>,vp=v4)</span><br></pre></td></tr></table></figure>
+
+
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/01/13/(%E7%AC%94%E8%AE%B0%E4%BA%94)ggplot2%E6%A0%87%E5%BA%A6%EF%BC%8C%E5%9D%90%E6%A0%87%E5%92%8C%E5%9B%BE%E4%BE%8B/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2020/01/13/2020-1-13-%E8%BF%87%E5%B9%B4%E5%B0%B1%E5%B8%A6%E8%87%AA%E5%B7%B1%E7%9A%84%E7%88%B6%E6%AF%8D%E5%8E%BB%E4%BD%93%E6%A3%80%E5%90%A7/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

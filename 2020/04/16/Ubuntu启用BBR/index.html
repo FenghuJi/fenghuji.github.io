@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Ubuntu 16.04 启用 BBR | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="BBR," />
+  
+
+  <meta name="description" content="使用Ubuntu搭建V2ray协议的时候发现网速较慢，需要使用BBR加速，操作系统为Ubuntu 16.04 LTS，机器是AWS上面的BBR版本。使用网上很多版本都发现不行，比如下载更新内核等等，都无法将BBR安装并启动。关于V2ray的安装，推荐233boy的一键安装脚本。 BBR简介BBR 是 Google 推出的一个「TCP 拥塞控制算法」，它是以 Linux 内核模块的形式加载，可以最大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04 启用 BBR">
+<meta property="og:url" content="https://fenghuji.github.io/2020/04/16/Ubuntu%E5%90%AF%E7%94%A8BBR/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="使用Ubuntu搭建V2ray协议的时候发现网速较慢，需要使用BBR加速，操作系统为Ubuntu 16.04 LTS，机器是AWS上面的BBR版本。使用网上很多版本都发现不行，比如下载更新内核等等，都无法将BBR安装并启动。关于V2ray的安装，推荐233boy的一键安装脚本。 BBR简介BBR 是 Google 推出的一个「TCP 拥塞控制算法」，它是以 Linux 内核模块的形式加载，可以最大">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-16T03:03:40.000Z">
+<meta property="article:modified_time" content="2020-04-16T03:03:40.000Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="BBR">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#BBR%E7%AE%80%E4%BB%8B"><span class="toc-text">BBR简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B-BBR-%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF"><span class="toc-text">检测 BBR 是否开启</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA-Ubuntu-16-04-%E5%AE%89%E8%A3%85-4-10-%E6%96%B0%E5%86%85%E6%A0%B8"><span class="toc-text">为 Ubuntu 16.04 安装 4.10 + 新内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA-Ubuntu-16-04-%E5%90%AF%E7%94%A8-BBR"><span class="toc-text">为 Ubuntu 16.04 启用 BBR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Ubuntu启用BBR" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Ubuntu 16.04 启用 BBR</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.04.16</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>使用Ubuntu搭建V2ray协议的时候发现网速较慢，需要使用BBR加速，操作系统为Ubuntu 16.04 LTS，机器是AWS上面的BBR版本。使用网上很多版本都发现不行，比如下载更新内核等等，都无法将BBR安装并启动。<br>关于V2ray的安装，推荐<a target="_blank" rel="noopener" href="https://github.com/233boy/v2ray/wiki/V2Ray%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">233boy的一键安装脚本</a>。</p>
+<h2 id="BBR简介"><a href="#BBR简介" class="headerlink" title="BBR简介"></a>BBR简介</h2><p>BBR 是 Google 推出的一个「TCP 拥塞控制算法」，它是以 Linux 内核模块的形式加载，可以最大化 Linux Server 的网络吞吐量。<br>在科学上网的时候网速会比较慢，BBR加速能够使得上网速度上升几个数量级。关于BBR的原理可以看南琴浪的<a target="_blank" rel="noopener" href="https://blog.sometimesnaive.org/article/8.html">这篇文章</a>。<br>当然BBR加速并不只适用于V2Ray协议，之前的Shadowsocks也可以使用BBR进行加速，一般来说都要进行内核的更换。搬瓦工提供的KVM框架的机器基本都已经自动配置了BBR加速，Ubuntu一般也都有BBR。</p>
+<h2 id="检测-BBR-是否开启"><a href="#检测-BBR-是否开启" class="headerlink" title="检测 BBR 是否开启"></a>检测 BBR 是否开启</h2><p>执行这条指令可以返回当前 Linux 内核可以使用的 TCP 拥堵控制算法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl net.ipv4.tcp_available_congestion_control</span><br></pre></td></tr></table></figure>
+<p>在没使用BBR加速时一般会返回</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_available_congestion_control &#x3D; cubic reno</span><br></pre></td></tr></table></figure>
+<p>很明显，默认的 Ubuntu 16.04 用的是 Linux 4.4.0 内核，自然是看不到 BBR 的。<br>我们再确认一次当前使用的控制算法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl net.ipv4.tcp_congestion_control</span><br></pre></td></tr></table></figure>
+<p>返回为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_congestion_control &#x3D; cubic</span><br></pre></td></tr></table></figure>
+<p>这个算法并不是bbr算法，我们需要将其修改。</p>
+<h2 id="为-Ubuntu-16-04-安装-4-10-新内核"><a href="#为-Ubuntu-16-04-安装-4-10-新内核" class="headerlink" title="为 Ubuntu 16.04 安装 4.10 + 新内核"></a>为 Ubuntu 16.04 安装 4.10 + 新内核</h2><p> BBR 只能配合 Linux Kernel 4.10 以上内核才能使用。但是在 Ubuntu 16.04 上怎么使用 4.10 呢？难道要手动下载和安装吗？<br>这会有一个安全隐患，手动下载安装的新内核，无法保证后续能得到及时的安全更新。推荐使用的是HWE 版本的内核，它就在官方源里。HWE，即：HareWare Enablement，是专门为在老的系统上支持新的硬件而推出的内核。你可以像安装其他软件包一样在 Ubuntu 16.04 里非常容易的安装它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install linux-generic-hwe-16.04</span><br></pre></td></tr></table></figure>
+<p>安装好之后使用<code>reboot</code>命令重启机器，然后使用<code>uname -r </code>查看当前的内核版本，我的返回为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4.15.0-96-generic</span><br></pre></td></tr></table></figure>
+<h2 id="为-Ubuntu-16-04-启用-BBR"><a href="#为-Ubuntu-16-04-启用-BBR" class="headerlink" title="为 Ubuntu 16.04 启用 BBR"></a>为 Ubuntu 16.04 启用 BBR</h2><p>有了新内核以后，我们就可以为新内核装载 BBR 模块了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe tcp_bbr</span><br><span class="line">echo &quot;tcp_bbr&quot; | sudo tee -a &#x2F;etc&#x2F;modules-load.d&#x2F;modules.conf</span><br></pre></td></tr></table></figure>
+<p>装载后，再执行 <code>sysctl net.ipv4.tcp_available_congestion_control </code>命令，你就可以看到 BBR 出现在输出结果里了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_available_congestion_control &#x3D; reno cubic bbr</span><br></pre></td></tr></table></figure>
+<p>接下去再正式启用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;net.core.default_qdisc&#x3D;fq&quot; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">echo &quot;net.ipv4.tcp_congestion_control&#x3D;bbr&quot; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">sudo sysctl -p</span><br></pre></td></tr></table></figure>
+<p><code>/etc/sysctl.conf</code>这个文件是控制使用算法的文件，执行完这几条指令后，再用 <code>sysctl net.ipv4.tcp_congestion_control</code> 验证一下，看到返回结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_congestion_control &#x3D; bbr</span><br></pre></td></tr></table></figure>
+<p>现在你的网络就是使用BBR算法加速的了。你会发现速度会发生质的飞跃。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://imtx.me/archives/2379.html">使用标准方式在 Ubuntu 16.04 下启用 TCP 拥塞控制之 BBR</a><br><a target="_blank" rel="noopener" href="https://blog.sometimesnaive.org/article/8.html">TCP 拥塞控制技术</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/01/13/2020-1-13-%E8%BF%87%E5%B9%B4%E5%B0%B1%E5%B8%A6%E8%87%AA%E5%B7%B1%E7%9A%84%E7%88%B6%E6%AF%8D%E5%8E%BB%E4%BD%93%E6%A3%80%E5%90%A7/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
