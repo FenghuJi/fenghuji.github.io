@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>autossh实现内网穿透 | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Linux," />
+  
+
+  <meta name="description" content="腾讯云服务器公网ip：121.4.14.26,密码****那不可能写在这哈哈。 1. 原理1.1 反向连接反向连接是指主机A（受控端）主动连接主机B（控制端），在主机A和主机B之间建立一个远程连接，通过这个连接主机B可以主动的向主机A发送一些请求。 这是因为主机A在局域网内，如果没有对主机A进行端口映射，对于主机B来说主机A是不可见的，如果在主机B这边向主机A发送连接请求，这个请求是不可达的。而主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="autossh实现内网穿透">
+<meta property="og:url" content="https://fenghuji.github.io/2020/12/02/autossh-network/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="腾讯云服务器公网ip：121.4.14.26,密码****那不可能写在这哈哈。 1. 原理1.1 反向连接反向连接是指主机A（受控端）主动连接主机B（控制端），在主机A和主机B之间建立一个远程连接，通过这个连接主机B可以主动的向主机A发送一些请求。 这是因为主机A在局域网内，如果没有对主机A进行端口映射，对于主机B来说主机A是不可见的，如果在主机B这边向主机A发送连接请求，这个请求是不可达的。而主">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-12-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-01T16:00:00.000Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-154715039-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+
+  
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            荐读
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8E%9F%E7%90%86"><span class="toc-text">1. 原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%8F%8D%E5%90%91%E8%BF%9E%E6%8E%A5"><span class="toc-text">1.1 反向连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-SSH%E5%8F%8D%E5%90%91%E8%BF%9E%E6%8E%A5%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-text">1.2 SSH反向连接的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%BF%9E%E6%8E%A5%E6%B5%81%E7%A8%8B"><span class="toc-text">1.3 连接流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E4%BE%8B"><span class="toc-text">2. 实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E9%80%9A%E8%BF%87%E5%85%AC%E7%BD%91%E8%B7%B3%E8%BD%AC%E5%88%B0%E5%86%85%E7%BD%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">2.1 通过公网跳转到内网服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%8E%A8%E9%80%81B%E7%9A%84%E5%85%AC%E9%92%A5%E5%88%B0A%EF%BC%8C%E5%AE%9E%E7%8E%B0%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95"><span class="toc-text">2.2 推送B的公钥到A，实现免密登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%9C%A8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%BB%E5%8A%A8%E8%BF%9E%E6%8E%A5%E5%85%AC%E7%BD%91%E6%9C%8D%E5%8A%A1%E5%99%A8A"><span class="toc-text">2.3 在B服务器主动连接公网服务器A</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%99%BB%E5%BD%95A%E8%AE%BF%E9%97%AEB"><span class="toc-text">2.4 登录A访问B</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-ssh%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">2.5 ssh正向代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E5%AE%89%E5%85%A8%E7%BB%84%E5%BC%80%E6%94%BE%E7%AB%AF%E5%8F%A3"><span class="toc-text">2.6 安全组开放端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E6%9C%AC%E5%9C%B0%E7%9B%B4%E6%8E%A5%E7%99%BB%E5%BD%95%E5%86%85%E7%BD%91%E6%9C%BA%E5%99%A8"><span class="toc-text">2.7 本地直接登录内网机器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-autossh-%E9%85%8D%E7%BD%AE%E4%B8%BA%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.autossh 配置为服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-autossh-network" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">autossh实现内网穿透</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2020.12.02</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>腾讯云服务器公网ip：<code>121.4.14.26</code>,密码****那不可能写在这哈哈。</p>
+<h2 id="1-原理"><a href="#1-原理" class="headerlink" title="1. 原理"></a>1. 原理</h2><h3 id="1-1-反向连接"><a href="#1-1-反向连接" class="headerlink" title="1.1 反向连接"></a>1.1 反向连接</h3><p>反向连接是指主机A（受控端）主动连接主机B（控制端），在主机A和主机B之间建立一个远程连接，通过这个连接主机B可以主动的向主机A发送一些请求。</p>
+<p>这是因为主机A在局域网内，如果没有对主机A进行端口映射，对于主机B来说主机A是不可见的，如果在主机B这边向主机A发送连接请求，这个请求是不可达的。而主机B有自己独立的IP，对于主机A来说是可见的，可以直接向主机B请求连接。</p>
+<h3 id="1-2-SSH反向连接的过程"><a href="#1-2-SSH反向连接的过程" class="headerlink" title="1.2 SSH反向连接的过程"></a>1.2 SSH反向连接的过程</h3><p>主机A主动去连接主机B，主机B响应主机A的连接请求，它们之间就建立了一个远程连接。然后主机B在本地再创建一个本地连接，重定向到主机A和主机B刚才建立的远程连接上，这就在主机A和主机B之间建立了连接通道，此时对于主机B来说，主机A已经是可见了。</p>
+<h3 id="1-3-连接流程"><a href="#1-3-连接流程" class="headerlink" title="1.3 连接流程"></a>1.3 连接流程</h3><ul>
+<li><p>主机A ssh客户端向主机B sshd服务端发送请求，建立远程连接</p>
+</li>
+<li><p>主机B sshd服务端创建本地连接到远程连接的映射（反向连接通道）</p>
+</li>
+<li><p>主机B ssh客户端向主机B sshd服务端的连接通道发送请求，建立主机B ssh和主机A sshd的连接</p>
+</li>
+</ul>
+<p><strong>完成连接后，主机A对于主机B可见的形式就是存在于主机B的那个本地连接。</strong></p>
+<h2 id="2-实例"><a href="#2-实例" class="headerlink" title="2. 实例"></a>2. 实例</h2><h3 id="2-1-通过公网跳转到内网服务器"><a href="#2-1-通过公网跳转到内网服务器" class="headerlink" title="2.1 通过公网跳转到内网服务器"></a>2.1 通过公网跳转到内网服务器</h3><p>适用于只有公网地址，对应服务器连接不到内网服务器</p>
+<blockquote>
+<p>服务器A：假定为121.4.14.26</p>
+</blockquote>
+<blockquote>
+<p>服务器B :   假定为10.0.0.0 (内网服务器）</p>
+</blockquote>
+<h3 id="2-2-推送B的公钥到A，实现免密登录"><a href="#2-2-推送B的公钥到A，实现免密登录" class="headerlink" title="2.2 推送B的公钥到A，实现免密登录"></a>2.2 推送B的公钥到A，实现免密登录</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa （一直回车,无需配置密码）</span><br><span class="line"></span><br><span class="line">ssh-copy-id  jfh@121.4.14.26</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-在B服务器主动连接公网服务器A"><a href="#2-3-在B服务器主动连接公网服务器A" class="headerlink" title="2.3 在B服务器主动连接公网服务器A"></a>2.3 在B服务器主动连接公网服务器A</h3><p>需要首先安装autossh，然后使用内网机器连接公网机器,使用A端口<code>11222</code>访问B端口<code>11221</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y install autossh</span><br><span class="line"></span><br><span class="line">autossh -p 22 -M 11222 -fNR 11221:localhost:22 jfh@121.4.14.26</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-登录A访问B"><a href="#2-4-登录A访问B" class="headerlink" title="2.4 登录A访问B"></a>2.4 登录A访问B</h3><p>在我们的电脑C上，可以先登录到A,再使用如下命令,登录B(需输入B的密码)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p11221 spark@localhost</span><br></pre></td></tr></table></figure>
+<p>可以将A的公钥加进B的<code>~/.ssh/authorized_keys</code>中，从而实现免密登录。</p>
+<blockquote>
+<p>这种登录有些麻烦，于是可以结合下面的正向代理使C可以直接访问到B</p>
+</blockquote>
+<h3 id="2-5-ssh正向代理"><a href="#2-5-ssh正向代理" class="headerlink" title="2.5 ssh正向代理"></a>2.5 ssh正向代理</h3><p>登录A,将11221这个端口本地转发,由于autossh转发后的端口,只支持本地访问,需要将那个转发端口再转发到本地的其他端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -fCNL *:11051:localhost:11221 localhost</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>*代表接受来自任意机器的访问</li>
+</ul>
+</blockquote>
+<ul>
+<li>11051是用于本地转发的一个端口,用于和外网通信（端口任选，不被占用即可）</li>
+<li>11221是前面反向代理出的用于连接的端口</li>
+</ul>
+<p>如需输入密码，输入A的即可</p>
+<h3 id="2-6-安全组开放端口"><a href="#2-6-安全组开放端口" class="headerlink" title="2.6 安全组开放端口"></a>2.6 安全组开放端口</h3><p>由于A是云服务器，因此需要使安全组开放一下正向代理转发的端口(即11051)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -I INPUT -p tcp --dport 11051 -j ACCEPT</span><br></pre></td></tr></table></figure>
+<h3 id="2-7-本地直接登录内网机器"><a href="#2-7-本地直接登录内网机器" class="headerlink" title="2.7 本地直接登录内网机器"></a>2.7 本地直接登录内网机器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p11051 spark@121.4.14.26</span><br></pre></td></tr></table></figure>
+<p>密码是内网机器的密码。也可将C的公钥推送到B：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-copy-id -i ~&#x2F;.ssh&#x2F;id_rsa.pub -p 11051 spark@121.4.14.26</span><br></pre></td></tr></table></figure>
+<p>以上就完成了内网穿透，并简化了登录过程，达到一步登录的效果。</p>
+<h2 id="3-autossh-配置为服务"><a href="#3-autossh-配置为服务" class="headerlink" title="3.autossh 配置为服务"></a>3.autossh 配置为服务</h2><p>下面为将autossh作为服务，使用systemctl来控制的操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /lib/systemd/system/autossh.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Auto SSH Tunnel</span><br><span class="line">After=network-online.target</span><br><span class="line">[Service]</span><br><span class="line">User=jfh</span><br><span class="line">Type=simple</span><br><span class="line">ExecStart=/usr/bin/autossh -NR 11221:localhost:22  -i /home/jfh/.ssh/id_rsa  -p jfh@121.4.14.26　&gt;&gt; /dev/null 2&gt;&amp;1</span><br><span class="line">ExecReload=/bin/<span class="built_in">kill</span> -HUP <span class="variable">$MAINPID</span></span><br><span class="line">ExecStop=/bin/<span class="built_in">kill</span> -TERM <span class="variable">$MAINPID</span></span><br><span class="line">KillMode=process</span><br><span class="line">Restart=no</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">WantedBy=graphical.target</span><br></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://blog.51cto.com/jaysonzhang/1213679">ssh反向连接(公网跳转内网服务器)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/GX_1_11_real/article/details/100653816">autossh实现内网穿透</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/irockcode/p/6629526.html">SSH反向连接和autossh</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">自愿投币</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2020/04/16/Ubuntu%E5%90%AF%E7%94%A8BBR/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2020/12/04/proxy-ubuntu/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              荐读
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'e5ff3017bbfe258046d3',
+  clientSecret: '9ad425be6fbbe977c47cf51e7f90cced3541a4c3',
+  repo: 'fenghuji.github.io',
+  owner: 'fenghuji',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['fenghuji'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
