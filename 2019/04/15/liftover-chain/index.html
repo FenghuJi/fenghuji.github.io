@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用liftover创建注释Chain文件 | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Bioinformatics," />
+  
+
+  <meta name="description" content="问题情形：在自己组装出一个基因组之后，会想要看自己的序列的组装情况和染色体朝向，或者是想根据已有的基因组注释文件创建自己的基因组的注释文件。这个时候需要的是一个chain file来进行坐标的转换。一般在ucsc的官网下会有一些不同版本的基因组的chain file，有时我们需要利用自己的序列产生自己的chainfile，这里对liftover的使用方法进行记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用liftover创建注释Chain文件">
+<meta property="og:url" content="https://fenghuji.github.io/2019/04/15/liftover-chain/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="问题情形：在自己组装出一个基因组之后，会想要看自己的序列的组装情况和染色体朝向，或者是想根据已有的基因组注释文件创建自己的基因组的注释文件。这个时候需要的是一个chain file来进行坐标的转换。一般在ucsc的官网下会有一些不同版本的基因组的chain file，有时我们需要利用自己的序列产生自己的chainfile，这里对liftover的使用方法进行记录。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.737Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Bioinformatics">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%83%85%E5%BD%A2%EF%BC%9A"><span class="toc-text">问题情形：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80-%E6%9E%84%E5%BB%BA%E7%A8%8B%E5%BA%8F%E7%8E%AF%E5%A2%83"><span class="toc-text">一.构建程序环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C-%E5%87%86%E5%A4%87%E6%96%87%E4%BB%B6"><span class="toc-text">二.准备文件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%BF%90%E8%A1%8CLiftover%E7%A8%8B%E5%BA%8F"><span class="toc-text">三、运行Liftover程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%8A%A5%E9%94%99%E5%A4%84%E7%90%86"><span class="toc-text">四、报错处理</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-liftover-chain" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">使用liftover创建注释Chain文件</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.04.15</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Bioinformatics/">Bioinformatics</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h3 id="问题情形："><a href="#问题情形：" class="headerlink" title="问题情形："></a>问题情形：</h3><p>在自己组装出一个基因组之后，会想要看自己的序列的组装情况和染色体朝向，或者是想根据已有的基因组注释文件创建自己的基因组的注释文件。这个时候需要的是一个chain file来进行坐标的转换。<br>一般在ucsc的官网下会有一些不同版本的基因组的chain file，有时我们需要利用自己的序列产生自己的chainfile，这里对liftover的使用方法进行记录。   </p>
+<a id="more"></a>
+
+<p>主要参考为：<a target="_blank" rel="noopener" href="http://genomewiki.ucsc.edu/index.php/DoSameSpeciesLiftOver.pl">http://genomewiki.ucsc.edu/index.php/DoSameSpeciesLiftOver.pl</a><br>这里我们使用自己组装的序列asm.fa和hg19来创建，为了避免不必要的bug，我们按照文档说明构建文件夹和操作。   </p>
+<h4 id="一-构建程序环境"><a href="#一-构建程序环境" class="headerlink" title="一.构建程序环境"></a>一.构建程序环境</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">####从官网下载需要的脚本和程序####</span><br><span class="line">mkdir &#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;bin</span><br><span class="line">mkdir &#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;scripts</span><br><span class="line">chmod 755 &#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;bin</span><br><span class="line">chmod 755 &#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;scripts</span><br><span class="line">cd &#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data</span><br><span class="line">rsync -a rsync:&#x2F;&#x2F;hgdownload.soe.ucsc.edu&#x2F;genome&#x2F;admin&#x2F;exe&#x2F;linux.x86_64&#x2F; .&#x2F;bin</span><br><span class="line">git archive --remote&#x3D;git:&#x2F;&#x2F;genome-source.soe.ucsc.edu&#x2F;kent.git \</span><br><span class="line">  --prefix&#x3D;kent&#x2F; HEAD src&#x2F;hg&#x2F;utils&#x2F;automation \</span><br><span class="line">     | tar vxf - -C .&#x2F;scripts --strip-components&#x3D;5 \</span><br><span class="line">        --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;incidentDb&#39; \</span><br><span class="line">      --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;configFiles&#39; \</span><br><span class="line">      --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;ensGene&#39; \</span><br><span class="line">      --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;genbank&#39; \</span><br><span class="line">      --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;lastz_D&#39; \</span><br><span class="line">      --exclude&#x3D;&#39;kent&#x2F;src&#x2F;hg&#x2F;utils&#x2F;automation&#x2F;openStack&#39;</span><br><span class="line">wget -O .&#x2F;bin&#x2F;bedSingleCover.pl \</span><br><span class="line">&#39;http:&#x2F;&#x2F;genome-source.soe.ucsc.edu&#x2F;gitlist&#x2F;kent.git&#x2F;raw&#x2F;master&#x2F;src&#x2F;utils&#x2F;bedSingleCover.pl&#39;</span><br></pre></td></tr></table></figure>
+<p>将程序路径加入到~/.bashrc后面   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export PATH&#x3D;&#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;bin:&#x2F;data&#x2F;scripts:$PATH</span><br><span class="line">export PATH&#x3D;&#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;bin:&#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;bin&#x2F;blat:&#x2F;home&#x2F;jfh&#x2F;projects&#x2F;hic_analysis&#x2F;data&#x2F;liftover&#x2F;data&#x2F;scripts:$PATH</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>另外，需要搭建parasol集群环境：<br>参考：<a target="_blank" rel="noopener" href="http://genomewiki.ucsc.edu/index.php/Parasol_job_control_system">http://genomewiki.ucsc.edu/index.php/Parasol_job_control_system</a><br>需要注意的是：文档中并未提及需要能免密<code>ssh localhost</code>，需要自己手动配置免密ssh本地，设置好后其余的按照文档要求做即可。   </p>
+<h4 id="二-准备文件"><a href="#二-准备文件" class="headerlink" title="二.准备文件"></a>二.准备文件</h4><p>将自己的序列分别压缩为<code>asm.fa.gz</code>和<code>hg19.fa.gz</code>形成<br><code>/home/jfh/projects/hic_analysis/data/liftover/data/genomes/hg19/hg19.fa.gz</code><br><code>/home/jfh/projects/hic_analysis/data/liftover/data/genomes/asm/asm.fa.gz</code>   </p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">genome&#x3D;&#x2F;home&#x2F;hugo&#x2F;storage&#x2F;jifh&#x2F;projects&#x2F;liftover&#x2F;data&#x2F;genomes</span><br><span class="line">query&#x3D;hg19</span><br><span class="line">target&#x3D;asm</span><br><span class="line">cd $genome&#x2F;asm</span><br><span class="line">faToTwoBit $genome&#x2F;asm&#x2F;asm.fa.gz asm.2bit</span><br><span class="line">twoBitInfo asm.2bit stdout | sort -k2,2nr &gt; asm.chrom.sizes</span><br><span class="line">cd $genome&#x2F;hg19</span><br><span class="line">faToTwoBit $genome&#x2F;hg19&#x2F;hg19.fa.gz hg19.2bit</span><br><span class="line">twoBitInfo hg19.2bit stdout | sort -k2,2nr &gt; hg19.chrom.sizes</span><br></pre></td></tr></table></figure>
+<p>创建ooc file<br><code>blat asm.2bit /dev/null /dev/null -tileSize=11 -makeOoc=asm.ooc -repMatch=1024</code>   </p>
+<h4 id="三、运行Liftover程序"><a href="#三、运行Liftover程序" class="headerlink" title="三、运行Liftover程序"></a>三、运行Liftover程序</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">data&#x3D;&#x2F;home&#x2F;hugo&#x2F;storage&#x2F;jifh&#x2F;projects&#x2F;liftover&#x2F;data</span><br><span class="line">export target&#x3D;&quot;asm&quot;</span><br><span class="line">export query&#x3D;&quot;hg19&quot;</span><br><span class="line">cd $data&#x2F;genomes&#x2F;$&#123;target&#125;</span><br><span class="line">time (doSameSpeciesLiftOver.pl -verbose&#x3D;2 -buildDir&#x3D;&#96;pwd&#96;   \</span><br><span class="line">  -ooc&#x3D;&#96;pwd&#96;&#x2F;$&#123;target&#125;.ooc -fileServer&#x3D;localhost -localTmp&#x3D;&quot;&#x2F;dev&#x2F;shm&quot; \</span><br><span class="line">    -bigClusterHub&#x3D;localhost -dbHost&#x3D;localhost -workhorse&#x3D;localhost \</span><br><span class="line">      -target2Bit&#x3D;&#96;pwd&#96;&#x2F;$&#123;target&#125;.2bit -targetSizes&#x3D;&#96;pwd&#96;&#x2F;$&#123;target&#125;.chrom.sizes \</span><br><span class="line">        -query2Bit&#x3D;$data&#x2F;genomes&#x2F;$&#123;query&#125;&#x2F;$&#123;query&#125;.2bit \</span><br><span class="line">          -querySizes&#x3D;$data&#x2F;genomes&#x2F;$&#123;query&#125;&#x2F;$&#123;query&#125;.chrom.sizes $&#123;target&#125; $&#123;query&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="四、报错处理"><a href="#四、报错处理" class="headerlink" title="四、报错处理"></a>四、报错处理</h4><p>运行liftover的时候，可能会出现parasol运行停止的情况，机器提示sick machine，这时只要进入到batch所在的目录下，运行以下命令即可：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">para clearSickNodes</span><br><span class="line">para try</span><br><span class="line">para push</span><br></pre></td></tr></table></figure>
+<p>最后在自己的target文件夹下面就可以看到asmToHg19.over.chain.gz，就可以拿去用了。   </p>
+<p>Reference Link：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;genomewiki.ucsc.edu&#x2F;index.php&#x2F;DoSameSpeciesLiftOver.pl</span><br><span class="line">http:&#x2F;&#x2F;genomewiki.ucsc.edu&#x2F;index.php&#x2F;Parasol_job_control_system</span><br><span class="line">https:&#x2F;&#x2F;genecats.gi.ucsc.edu&#x2F;eng&#x2F;parasol.html</span><br></pre></td></tr></table></figure>
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="hide pull-left" href="/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/04/22/ubuntu-windows-install/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

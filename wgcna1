@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>WGCNA官方教程(二) | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Bioinformatics,WGCNA," />
+  
+
+  <meta name="description" content="写在前面WGCNA官方给的教程二和教程一大同小异，不同之处在于教程二加入了雄性小鼠的数据，进行了平行同时分析，最后进行了雌雄的差异分析，雌性和共有模块的分析等等。仔细看完教程一后，教程二的后半段可以作为多数据集的并行分析和比较分析。如果你有多个数据集，那你可以参考这个教程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WGCNA官方教程(二)">
+<meta property="og:url" content="https://fenghuji.github.io/wgcna1">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="写在前面WGCNA官方给的教程二和教程一大同小异，不同之处在于教程二加入了雄性小鼠的数据，进行了平行同时分析，最后进行了雌雄的差异分析，雌性和共有模块的分析等等。仔细看完教程一后，教程二的后半段可以作为多数据集的并行分析和比较分析。如果你有多个数据集，那你可以参考这个教程。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/SampleClustering.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/Re_SampleClustering.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/scaleFreeAnalysis.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/ConsensusDendrogram-auto.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/ConsensusVsFemaleModules.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/EigengeneNetworks.png">
+<meta property="article:published_time" content="2019-11-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.749Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Bioinformatics">
+<meta property="article:tag" content="WGCNA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/SampleClustering.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="toc-text">前期准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E5%92%8C%E5%BC%82%E5%B8%B8%E5%80%BC%E5%A4%84%E7%90%86"><span class="toc-text">基本数据清洗和异常值处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E8%BF%9B%E4%B8%B4%E5%BA%8A%E6%95%B0%E5%80%BC"><span class="toc-text">读进临床数值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E9%98%88%E5%80%BC%E6%8C%87%E6%95%B0"><span class="toc-text">软阈值指数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%9E%84%E5%BB%BA%E5%92%8C%E6%A8%A1%E5%9D%97%E6%A3%80%E6%B5%8B"><span class="toc-text">网络构建和模块检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%86consensus%E6%A8%A1%E5%9D%97%E5%92%8Cfemale%E6%95%B0%E6%8D%AE%E9%9B%86%E7%89%B9%E5%BC%82%E6%80%A7%E6%A8%A1%E5%9D%97%E7%BB%93%E5%90%88"><span class="toc-text">将consensus模块和female数据集特异性模块结合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%94%E8%BE%83male%E5%92%8Cfemale%E4%B8%A4%E4%B8%AA%E7%BD%91%E7%BB%9C"><span class="toc-text">比较male和female两个网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-WGCNA(二)" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">WGCNA官方教程(二)</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.11.08</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Bioinformatics/">Bioinformatics</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>WGCNA官方给的教程二和教程一大同小异，不同之处在于教程二加入了雄性小鼠的数据，进行了平行同时分析，最后进行了<strong>雌雄的差异分析，雌性和共有模块的分析</strong>等等。仔细看完教程一后，教程二的后半段可以作为多数据集的并行分析和比较分析。如果你有多个数据集，那你可以参考这个教程。</p>
+<a id="more"></a>
+
+<p>教程二的数据集在<a target="_blank" rel="noopener" href="https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/MaleLiver-Data.zip">这个链接</a>下载。</p>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">nSets = <span class="number">2</span>;</span><br><span class="line"><span class="comment"># 为了方便绘图 设置一个label向量</span></span><br><span class="line">setLabels = <span class="built_in">c</span>(<span class="string">&quot;Female liver&quot;</span>, <span class="string">&quot;Male liver&quot;</span>)</span><br><span class="line">shortLabels = <span class="built_in">c</span>(<span class="string">&quot;Female&quot;</span>, <span class="string">&quot;Male&quot;</span>)</span><br><span class="line"><span class="comment">#数据从第九列开始包含表达量值</span></span><br><span class="line">multiExpr = vector(mode = <span class="string">&quot;list&quot;</span>, <span class="built_in">length</span> = nSets)</span><br><span class="line">multiExpr[[<span class="number">1</span>]] = <span class="built_in">list</span>(data = as.data.frame(t(femData[-<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)])));</span><br><span class="line"><span class="built_in">names</span>(multiExpr[[<span class="number">1</span>]]$data) = femData$substanceBXH;</span><br><span class="line">rownames(multiExpr[[<span class="number">1</span>]]$data) = <span class="built_in">names</span>(femData)[-<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)];</span><br><span class="line">multiExpr[[<span class="number">2</span>]] = <span class="built_in">list</span>(data = as.data.frame(t(maleData[-<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)])));</span><br><span class="line"><span class="built_in">names</span>(multiExpr[[<span class="number">2</span>]]$data) = maleData$substanceBXH;</span><br><span class="line">rownames(multiExpr[[<span class="number">2</span>]]$data) = <span class="built_in">names</span>(maleData)[-<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)];</span><br><span class="line"><span class="comment"># Check that the data has the correct format for many functions operating on multiple sets:</span></span><br><span class="line">exprSize = checkSets(multiExpr)</span><br></pre></td></tr></table></figure>
+<p>变量<code>exprSize</code>包含数据大小信息</p>
+<h2 id="基本数据清洗和异常值处理"><a href="#基本数据清洗和异常值处理" class="headerlink" title="基本数据清洗和异常值处理"></a>基本数据清洗和异常值处理</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">gsg = goodSamplesGenesMS(multiExpr, verbose = <span class="number">3</span>);</span><br><span class="line">gsg$allOK</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!gsg$allOK)</span><br><span class="line">&#123;</span><br><span class="line"><span class="comment"># Print information about the removed genes:</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">sum</span>(!gsg$goodGenes) &gt; <span class="number">0</span>)</span><br><span class="line">		printFlush(paste(<span class="string">&quot;Removing genes:&quot;</span>, paste(<span class="built_in">names</span>(multiExpr[[<span class="number">1</span>]]$data)[!gsg$goodGenes],collapse = <span class="string">&quot;, &quot;</span>)))</span><br><span class="line">	<span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:exprSize$nSets)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">sum</span>(!gsg$goodSamples[[set]]))</span><br><span class="line">		printFlush(paste(<span class="string">&quot;In set&quot;</span>, setLabels[set], <span class="string">&quot;removing samples&quot;</span>,</span><br><span class="line">		paste(rownames(multiExpr[[set]]$data)[!gsg$goodSamples[[set]]], collapse = <span class="string">&quot;, &quot;</span>)))</span><br><span class="line">		<span class="comment"># Remove the offending genes and samples</span></span><br><span class="line">		multiExpr[[set]]$data = multiExpr[[set]]$data[gsg$goodSamples[[set]], gsg$goodGenes];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment"># Update exprSize</span></span><br><span class="line">	exprSize = checkSets(multiExpr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对每个数据集，使用Euclidean距离做样本聚类</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sampleTrees = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">sampleTrees[[set]] = hclust(dist(multiExpr[[set]]$data), method = <span class="string">&quot;average&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时对每个样本绘制样本聚类图</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">png(file = <span class="string">&quot;Plots/SampleClustering.png&quot;</span>, width = <span class="number">800</span>, height = <span class="number">600</span>);</span><br><span class="line">par(mfrow=<span class="built_in">c</span>(<span class="number">2</span>,<span class="number">1</span>))</span><br><span class="line">par(mar = <span class="built_in">c</span>(<span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">0</span>))</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">plot(sampleTrees[[set]], main = paste(<span class="string">&quot;Sample clustering on all genes in&quot;</span>, setLabels[set]),xlab=<span class="string">&quot;&quot;</span>, sub=<span class="string">&quot;&quot;</span>, cex = <span class="number">0.7</span>);</span><br><span class="line">dev.off();</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/SampleClustering.png" alt="SampleClustering"></p>
+<p>发现雌性小鼠有异常值，移除。首先绘制找寻异常值具有截断线段的图形。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为雌性样本选择基础cut值</span></span><br><span class="line">baseHeight = <span class="number">16</span></span><br><span class="line"><span class="comment"># 然后根据雄性样本数选择cut高度</span></span><br><span class="line">cutHeights = <span class="built_in">c</span>(<span class="number">16</span>, <span class="number">16</span>*exprSize$nSamples[<span class="number">2</span>]/exprSize$nSamples[<span class="number">1</span>]);</span><br><span class="line"><span class="comment"># 重新绘制聚类树图</span></span><br><span class="line">png(file = <span class="string">&quot;Plots/Re_SampleClustering.png&quot;</span>, width = <span class="number">800</span>, height = <span class="number">600</span>);</span><br><span class="line">par(mfrow=<span class="built_in">c</span>(<span class="number">2</span>,<span class="number">1</span>))</span><br><span class="line">par(mar = <span class="built_in">c</span>(<span class="number">0</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">0</span>))</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">plot(sampleTrees[[set]], main = paste(<span class="string">&quot;Sample clustering on all genes in&quot;</span>, setLabels[set]),</span><br><span class="line">xlab=<span class="string">&quot;&quot;</span>, sub=<span class="string">&quot;&quot;</span>, cex = <span class="number">0.7</span>);</span><br><span class="line">abline(h=cutHeights[set], col = <span class="string">&quot;red&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">dev.off();</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/Re_SampleClustering.png" alt="Re_SampleClustering"></p>
+<p>开始移除异常值</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment"># 寻找cut线内的聚类</span></span><br><span class="line">	labels = cutreeStatic(sampleTrees[[set]], cutHeight = cutHeights[set])</span><br><span class="line">	<span class="comment"># 保留标签为1的较大的一个聚类 (labeled by the number 1)</span></span><br><span class="line">	keep = (labels==<span class="number">1</span>)</span><br><span class="line">	multiExpr[[set]]$data = multiExpr[[set]]$data[keep, ]</span><br><span class="line">&#125;</span><br><span class="line">collectGarbage();</span><br><span class="line"><span class="comment"># 查看剩余数据的大小</span></span><br><span class="line">exprSize = checkSets(multiExpr)</span><br><span class="line">exprSize</span><br></pre></td></tr></table></figure>
+<h2 id="读进临床数值"><a href="#读进临床数值" class="headerlink" title="读进临床数值"></a>读进临床数值</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">traitData = read.csv(<span class="string">&quot;ClinicalTraits.csv&quot;</span>);</span><br><span class="line"><span class="built_in">dim</span>(traitData)</span><br><span class="line"><span class="built_in">names</span>(traitData)</span><br><span class="line"><span class="comment"># remove columns that hold information we do not need.</span></span><br><span class="line">allTraits = traitData[, -<span class="built_in">c</span>(<span class="number">31</span>, <span class="number">16</span>)];</span><br><span class="line">allTraits = allTraits[, <span class="built_in">c</span>(<span class="number">2</span>, <span class="number">11</span>:<span class="number">36</span>) ];</span><br><span class="line"><span class="comment"># See how big the traits are and what are the trait and sample names</span></span><br><span class="line"><span class="built_in">dim</span>(allTraits)</span><br><span class="line"><span class="built_in">names</span>(allTraits)</span><br><span class="line">allTraits$Mice</span><br><span class="line"><span class="comment"># Form a multi-set structure that will hold the clinical traits.</span></span><br><span class="line">Traits = vector(mode=<span class="string">&quot;list&quot;</span>, <span class="built_in">length</span> = nSets);</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">	setSamples = rownames(multiExpr[[set]]$data);</span><br><span class="line">	traitRows = match(setSamples, allTraits$Mice);</span><br><span class="line">	Traits[[set]] = <span class="built_in">list</span>(data = allTraits[traitRows, -<span class="number">1</span>]);</span><br><span class="line">	rownames(Traits[[set]]$data) = allTraits[traitRows, <span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line">collectGarbage();</span><br><span class="line"><span class="comment"># Define data set dimensions</span></span><br><span class="line">nGenes = exprSize$nGenes;</span><br><span class="line">nSamples = exprSize$nSamples;</span><br></pre></td></tr></table></figure>
+<p>保存临床文件</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">save(multiExpr, Traits, nGenes, nSamples, setLabels, shortLabels, exprSize,</span><br><span class="line">file = <span class="string">&quot;Consensus-dataInput.RData&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="软阈值指数"><a href="#软阈值指数" class="headerlink" title="软阈值指数"></a>软阈值指数</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Choose a set of soft-thresholding powers</span></span><br><span class="line">powers = <span class="built_in">c</span>(seq(<span class="number">4</span>,<span class="number">10</span>,by=<span class="number">1</span>), seq(<span class="number">12</span>,<span class="number">20</span>, by=<span class="number">2</span>));</span><br><span class="line"><span class="comment"># Initialize a list to hold the results of scale-free analysis</span></span><br><span class="line">powerTables = vector(mode = <span class="string">&quot;list&quot;</span>, <span class="built_in">length</span> = nSets);</span><br><span class="line"><span class="comment"># Call the network topology analysis function for each set in turn</span></span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">powerTables[[set]] = <span class="built_in">list</span>(data = pickSoftThreshold(multiExpr[[set]]$data, powerVector=powers,</span><br><span class="line">verbose = <span class="number">2</span>)[[<span class="number">2</span>]]);</span><br><span class="line">collectGarbage();</span><br><span class="line"><span class="comment"># Plot the results:</span></span><br><span class="line">colors = <span class="built_in">c</span>(<span class="string">&quot;black&quot;</span>, <span class="string">&quot;red&quot;</span>)</span><br><span class="line"><span class="comment"># Will plot these columns of the returned scale free analysis tables</span></span><br><span class="line">plotCols = <span class="built_in">c</span>(<span class="number">2</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>)</span><br><span class="line">colNames = <span class="built_in">c</span>(<span class="string">&quot;Scale Free Topology Model Fit&quot;</span>, <span class="string">&quot;Mean connectivity&quot;</span>, <span class="string">&quot;Median connectivity&quot;</span>,</span><br><span class="line"><span class="string">&quot;Max connectivity&quot;</span>);</span><br><span class="line"><span class="comment"># Get the minima and maxima of the plotted points</span></span><br><span class="line">ylim = matrix(<span class="literal">NA</span>, nrow = <span class="number">2</span>, ncol = <span class="number">4</span>);</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (col <span class="keyword">in</span> <span class="number">1</span>:<span class="built_in">length</span>(plotCols))</span><br><span class="line">		&#123;</span><br><span class="line">		ylim[<span class="number">1</span>, col] = <span class="built_in">min</span>(ylim[<span class="number">1</span>, col], powerTables[[set]]$data[, plotCols[col]], na.rm = <span class="literal">TRUE</span>);</span><br><span class="line">		ylim[<span class="number">2</span>, col] = <span class="built_in">max</span>(ylim[<span class="number">2</span>, col], powerTables[[set]]$data[, plotCols[col]], na.rm = <span class="literal">TRUE</span>);</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Plot the quantities in the chosen columns vs. the soft thresholding power</span></span><br><span class="line">sizeGrWindow(<span class="number">8</span>, <span class="number">6</span>)</span><br><span class="line">png(file = <span class="string">&quot;Plots/scaleFreeAnalysis.png&quot;</span>, wi = <span class="number">800</span>, he = <span class="number">600</span>)</span><br><span class="line">par(mfcol = <span class="built_in">c</span>(<span class="number">2</span>,<span class="number">2</span>));</span><br><span class="line">par(mar = <span class="built_in">c</span>(<span class="number">4.2</span>, <span class="number">4.2</span> , <span class="number">2.2</span>, <span class="number">0.5</span>))</span><br><span class="line">cex1 = <span class="number">0.7</span>;</span><br><span class="line"><span class="keyword">for</span> (col <span class="keyword">in</span> <span class="number">1</span>:<span class="built_in">length</span>(plotCols)) <span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (set==<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		plot(powerTables[[set]]$data[,<span class="number">1</span>], -<span class="built_in">sign</span>(powerTables[[set]]$data[,<span class="number">3</span>])*powerTables[[set]]$data[,<span class="number">2</span>],</span><br><span class="line">		xlab=<span class="string">&quot;Soft Threshold (power)&quot;</span>,ylab=colNames[col],type=<span class="string">&quot;n&quot;</span>, ylim = ylim[, col],</span><br><span class="line">		main = colNames[col]);</span><br><span class="line">		addGrid();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (col==<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		text(powerTables[[set]]$data[,<span class="number">1</span>], -<span class="built_in">sign</span>(powerTables[[set]]$data[,<span class="number">3</span>])*powerTables[[set]]$data[,<span class="number">2</span>],</span><br><span class="line">		labels=powers,cex=cex1,col=colors[set]);</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	text(powerTables[[set]]$data[,<span class="number">1</span>], powerTables[[set]]$data[,plotCols[col]],labels=powers,cex=cex1,col=colors[set]);</span><br><span class="line">	<span class="keyword">if</span> (col==<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		legend(<span class="string">&quot;bottomright&quot;</span>, legend = setLabels, col = colors, pch = <span class="number">20</span>) ;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span> legend(<span class="string">&quot;topright&quot;</span>, legend = setLabels, col = colors, pch = <span class="number">20</span>) ;</span><br><span class="line">&#125;</span><br><span class="line">dev.off();</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/scaleFreeAnalysis.png" alt="scaleFreeAnalysis"></p>
+<h2 id="网络构建和模块检测"><a href="#网络构建和模块检测" class="headerlink" title="网络构建和模块检测"></a>网络构建和模块检测</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">net = blockwiseConsensusModules(</span><br><span class="line">	multiExpr, power = <span class="number">6</span>, minModuleSize = <span class="number">30</span>, deepSplit = <span class="number">2</span>,</span><br><span class="line">	pamRespectsDendro = <span class="literal">FALSE</span>,</span><br><span class="line">	mergeCutHeight = <span class="number">0.25</span>, numericLabels = <span class="literal">TRUE</span>,</span><br><span class="line">	minKMEtoStay = <span class="number">0</span>,</span><br><span class="line">	saveTOMs = <span class="literal">TRUE</span>, verbose = <span class="number">5</span>)</span><br><span class="line">consMEs = net$multiMEs;</span><br><span class="line">moduleLabels = net$colors;</span><br><span class="line"><span class="comment"># Convert the numeric labels to color labels</span></span><br><span class="line">moduleColors = labels2colors(moduleLabels)</span><br><span class="line">consTree = net$dendrograms[[<span class="number">1</span>]];</span><br></pre></td></tr></table></figure>
+<p>查看结果</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sizeGrWindow(<span class="number">8</span>,<span class="number">6</span>);</span><br><span class="line">png(file = <span class="string">&quot;Plots/ConsensusDendrogram-auto.png&quot;</span>, wi = <span class="number">800</span>, he = <span class="number">600</span>)</span><br><span class="line">plotDendroAndColors(consTree, moduleColors,</span><br><span class="line"><span class="string">&quot;Module colors&quot;</span>,</span><br><span class="line">dendroLabels = <span class="literal">FALSE</span>, hang = <span class="number">0.03</span>,</span><br><span class="line">addGuide = <span class="literal">TRUE</span>, guideHang = <span class="number">0.05</span>,</span><br><span class="line">main = <span class="string">&quot;Consensus gene dendrogram and module colors&quot;</span>)</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/ConsensusDendrogram-auto.png" alt="ConsensusDendrogram-auto"><br>保留数据</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save(consMEs, moduleLabels, moduleColors, consTree, file = <span class="string">&quot;Consensus-NetworkConstruction-auto.RData&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="将consensus模块和female数据集特异性模块结合"><a href="#将consensus模块和female数据集特异性模块结合" class="headerlink" title="将consensus模块和female数据集特异性模块结合"></a>将consensus模块和female数据集特异性模块结合</h2><p>载入数据</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">lnames = load(file = <span class="string">&quot;Consensus-dataInput.RData&quot;</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;Consensus-NetworkConstruction-auto.RData&quot;</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-02-networkConstruction-auto.RData&quot;</span>);</span><br><span class="line">femaleLabels = moduleLabels;</span><br><span class="line">femaleColors = moduleColors;</span><br><span class="line">femaleTree = geneTree;</span><br><span class="line">femaleMEs = orderMEs(MEs, greyName = <span class="string">&quot;ME0&quot;</span>);</span><br><span class="line"></span><br><span class="line">lnames = load(<span class="string">&quot;Consensus-NetworkConstruction-auto.RData&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>计算female-consensus modules的关系并计算Fisher检验p-value</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Isolate the module labels in the order they appear in ordered module eigengenes</span></span><br><span class="line">femModuleLabels = substring(<span class="built_in">names</span>(femaleMEs), <span class="number">3</span>)</span><br><span class="line">consModuleLabels = substring(<span class="built_in">names</span>(consMEs[[<span class="number">1</span>]]$data), <span class="number">3</span>)</span><br><span class="line"><span class="comment"># Convert the numeric module labels to color labels</span></span><br><span class="line">femModules = labels2colors(<span class="built_in">as.numeric</span>(femModuleLabels))</span><br><span class="line">consModules = labels2colors(<span class="built_in">as.numeric</span>(consModuleLabels))</span><br><span class="line"><span class="comment"># Numbers of female and consensus modules</span></span><br><span class="line">nFemMods = <span class="built_in">length</span>(femModules)</span><br><span class="line">nConsMods = <span class="built_in">length</span>(consModules)</span><br><span class="line"><span class="comment"># Initialize tables of p-values and of the corresponding counts</span></span><br><span class="line">pTable = matrix(<span class="number">0</span>, nrow = nFemMods, ncol = nConsMods);</span><br><span class="line">CountTbl = matrix(<span class="number">0</span>, nrow = nFemMods, ncol = nConsMods);</span><br><span class="line"><span class="comment"># Execute all pairwaise comparisons</span></span><br><span class="line"><span class="keyword">for</span> (fmod <span class="keyword">in</span> <span class="number">1</span>:nFemMods)</span><br><span class="line"><span class="keyword">for</span> (cmod <span class="keyword">in</span> <span class="number">1</span>:nConsMods)</span><br><span class="line">&#123;</span><br><span class="line">	femMembers = (femaleColors == femModules[fmod]);</span><br><span class="line">	consMembers = (moduleColors == consModules[cmod]);</span><br><span class="line">	pTable[fmod, cmod] = -log10(fisher.test(femMembers, consMembers, alternative = <span class="string">&quot;greater&quot;</span>)$p.value);</span><br><span class="line">	CountTbl[fmod, cmod] = <span class="built_in">sum</span>(femaleColors == femModules[fmod] &amp; moduleColors == consModules[cmod])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可视化p值</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Truncate p values smaller than 10^&#123;-50&#125; to 10^&#123;-50&#125;</span></span><br><span class="line">pTable[<span class="built_in">is.infinite</span>(pTable)] = <span class="number">1.3</span>*<span class="built_in">max</span>(pTable[<span class="built_in">is.finite</span>(pTable)]);</span><br><span class="line">pTable[pTable&gt;<span class="number">50</span> ] = <span class="number">50</span> ;</span><br><span class="line"><span class="comment"># Marginal counts (really module sizes)</span></span><br><span class="line">femModTotals = apply(CountTbl, <span class="number">1</span>, <span class="built_in">sum</span>)</span><br><span class="line">consModTotals = apply(CountTbl, <span class="number">2</span>, <span class="built_in">sum</span>)</span><br><span class="line"><span class="comment"># Actual plotting</span></span><br><span class="line">sizeGrWindow(<span class="number">10</span>,<span class="number">7</span> );</span><br><span class="line">png(file = <span class="string">&quot;Plots/ConsensusVsFemaleModules.png&quot;</span>, wi = <span class="number">1000</span>, he = <span class="number">700</span>);</span><br><span class="line">par(mfrow=<span class="built_in">c</span>(<span class="number">1</span>,<span class="number">1</span>));</span><br><span class="line">par(cex = <span class="number">1.0</span>);</span><br><span class="line">par(mar=<span class="built_in">c</span>(<span class="number">8</span>, <span class="number">10.4</span>, <span class="number">2.7</span>, <span class="number">1</span>)+<span class="number">0.3</span>);</span><br><span class="line"><span class="comment"># Use function labeledHeatmap to produce the color-coded table with all the trimmings</span></span><br><span class="line">labeledHeatmap(Matrix = pTable,</span><br><span class="line">	xLabels = paste(<span class="string">&quot; &quot;</span>, consModules),</span><br><span class="line">	yLabels = paste(<span class="string">&quot; &quot;</span>, femModules),</span><br><span class="line">	colorLabels = <span class="literal">TRUE</span>,</span><br><span class="line">	xSymbols = paste(<span class="string">&quot;Cons &quot;</span>, consModules, <span class="string">&quot;: &quot;</span>, consModTotals, sep=<span class="string">&quot;&quot;</span>),</span><br><span class="line">	ySymbols = paste(<span class="string">&quot;Fem &quot;</span>, femModules, <span class="string">&quot;: &quot;</span>, femModTotals, sep=<span class="string">&quot;&quot;</span>),</span><br><span class="line">	textMatrix = CountTbl,</span><br><span class="line">	colors = greenWhiteRed(<span class="number">100</span>)[<span class="number">50</span>:<span class="number">100</span>],</span><br><span class="line">	main = <span class="string">&quot;Correspondence of Female set-specific and Female-Male consensus modules&quot;</span>,</span><br><span class="line">	cex.text = <span class="number">1.0</span>, cex.lab = <span class="number">1.0</span>, setStdMargins = <span class="literal">FALSE</span>);</span><br><span class="line">dev.off();</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/ConsensusVsFemaleModules.png" alt="ConsensusVsFemaleModules"></p>
+<h2 id="比较male和female两个网络"><a href="#比较male和female两个网络" class="headerlink" title="比较male和female两个网络"></a>比较male和female两个网络</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create a variable weight that will hold just the body weight of mice in both sets</span></span><br><span class="line">weight = vector(mode = <span class="string">&quot;list&quot;</span>, <span class="built_in">length</span> = nSets);</span><br><span class="line"><span class="keyword">for</span> (set <span class="keyword">in</span> <span class="number">1</span>:nSets)</span><br><span class="line">&#123;</span><br><span class="line">	weight[[set]] = <span class="built_in">list</span>(data = as.data.frame(Traits[[set]]$data$weight_g));</span><br><span class="line">	<span class="built_in">names</span>(weight[[set]]$data) = <span class="string">&quot;weight&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Recalculate consMEs to give them color names</span></span><br><span class="line">consMEsC = multiSetMEs(multiExpr, universalColors = moduleColors);</span><br><span class="line"><span class="comment"># We add the weight trait to the eigengenes and order them by consesus hierarchical clustering:</span></span><br><span class="line">MET = consensusOrderMEs(addTraitToMEs(consMEsC, weight));</span><br></pre></td></tr></table></figure>
+<p>使用函数<code>plotEigengeneNetworks</code>进行差异分析</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sizeGrWindow(<span class="number">8</span>,<span class="number">10</span>);</span><br><span class="line">png(file = <span class="string">&quot;Plots/EigengeneNetworks.png&quot;</span>, width= <span class="number">800</span>, height = <span class="number">1000</span>);</span><br><span class="line">par(cex = <span class="number">0.9</span>)</span><br><span class="line">plotEigengeneNetworks(MET, setLabels, marDendro = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>), marHeatmap = <span class="built_in">c</span>(<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>),</span><br><span class="line">zlimPreservation = <span class="built_in">c</span>(<span class="number">0.5</span>, <span class="number">1</span>), xLabelsAngle = <span class="number">90</span>)</span><br><span class="line">dev.off();</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/EigengeneNetworks.png" alt="EigengeneNetworks"><br>对角线两个热图为模块相关热图，而Preservation heatmap展示1-两个数据集的eigengene差异绘制，柱状图则为一个eigengenes相对于其他所有eigengenes的平均preservation，即为Preservation heatmap的列均值</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/">Tutorials for the WGCNA package</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/11/07/WGCNA(%E4%B8%80)/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/11/14/edgeR/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

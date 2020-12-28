@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用SLURM运行Hic-Pro | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Bioinformatics,Linux,SLURM,HiC," />
+  
+
+  <meta name="description" content="由于最近工作失误，错误运行了两次Hic-Pro，由于其中Bowtie2的运行相当耗时，耽误了大量的时间，于是决定安装一个SLURM集群系统，并行运行Hic-Pro，来减少工作时间。下面对其中遇到的问题进行总结，记录各个流程中遇到的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用SLURM运行Hic-Pro">
+<meta property="og:url" content="https://fenghuji.github.io/2019/04/23/slurm-hicpro/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="由于最近工作失误，错误运行了两次Hic-Pro，由于其中Bowtie2的运行相当耗时，耽误了大量的时间，于是决定安装一个SLURM集群系统，并行运行Hic-Pro，来减少工作时间。下面对其中遇到的问题进行总结，记录各个流程中遇到的问题。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-23T04:24:31.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.748Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Bioinformatics">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="SLURM">
+<meta property="article:tag" content="HiC">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85SLURM"><span class="toc-text">安装SLURM</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7jfh"><span class="toc-text">1、添加用户jfh</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%AE%89%E8%A3%85munge%EF%BC%88%E7%94%A8%E4%BA%8E%E6%9C%BA%E5%99%A8%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1%EF%BC%89"><span class="toc-text">2、安装munge（用于机器间的通信）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AE%89%E8%A3%85Slurm"><span class="toc-text">3.安装Slurm</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-text">参考配置：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E6%9F%A5%E9%94%99%E6%8E%92%E9%99%A4%E9%97%AE%E9%A2%98"><span class="toc-text">4、查错排除问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81SLURM%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4"><span class="toc-text">5、SLURM常见命令</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85HiC-Pro%E5%B9%B6%E8%BF%90%E8%A1%8C"><span class="toc-text">安装HiC-Pro并运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-slurm-hicpro" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">使用SLURM运行Hic-Pro</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.04.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>由于最近工作失误，错误运行了两次Hic-Pro，由于其中Bowtie2的运行相当耗时，耽误了大量的时间，于是决定安装一个SLURM集群系统，并行运行Hic-Pro，来减少工作时间。下面对其中遇到的问题进行总结，记录各个流程中遇到的问题。   </p>
+<a id="more"></a>
+
+<h3 id="安装SLURM"><a href="#安装SLURM" class="headerlink" title="安装SLURM"></a>安装SLURM</h3><p>安装流程主要参照网上和师兄的教程，SLURM最常遇到的问题就是解决同步问题：Munge的时间同步和多机器之间的UID同步。   </p>
+<h4 id="1、添加用户jfh"><a href="#1、添加用户jfh" class="headerlink" title="1、添加用户jfh"></a>1、添加用户jfh</h4><p><code># user add jfh</code><br>然后添加sudo权限   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># chmod -v u+w &#x2F;etc&#x2F;sudoers</span><br><span class="line"># yum install vim git -y</span><br><span class="line"># vim &#x2F;etc&#x2F;sudoers</span><br></pre></td></tr></table></figure>
+<p>模仿root用户的权限控制加入<code>jfh ALL=(ALL) ALL</code><br>然后恢复sudoers文件的权限 <code># chmod -v u-w /etc/sudoers</code><br>然后使用用户jfh进行操作 <code>su jfh</code>   </p>
+<h4 id="2、安装munge（用于机器间的通信）"><a href="#2、安装munge（用于机器间的通信）" class="headerlink" title="2、安装munge（用于机器间的通信）"></a>2、安装munge（用于机器间的通信）</h4><p>这次安装还是使用<code>yum install munge munge-devel</code>进行安装的，安装过程中没遇到什么问题。以往都是使用编译安装包安装，下载<a target="_blank" rel="noopener" href="https://github.com/dun/munge/releases/download/munge-0.5.11/munge-0.5.11.tar.bz2">编译安装包</a>：<br>安装依赖  <code># yum install -y rpm-build rpmdevtools bzip2-devel openssl-devel zlib-devel</code><br>然后下载好编译安装包后，运行：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rpmbuild -tb --clean munge-0.5.11.tar.bz2</span><br><span class="line"># cd &#x2F;root&#x2F;rpmbuild&#x2F;RPMS&#x2F;x86_64</span><br><span class="line"># rpm --install munge*.rpm</span><br></pre></td></tr></table></figure>
+<p>创建文件夹并修改所有者，这些文件夹大都已经创建，可以确认一下，   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># mkdir &#x2F;etc&#x2F;munge</span><br><span class="line"># mkdir &#x2F;var&#x2F;run&#x2F;munge</span><br><span class="line"># mkdir &#x2F;var&#x2F;lib&#x2F;munge</span><br><span class="line"># mkdir &#x2F;var&#x2F;log&#x2F;munge</span><br><span class="line"># chown jfh:jfh &#x2F;etc&#x2F;munge</span><br><span class="line"># chown jfh:jfh &#x2F;var&#x2F;run&#x2F;munge</span><br><span class="line"># chown jfh:jfh &#x2F;var&#x2F;lib&#x2F;munge</span><br><span class="line"># chown jfh:jfh &#x2F;var&#x2F;log&#x2F;munge</span><br></pre></td></tr></table></figure>
+<p>使用<code>create-munge-key</code>创建密钥并修改所有者<code># chown jfh:jfh /etc/munge/munge.key</code><br><strong>这个密钥要拷贝到其它机器上，各机器上的秘钥要同步。</strong><br>通过ssh-copy-id实现各机器之间的免密登录，另外，<strong>一定要设置各机器之间的时间同步。</strong><br>检测munge使用如下命令   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">munge -n</span><br><span class="line">munge -n | unmunge</span><br><span class="line">munge -n | ssh 10.12 unmunge</span><br></pre></td></tr></table></figure>
+<h4 id="3-安装Slurm"><a href="#3-安装Slurm" class="headerlink" title="3.安装Slurm"></a>3.安装Slurm</h4><p>下载<a href="%5Bhttps://www.schedmd.com/archives.php%5D(https://www.schedmd.com/archives.php)">编译安装包</a>，<br>安装依赖 <code># yum install -y readline-devel pam-devel perl-DBI perl-ExtUtils-MakeMaker</code><br>之后编译安装   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># rpmbuild -ta --clean slurm-15.08.13.tar.bz2</span><br><span class="line"># cd &#x2F;root&#x2F;rpmbuild&#x2F;RPMS&#x2F;x86_64</span><br><span class="line"># rpm --install slurm*.rpm</span><br></pre></td></tr></table></figure>
+<p>修改Slurm配置文件   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># cp &#x2F;etc&#x2F;slurm&#x2F;slurm.conf.example &#x2F;etc&#x2F;slurm.conf</span><br><span class="line"># vim &#x2F;etc&#x2F;slurm&#x2F;slurm.conf</span><br></pre></td></tr></table></figure>
+<h4 id="参考配置："><a href="#参考配置：" class="headerlink" title="参考配置："></a>参考配置：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">#</span><br><span class="line"># Example slurm.conf file. Please run configurator.html</span><br><span class="line"># (in doc&#x2F;html) to build a configuration file customized</span><br><span class="line"># for your environment.</span><br><span class="line">#</span><br><span class="line">#</span><br><span class="line"># slurm.conf file generated by configurator.html.</span><br><span class="line">#</span><br><span class="line"># See the slurm.conf man page for more information.</span><br><span class="line">#</span><br><span class="line">ClusterName&#x3D;SlurmXia</span><br><span class="line">ControlMachine&#x3D;dell-r730-1</span><br><span class="line">ControlAddr&#x3D;10.0.0.11</span><br><span class="line">#BackupController&#x3D;</span><br><span class="line">#BackupAddr&#x3D;</span><br><span class="line">#</span><br><span class="line">SlurmUser&#x3D;jfh</span><br><span class="line">#SlurmdUser&#x3D;root</span><br><span class="line">SlurmctldPort&#x3D;6817</span><br><span class="line">SlurmdPort&#x3D;6818</span><br><span class="line">AuthType&#x3D;auth&#x2F;munge</span><br><span class="line">#JobCredentialPrivateKey&#x3D;</span><br><span class="line">#JobCredentialPublicCertificate&#x3D;</span><br><span class="line">StateSaveLocation&#x3D;&#x2F;var&#x2F;spool&#x2F;slurm&#x2F;ctld</span><br><span class="line">SlurmdSpoolDir&#x3D;&#x2F;var&#x2F;spool&#x2F;slurm&#x2F;d</span><br><span class="line">SwitchType&#x3D;switch&#x2F;none</span><br><span class="line">MpiDefault&#x3D;none</span><br><span class="line">SlurmctldPidFile&#x3D;&#x2F;var&#x2F;run&#x2F;slurmctld.pid</span><br><span class="line">SlurmdPidFile&#x3D;&#x2F;var&#x2F;run&#x2F;slurmd.pid</span><br><span class="line">ProctrackType&#x3D;proctrack&#x2F;pgid</span><br><span class="line">#PluginDir&#x3D;</span><br><span class="line">#FirstJobId&#x3D;</span><br><span class="line">ReturnToService&#x3D;0</span><br><span class="line">#MaxJobCount&#x3D;</span><br><span class="line">#PlugStackConfig&#x3D;</span><br><span class="line">#PropagatePrioProcess&#x3D;</span><br><span class="line">#PropagateResourceLimits&#x3D;</span><br><span class="line">#PropagateResourceLimitsExcept&#x3D;</span><br><span class="line">#Prolog&#x3D;</span><br><span class="line">#Epilog&#x3D;</span><br><span class="line">#SrunProlog&#x3D;</span><br><span class="line">#SrunEpilog&#x3D;</span><br><span class="line">#TaskProlog&#x3D;</span><br><span class="line">#TaskEpilog&#x3D;</span><br><span class="line">#TaskPlugin&#x3D;</span><br><span class="line">#TrackWCKey&#x3D;no</span><br><span class="line">#TreeWidth&#x3D;50</span><br><span class="line">#TmpFS&#x3D;</span><br><span class="line">#UsePAM&#x3D;</span><br><span class="line"># TIMERS</span><br><span class="line">SlurmctldTimeout&#x3D;300</span><br><span class="line">SlurmdTimeout&#x3D;300</span><br><span class="line">InactiveLimit&#x3D;0</span><br><span class="line">MinJobAge&#x3D;300</span><br><span class="line">KillWait&#x3D;30</span><br><span class="line">Waittime&#x3D;0</span><br><span class="line">#</span><br><span class="line"># SCHEDULING</span><br><span class="line">SchedulerType&#x3D;sched&#x2F;backfill</span><br><span class="line">#SchedulerAuth&#x3D;</span><br><span class="line">#SelectType&#x3D;select&#x2F;linear</span><br><span class="line">FastSchedule&#x3D;1</span><br><span class="line">#PriorityType&#x3D;priority&#x2F;multifactor</span><br><span class="line">#PriorityDecayHalfLife&#x3D;14-0</span><br><span class="line">#PriorityUsageResetPeriod&#x3D;14-0</span><br><span class="line">#PriorityWeightFairshare&#x3D;100000</span><br><span class="line">#PriorityWeightAge&#x3D;1000</span><br><span class="line">#PriorityWeightPartition&#x3D;10000</span><br><span class="line">#PriorityWeightJobSize&#x3D;1000</span><br><span class="line">#PriorityMaxAge&#x3D;1-0</span><br><span class="line">#</span><br><span class="line"># LOGGING</span><br><span class="line">SlurmctldDebug&#x3D;3</span><br><span class="line">SlurmctldLogFile&#x3D;&#x2F;var&#x2F;log&#x2F;slurmctld.log</span><br><span class="line">SlurmdDebug&#x3D;3</span><br><span class="line">SlurmdLogFile&#x3D;&#x2F;var&#x2F;log&#x2F;slurmd.log</span><br><span class="line">JobCompType&#x3D;jobcomp&#x2F;none</span><br><span class="line">#JobCompLoc&#x3D;</span><br><span class="line">#</span><br><span class="line"># ACCOUNTING</span><br><span class="line">JobAcctGatherType&#x3D;jobacct_gather&#x2F;linux</span><br><span class="line">JobAcctGatherFrequency&#x3D;30</span><br><span class="line">#</span><br><span class="line">AccountingStorageType&#x3D;accounting_storage&#x2F;filetxt</span><br><span class="line">AccountingStorageHost&#x3D;dell-r730-1</span><br><span class="line">AccountingStorageLoc&#x3D;&#x2F;opt&#x2F;slurm&#x2F;acct</span><br><span class="line">AccountingStoragePass&#x3D;elwg324</span><br><span class="line">AccountingStorageUser&#x3D;root</span><br><span class="line">#</span><br><span class="line"># COMPUTE NODES</span><br><span class="line">NodeName&#x3D;dell-r730-1 NodeAddr&#x3D;10.0.0.11 CPUs&#x3D;64 RealMemory&#x3D;378000 State&#x3D;UNKNOWN</span><br><span class="line">NodeName&#x3D;dell-r730-2 NodeAddr&#x3D;10.0.0.12 CPUs&#x3D;64 RealMemory&#x3D;378000 State&#x3D;UNKNOWN</span><br><span class="line">NodeName&#x3D;dell-r730-3 NodeAddr&#x3D;10.0.0.13 CPUs&#x3D;64 RealMemory&#x3D;252000 State&#x3D;UNKNOWN</span><br><span class="line">PartitionName&#x3D;control Nodes&#x3D;dell-r730-1 Default&#x3D;NO MaxTime&#x3D;INFINITE State&#x3D;UP</span><br><span class="line">PartitionName&#x3D;compute Nodes&#x3D;dell-r730-[1-3] Default&#x3D;YES MaxTime&#x3D;INFINITE State&#x3D;UP</span><br></pre></td></tr></table></figure>
+<p>这里面需要注意的就是更改主机名和各台机器的配置，另外需要打开<code>ACCOUNTING</code>中的日志采集，设置日志存储为’filetxt’并创建<code>/opt/slurm/acct</code>这个文件，这样之后才可以用<code>sacct</code>查看任务。<br>运行时控制节点运行   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable slurmctld</span><br><span class="line">systemctl start slurmctld</span><br><span class="line">systemctl enable slurmd</span><br><span class="line">systemctl start slurmd</span><br></pre></td></tr></table></figure>
+<p>计算节点运行以下即可   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable slurmd</span><br><span class="line">systemctl start slurmd</span><br></pre></td></tr></table></figure>
+<h4 id="4、查错排除问题"><a href="#4、查错排除问题" class="headerlink" title="4、查错排除问题"></a>4、查错排除问题</h4><p>使用sinfo查看各机器是否启动成功，如果出现问题就查看日志文件   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;var&#x2F;log&#x2F;slurmctld.log</span><br><span class="line">&#x2F;var&#x2F;log&#x2F;slurmd.log</span><br></pre></td></tr></table></figure>
+<h4 id="5、SLURM常见命令"><a href="#5、SLURM常见命令" class="headerlink" title="5、SLURM常见命令"></a>5、SLURM常见命令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sinfo  ##查看各机器状态</span><br><span class="line">scancel ##取消（删除）任务</span><br><span class="line">squeue ##查看队列中的任务</span><br><span class="line">sacct ##查看日志文件</span><br><span class="line">sbatch ##提交batch脚本</span><br></pre></td></tr></table></figure>
+<p>在此次安装中，出现的问题是uid在各台机器之间不一致，需要更改为一个共同的uid，我顺带修改了一个gid，虽然过程十分的繁琐，但也很无奈～。<br>修改之后出现之前用户不存在了，也就无法取消其已经提交的任务，任务处于CG状态，这时候运行下列命令重新启动SLURM   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scontrol update nodename&#x3D;dell-r730-[1-3] state&#x3D;down reason&#x3D;hang</span><br><span class="line">scontrol update nodename&#x3D;dell-r730-[1-3] state&#x3D;resume</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装HiC-Pro并运行"><a href="#安装HiC-Pro并运行" class="headerlink" title="安装HiC-Pro并运行"></a>安装HiC-Pro并运行</h3><p>使用SLURM运行HiC-Pro的主要注意点是   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、各机器之间的numpy和scipy包的版本要完全一致</span><br><span class="line">2、需要将FASTAQ文件切割为多个，HiC-Pro提供了组件供我们切割序列文件</span><br><span class="line">3、在正常的运行后面加上&#96;-p&#96;参数即可，然后运行生成目录下的两个&#96;sbatch&#96;脚本(需要修改一下其中的内存和时间配置)</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;liujiayi771.github.io&#x2F;2017&#x2F;07&#x2F;21&#x2F;slurm分布式调度系统搭建&#x2F;</span><br><span class="line">https:&#x2F;&#x2F;blog.csdn.net&#x2F;amaowolf&#x2F;article&#x2F;details&#x2F;8488132</span><br><span class="line">https:&#x2F;&#x2F;slurm.schedmd.com&#x2F;</span><br><span class="line">https:&#x2F;&#x2F;nservant.github.io&#x2F;HiC-Pro&#x2F;</span><br></pre></td></tr></table></figure>
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/04/22/ubuntu-windows-install/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/04/25/shadowsocks-install/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Ubuntu-Windows双系统安装 | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Ubuntu," />
+  
+
+  <meta name="description" content="情景实验室新配置了一台机器，一块固态硬盘和一块机械硬盘，在安装双系统的时候出现了许多问题，搞得十分崩溃，现记录一些出现的问题如下：目的：在固态硬盘上选取两个区域安装引导区，再划出150G用于ubuntu系统的安装。具体的流程如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu-Windows双系统安装">
+<meta property="og:url" content="https://fenghuji.github.io/2019/04/22/ubuntu-windows-install/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="情景实验室新配置了一台机器，一块固态硬盘和一块机械硬盘，在安装双系统的时候出现了许多问题，搞得十分崩溃，现记录一些出现的问题如下：目的：在固态硬盘上选取两个区域安装引导区，再划出150G用于ubuntu系统的安装。具体的流程如下：">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-04-22T15:46:31.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.744Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Ubuntu">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E6%99%AF"><span class="toc-text">情景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%89%E8%A3%85Windows"><span class="toc-text">一、安装Windows</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85ubuntu%EF%BC%88%E5%AE%9E%E9%99%85%E4%B8%8A%E6%AD%A4%E6%AC%A1%E6%88%91%E5%AE%89%E8%A3%85%E7%9A%84%E6%98%AFlinux-mint%EF%BC%89"><span class="toc-text">二、安装ubuntu（实际上此次我安装的是linux mint）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%88%86%E5%87%BAswap%EF%BC%9A%EF%BC%88%E6%8D%AE%E5%B8%88%E5%85%84%E8%AF%B4%EF%BC%8Cswap%E5%88%86%E5%8C%BA%E5%9C%A8%E5%86%85%E5%AD%98%E7%94%A8%E5%AE%8C%E7%9A%84%E6%97%B6%E5%80%99%E6%89%8D%E4%BC%9A%E4%BD%BF%E7%94%A8%EF%BC%8C%E4%B8%80%E8%88%AC%E7%94%A8%E5%9C%A8server%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%98%AFPC%E4%B8%8D%E5%BF%85%E8%A6%81%E8%AE%BE%E7%BD%AE%EF%BC%8C%E5%9B%A0%E4%B8%BA%E7%94%A8%E5%88%B0swap%E7%9A%84%E6%97%B6%E5%80%99%E7%94%B5%E8%84%91%E9%83%BD%E4%BC%9A%E5%8D%A1%E6%AD%BB%E4%B8%8D%E5%8A%A8%EF%BC%8C%E4%B8%8D%E5%A6%82%E4%B8%8D%E8%AE%BE%E7%BD%AE%E7%9B%B4%E6%8E%A5%E8%AE%A9%E4%BB%BB%E5%8A%A1%E7%BB%88%E6%AD%A2%EF%BC%89"><span class="toc-text">为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E3%80%81ubuntu%E8%8A%B1%E5%B1%8F%E9%97%AE%E9%A2%98"><span class="toc-text">三、ubuntu花屏问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%B3%E6%AD%A4%EF%BC%8C%E5%8F%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E5%B0%B1%E5%AE%8C%E6%88%90%E4%BA%86%E3%80%82%E3%80%82%E6%8E%A5%E4%B8%8B%E6%9D%A5%EF%BC%8C%E5%B0%B1%E6%98%AF%E5%8E%BB%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E7%9A%84%E8%BD%AF%E4%BB%B6%E5%92%8C%E7%BE%8E%E5%8C%96%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E4%BA%86"><span class="toc-text">至此，双系统安装就完成了。。接下来，就是去安装必要的软件和美化工作环境了.</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-ubuntu-windows-install" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Ubuntu-Windows双系统安装</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.04.22</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="情景"><a href="#情景" class="headerlink" title="情景"></a>情景</h2><p>实验室新配置了一台机器，一块固态硬盘和一块机械硬盘，在安装双系统的时候出现了许多问题，搞得十分崩溃，现记录一些出现的问题如下：<br><strong>目的：在固态硬盘上选取两个区域安装引导区，再划出150G用于ubuntu系统的安装。</strong><br><strong>具体的流程如下：</strong></p>
+<a id="more"></a>
+
+<h4 id="一、安装Windows"><a href="#一、安装Windows" class="headerlink" title="一、安装Windows"></a>一、安装Windows</h4><p>1.制作系统盘，使用<code>ultraiso</code>制作<br>2.插入电脑，开机按F2，选择boot顺序，以U盘启动盘启动<br>3.安装Windows<br>4.安装必要的软件<br>5.<code>Win+X</code>，选择磁盘，分出150G空间用于ubuntu的安装   </p>
+<h4 id="二、安装ubuntu（实际上此次我安装的是linux-mint）"><a href="#二、安装ubuntu（实际上此次我安装的是linux-mint）" class="headerlink" title="二、安装ubuntu（实际上此次我安装的是linux mint）"></a>二、安装ubuntu（实际上此次我安装的是linux mint）</h4><p>1.制作系统盘：安装过程中，使用了ultraiso等多种系统盘制作软件，但都不能使用，最后使用了rufus制作，选择8192的块大小并选择bios或uefi的系统盘制作方式。<br>使用<code>rufus</code>制作的系统盘在分区的时候会多出来一个EFI分区选项，这个分区用于boot，这个很关键，其余的软件都不行，都不能实现uefi双boot选项的目的。<br>2.安装ubuntu，进行ubuntu安装选项，选择分区。<br>在分区过程的细节如下：<br>分出500M，主分区，作为<code>EFI分区</code>，这个区域用于boot<br>分出30G，逻辑分区，挂载<code>/</code><br>剩余空间，逻辑分区，挂在<code>/home</code>   </p>
+<h6 id="为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）"><a href="#为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）" class="headerlink" title="为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）"></a>为什么不分出<code>swap</code>：（据师兄说，<code>swap</code>分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）</h6><p>开始安装，断网，如未断网，在下载时及时skip以节约时间。   </p>
+<h4 id="三、ubuntu花屏问题"><a href="#三、ubuntu花屏问题" class="headerlink" title="三、ubuntu花屏问题"></a>三、ubuntu花屏问题</h4><p>安装完ubuntu后会出现花屏问题，进不去ubuntu中，即使我使用是固态硬盘。<br>Google和询问他人后，判定为显卡驱动的问题，电脑上安装了一个GTX980的显卡，在刚刚安装好ubuntu的时候没有显卡驱动，所以在进去ubuntu的时候出现花屏进不去，直接卡死在开机过程中。<br>解决方法：<br>1、开机按<code>shift</code>，进入开机boot选项界面<br>2、在ubuntu boot选项处按<code>e</code>，进入boot编辑界面<br>3、找到linux一行，在<code>quiet splash</code>处后加上 <code>nomodeset</code>，这样就不会使用NVIDIA显卡（不同的硬件不同，详情可以网上查询）<br>4、<code>Ctrl+X</code>启动。<br>5、自行选择安装NVIDIA显卡驱动   </p>
+<p>进入ubuntu中，因为平时都用的ubuntu工作。将机械硬盘作为存储挂载在家目录下的storage上 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l  ##列出硬盘列表，记下930g的设备名称&#x2F;dev&#x2F;sda</span><br><span class="line">sudo mkfs -t ext4 &#x2F;dev&#x2F;sda ##格式化硬盘为ext4格式</span><br><span class="line">sudo mount &#x2F;dev&#x2F;sda &#x2F;home&#x2F;hugo&#x2F;storage ##挂在在家目录下</span><br><span class="line">sudo chown -R hugo:hugo &#x2F;home&#x2F;hugo&#x2F;storage ##获取权限，否则不能随意使用storage</span><br></pre></td></tr></table></figure>
+<h4 id="至此，双系统安装就完成了。。接下来，就是去安装必要的软件和美化工作环境了"><a href="#至此，双系统安装就完成了。。接下来，就是去安装必要的软件和美化工作环境了" class="headerlink" title="至此，双系统安装就完成了。。接下来，就是去安装必要的软件和美化工作环境了."></a>至此，双系统安装就完成了。。接下来，就是去安装必要的软件和美化工作环境了.</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## 安装必备的软件</span><br><span class="line">$ sudo apt-get install git vim pigz pavucontrol gnome-tweak-tool unar</span><br><span class="line">### 安装搜狗输入法，从[官网](https:&#x2F;&#x2F;pinyin.sogou.com&#x2F;linux&#x2F;?r&#x3D;pinyin)下载最新的安装包</span><br><span class="line">$ sudo dpkg -i sogoupinyin_2.2.0.0108_amd64.deb </span><br><span class="line">$ sudo apt-get install -f</span><br><span class="line">## 设置fcitx为搜狗输入法，重启</span><br><span class="line">##图标</span><br><span class="line">$ sudo add-apt-repository ppa:papirus&#x2F;papirus</span><br><span class="line">$ sudo apt install papirus-icon-theme</span><br><span class="line">## 主题</span><br><span class="line">$ sudo add-apt-repository ppa:daniruiz&#x2F;flat-remix</span><br><span class="line">$ sudo apt-get install flat-remix</span><br><span class="line">$ sudo apt-get install flat-remix-gnome</span><br></pre></td></tr></table></figure>
+<p><code>gnome-tweak</code>设置主题.</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/04/15/liftover-chain/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/04/23/slurm-hicpro/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

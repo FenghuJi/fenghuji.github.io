@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>R语言字符串处理包stringr | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="R," />
+  
+
+  <meta name="description" content="1. stringr介绍stringr包被定义为一致的、简单易用的字符串工具集。所有的函数和参数定义都具有一致性，比如，用相同的方法进行NA处理和0长度的向量处理。 字符串处理虽然不是R语言中最主要的功能，却也是必不可少的，数据清洗、可视化等的操作都会用到。对于R语言本身的base包提供的字符串基础函数，随着时间的积累，已经变得很多地方不一致，不规范的命名，不标准的参数定义，很难看一眼就上手使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="R语言字符串处理包stringr">
+<meta property="og:url" content="https://fenghuji.github.io/2019/12/30/stringr/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="1. stringr介绍stringr包被定义为一致的、简单易用的字符串工具集。所有的函数和参数定义都具有一致性，比如，用相同的方法进行NA处理和0长度的向量处理。 字符串处理虽然不是R语言中最主要的功能，却也是必不可少的，数据清洗、可视化等的操作都会用到。对于R语言本身的base包提供的字符串基础函数，随着时间的积累，已经变得很多地方不一致，不规范的命名，不标准的参数定义，很难看一眼就上手使用。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.743Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="R">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-stringr%E4%BB%8B%E7%BB%8D"><span class="toc-text">1. stringr介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8F%AF%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-text">2.可用函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E5%87%BD%E6%95%B0"><span class="toc-text">字符串拼接函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%AE%A1%E7%AE%97%E5%87%BD%E6%95%B0"><span class="toc-text">字符串计算函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D%E5%87%BD%E6%95%B0"><span class="toc-text">字符串匹配函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8F%98%E6%8D%A2%E5%87%BD%E6%95%B0"><span class="toc-text">字符串变换函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E6%8E%A7%E5%88%B6%E5%87%BD%E6%95%B0%EF%BC%8C%E4%BB%85%E7%94%A8%E4%BA%8E%E6%9E%84%E9%80%A0%E5%8A%9F%E8%83%BD%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%8C%E4%B8%8D%E8%83%BD%E7%8B%AC%E7%AB%8B%E4%BD%BF%E7%94%A8%E3%80%82"><span class="toc-text">参数控制函数，仅用于构造功能的参数，不能独立使用。</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-stringr" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">R语言字符串处理包stringr</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.12.30</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/R/">R</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="1-stringr介绍"><a href="#1-stringr介绍" class="headerlink" title="1. stringr介绍"></a>1. stringr介绍</h2><p>stringr包被定义为一致的、简单易用的字符串工具集。所有的函数和参数定义都具有一致性，比如，用相同的方法进行NA处理和0长度的向量处理。</p>
+<p>字符串处理虽然不是R语言中最主要的功能，却也是必不可少的，数据清洗、可视化等的操作都会用到。对于R语言本身的base包提供的字符串基础函数，随着时间的积累，已经变得很多地方不一致，不规范的命名，不标准的参数定义，很难看一眼就上手使用。字符串处理在其他语言中都是非常方便的事情，R语言在这方面确实落后了。stringr包就是为了解决这个问题，让字符串处理变得简单易用，提供友好的字符串操作接口。</p>
+<p>stringr的项目主页：<a target="_blank" rel="noopener" href="https://cran.r-project.org/web/packages/stringr/index.html">https://cran.r-project.org/web/packages/stringr/index.html</a></p>
+<h2 id="2-可用函数"><a href="#2-可用函数" class="headerlink" title="2.可用函数"></a>2.可用函数</h2><p>stringr包1.0.0版本，一共提供了30个函数，方便我们对字符串处理。常用的字符串的处理以str_开头来命名，方便更直观理解函数的定义。我们可以根据使用习惯对函数进行分类：</p>
+<h3 id="字符串拼接函数"><a href="#字符串拼接函数" class="headerlink" title="字符串拼接函数"></a>字符串拼接函数</h3><ul>
+<li>str_c: 字符串拼接。</li>
+<li>str_join: 字符串拼接，同str_c。</li>
+</ul>
+<blockquote>
+<p>str_c(…, sep = “”, collapse = NULL)<br>str_join(…, sep = “”, collapse = NULL)</p>
+</blockquote>
+<ul>
+<li>str_trim: 去掉字符串的空格和TAB(\t)</li>
+</ul>
+<blockquote>
+<p>str_trim(string, side = c(“both”, “left”, “right”))</p>
+</blockquote>
+<ul>
+<li>str_pad: 补充字符串的长度<blockquote>
+<p>str_pad(string, width, side = c(“left”, “right”, “both”), pad = “ “)</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>str_dup: 复制字符串</p>
+<blockquote>
+<p>str_dup(string, times)</p>
+</blockquote>
+</li>
+<li><p>str_wrap: 控制字符串输出格式</p>
+<blockquote>
+<p>str_wrap(string, width = 80, indent = 0, exdent = 0)</p>
+</blockquote>
+</li>
+<li><p>str_sub: 截取字符串</p>
+</li>
+<li><p>str_sub&lt;- 截取字符串，并赋值，同str_sub</p>
+<blockquote>
+<p>str_sub(string, start = 1L, end = -1L)</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="字符串计算函数"><a href="#字符串计算函数" class="headerlink" title="字符串计算函数"></a>字符串计算函数</h3><ul>
+<li><p>str_count: 字符串计数</p>
+<blockquote>
+<p>str_count(string, pattern = “”)</p>
+</blockquote>
+</li>
+<li><p>str_length: 字符串长度</p>
+<blockquote>
+<p>str_length(string)</p>
+</blockquote>
+</li>
+<li><p>str_sort: 字符串值排序</p>
+</li>
+<li><p>str_order: 字符串索引排序，规则同str_sort</p>
+</li>
+</ul>
+<blockquote>
+<p>str_sort(x, decreasing = FALSE, na_last = TRUE, locale = “”, …)<br>str_order(x, decreasing = FALSE, na_last = TRUE, locale = “”, …)</p>
+</blockquote>
+<h3 id="字符串匹配函数"><a href="#字符串匹配函数" class="headerlink" title="字符串匹配函数"></a>字符串匹配函数</h3><ul>
+<li><p>str_split: 字符串分割</p>
+</li>
+<li><p>str_split_fixed: 字符串分割，同str_split</p>
+<blockquote>
+<p>str_split(string, pattern, n = Inf)<br>str_split_fixed(string, pattern, n)</p>
+</blockquote>
+</li>
+<li><p>str_subset: 返回匹配的字符串</p>
+<blockquote>
+<p>str_subset(string, pattern)</p>
+</blockquote>
+</li>
+<li><p>word: 从文本中提取单词</p>
+<blockquote>
+<p>word(string, start = 1L, end = start, sep = fixed(“ “))</p>
+</blockquote>
+</li>
+<li><p>str_detect: 检查匹配字符串的字符</p>
+<blockquote>
+<p>str_detect(string, pattern)</p>
+</blockquote>
+</li>
+<li><p>str_match: 从字符串中提取匹配组。</p>
+</li>
+<li><p>str_match_all: 从字符串中提取匹配组，同str_match</p>
+<blockquote>
+<p>str_match(string, pattern)<br>str_match_all(string, pattern)</p>
+</blockquote>
+</li>
+<li><p>str_replace: 字符串替换</p>
+<blockquote>
+<p>str_replace(string, pattern, replacement)</p>
+</blockquote>
+</li>
+<li><p>str_replace_all: 字符串替换，同str_replace</p>
+</li>
+<li><p>str_replace_na:把NA替换为NA字符串</p>
+<blockquote>
+<p>str_replace_na(string, replacement = “NA”)</p>
+</blockquote>
+</li>
+<li><p>str_locate: 找到匹配的字符串的位置。</p>
+</li>
+<li><p>str_locate_all: 找到匹配的字符串的位置,同str_locate</p>
+<blockquote>
+<p>str_locate(string, pattern)<br>str_locate_all(string, pattern)</p>
+</blockquote>
+</li>
+<li><p>str_extract: 从字符串中提取匹配字符</p>
+</li>
+<li><p>str_extract_all: 从字符串中提取匹配字符，同str_extract</p>
+<blockquote>
+<p>str_extract(string, pattern)<br>str_extract_all(string, pattern, simplify = FALSE)</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="字符串变换函数"><a href="#字符串变换函数" class="headerlink" title="字符串变换函数"></a>字符串变换函数</h3><ul>
+<li><p>str_conv: 字符编码转换</p>
+<blockquote>
+<p>str_conv(string, encoding)</p>
+</blockquote>
+</li>
+<li><p>str_to_upper: 字符串转成大写</p>
+</li>
+<li><p>str_to_lower: 字符串转成小写,规则同str_to_upper</p>
+</li>
+<li><p>str_to_title: 字符串转成首字母大写,规则同str_to_upper</p>
+<blockquote>
+<p>str_to_upper(string, locale = “”)<br>str_to_lower(string, locale = “”)<br>str_to_title(string, locale = “”)</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="参数控制函数，仅用于构造功能的参数，不能独立使用。"><a href="#参数控制函数，仅用于构造功能的参数，不能独立使用。" class="headerlink" title="参数控制函数，仅用于构造功能的参数，不能独立使用。"></a>参数控制函数，仅用于构造功能的参数，不能独立使用。</h3><ul>
+<li>boundary: 定义使用边界</li>
+<li>coll: 定义字符串标准排序规则。</li>
+<li>fixed: 定义用于匹配的字符，包括正则表达式中的转义符</li>
+<li>regex: 定义正则表达式</li>
+</ul>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2019/12/28/R_S3/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/12/31/formatR/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

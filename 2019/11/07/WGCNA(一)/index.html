@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>WGCNA官方教程(一) | Hugo&#39;s Note</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Bioinformatics,WGCNA," />
+  
+
+  <meta name="description" content="基本概念加权基因共表达网络分析 (WGCNA, Weighted correlation network analysis)是用来描述不同样品之间基因关联模式的系统生物学方法，可以用来鉴定高度协同变化的基因集, 并根据基因集的内连性和基因集与表型之间的关联鉴定候补生物标记基因或治疗靶点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WGCNA官方教程(一)">
+<meta property="og:url" content="https://fenghuji.github.io/2019/11/07/WGCNA(%E4%B8%80)/index.html">
+<meta property="og:site_name" content="Hugo&#39;s Note">
+<meta property="og:description" content="基本概念加权基因共表达网络分析 (WGCNA, Weighted correlation network analysis)是用来描述不同样品之间基因关联模式的系统生物学方法，可以用来鉴定高度协同变化的基因集, 并根据基因集的内连性和基因集与表型之间的关联鉴定候补生物标记基因或治疗靶点。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/2.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/3.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/4.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/5.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/6.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/7.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/8.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/9.png">
+<meta property="article:published_time" content="2019-11-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-28T07:15:04.746Z">
+<meta property="article:author" content="Hugo Ji">
+<meta property="article:tag" content="Bioinformatics">
+<meta property="article:tag" content="WGCNA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/2.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbeddx" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-38189205-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/category/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            分类
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/link/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            友链
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/atom.xml"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            RSS
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Posts List</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85WGCNA%E5%8C%85"><span class="toc-text">安装WGCNA包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85WGCNA-Package"><span class="toc-text">安装WGCNA Package</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5%EF%BC%8C%E6%B8%85%E6%B4%97%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text">数据导入，清洗和预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%86%E5%88%AB%E7%A6%BB%E7%BE%A4%E5%80%BC-%E7%A9%BA%E5%80%BC"><span class="toc-text">识别离群值&#x2F;空值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E4%B8%B4%E5%BA%8A%E6%95%B0%E6%8D%AE"><span class="toc-text">导入临床数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E6%9E%84%E5%BB%BA%E5%92%8C%E6%A8%A1%E5%9D%97%E6%A3%80%E6%B5%8B"><span class="toc-text">网络构建和模块检测</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%80%E6%AD%A5%E6%9E%84%E5%BB%BA%E7%BD%91%E7%BB%9C%E5%92%8C%E6%A8%A1%E5%9D%97%E6%A3%80%E6%B5%8B"><span class="toc-text">自动化一步构建网络和模块检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E5%9F%BA%E5%9B%A0%E7%BD%91%E7%BB%9C%E5%92%8C%E8%AF%86%E5%88%AB%E6%A8%A1%E5%9D%97"><span class="toc-text">自动化构建基因网络和识别模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA%E5%9F%BA%E5%9B%A0%E7%BD%91%E7%BB%9C%E5%92%8C%E8%AF%86%E5%88%AB%E6%A8%A1%E5%9D%97-1"><span class="toc-text">自动化构建基因网络和识别模块</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E8%BD%AF%E9%98%88%E5%80%BC%E6%8C%87%E6%95%B0%EF%BC%9A%E6%8B%93%E6%89%91%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90"><span class="toc-text">选择软阈值指数：拓扑网络分析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E6%AD%A5%E6%9E%84%E5%BB%BA%E7%BD%91%E7%BB%9C%E5%92%8C%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%9D%97"><span class="toc-text">一步构建网络和检测模块</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-by-step%E7%BD%91%E7%BB%9C%E6%9E%84%E5%BB%BA%E5%92%8C%E6%A8%A1%E5%9D%97%E8%AF%86%E5%88%AB"><span class="toc-text">Step-by-step网络构建和模块识别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%EF%BC%8C%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="toc-text">导入数据，配置环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%90%E6%AD%A5%E6%9E%84%E5%BB%BA%E7%BD%91%E7%BB%9C%E5%92%8C%E6%A8%A1%E5%9D%97%E6%A3%80%E6%B5%8B"><span class="toc-text">逐步构建网络和模块检测</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E8%BD%AF%E9%98%88%E5%80%BC%E6%8C%87%E6%95%B0%EF%BC%9A%E6%8B%93%E6%89%91%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90-1"><span class="toc-text">选择软阈值指数：拓扑网络分析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B1%E8%A1%A8%E8%BE%BE%E7%9B%B8%E4%BC%BC%E6%80%A7%E5%92%8C%E9%82%BB%E6%8E%A5%E5%80%BC"><span class="toc-text">共表达相似性和邻接值</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Topological-Overlap-Matrix-TOM-%E8%AE%A1%E7%AE%97"><span class="toc-text">Topological Overlap Matrix (TOM)计算</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8TOM%E8%81%9A%E7%B1%BB"><span class="toc-text">使用TOM聚类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%90%88%E5%B9%B6%E8%A1%A8%E8%BE%BE%E8%B0%B1%E7%9B%B8%E4%BC%BC%E7%9A%84%E6%A8%A1%E5%9D%97"><span class="toc-text">合并表达谱相似的模块</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%94%E7%B3%BB%E6%A8%A1%E5%9D%97-%E5%A4%96%E9%83%A8%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%AF%86%E5%88%AB%E9%87%8D%E8%A6%81%E5%9F%BA%E5%9B%A0"><span class="toc-text">联系模块-外部信息，识别重要基因</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%96%E9%83%A8%E4%B8%B4%E5%BA%8A%E6%95%B0%E6%8D%AE%E8%81%94%E7%B3%BB"><span class="toc-text">将模块和外部临床数据联系</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E9%87%8F%E6%A8%A1%E5%9D%97-%E4%B8%B4%E5%BA%8A%E5%85%B3%E7%B3%BB"><span class="toc-text">定量模块-临床关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E5%9B%A0%E5%92%8C%E4%B8%B4%E5%BA%8A%E8%A1%A8%E5%BE%81%E5%92%8C%E9%87%8D%E8%A6%81%E6%A8%A1%E5%9D%97%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9Agene%E6%98%BE%E8%91%97%E6%80%A7%E5%92%8C%E6%A8%A1%E5%9D%97%E5%85%B3%E7%B3%BB"><span class="toc-text">基因和临床表征和重要模块的关系：gene显著性和模块关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%86%85%E5%88%86%E6%9E%90%EF%BC%9A%E8%AF%86%E5%88%AB%E5%85%B7%E6%9C%89%E9%AB%98GS%E5%92%8CMM%E7%9A%84gene"><span class="toc-text">模块内分析：识别具有高GS和MM的gene</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C"><span class="toc-text">输出网络分析结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%92%8C%E5%85%B6%E4%BB%96%E6%95%B0%E6%8D%AE%E7%BB%93%E5%90%88%EF%BC%8C%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90-%E5%8A%9F%E8%83%BD%E6%B3%A8%E9%87%8A%EF%BC%8CGO"><span class="toc-text">和其他数据结合，接口网络分析(功能注释，GO)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">导入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E5%9F%BA%E5%9B%A0%E5%88%97%E8%A1%A8%E5%9C%A8%E7%BA%BF%E5%88%86%E6%9E%90"><span class="toc-text">输出基因列表在线分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8R%E8%BF%9B%E8%A1%8C%E5%8A%9F%E8%83%BD%E5%AF%8C%E9%9B%86%E5%88%86%E6%9E%90"><span class="toc-text">直接使用R进行功能富集分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WGCNA%E7%BD%91%E7%BB%9C%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">WGCNA网络可视化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%BD%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">载入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8R%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%BB%9C%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-text">使用R进行网络可视化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BD%91%E7%BB%9C%E7%9A%84eigengenes"><span class="toc-text">可视化网络的eigengenes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-WGCNA(一)" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">WGCNA官方教程(一)</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2019.11.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Hugo Ji</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Bioinformatics/">Bioinformatics</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>加权基因共表达网络分析 (WGCNA, Weighted correlation network analysis)是用来描述不同样品之间基因关联模式的系统生物学方法，可以用来鉴定高度协同变化的基因集, 并根据基因集的内连性和基因集与表型之间的关联鉴定候补生物标记基因或治疗靶点。</p>
+<a id="more"></a>
+<p>相比于只关注差异表达的基因，WGCNA利用数千或近万个变化最大的基因或全部基因的信息识别感兴趣的基因集，并与表型进行显著性关联分析。一是充分利用了信息，二是把数千个基因与表型的关联转换为数个基因集与表型的关联，免去了多重假设检验校正的问题。</p>
+<ul>
+<li>**Connectivity (连接度)**：类似于网络中 “度” (degree)的概念。每个基因的连接度是与其相连的基因的边属性之和</li>
+<li><strong>Module eigengene E</strong>: 给定模块的第一主成分(PCA)，代表整个模型的基因表达谱。我觉得和矩阵的特征向量作用相同，低维高信息量</li>
+<li><strong>Intramodular connectivity</strong>: 给定基因与给定模型内其他基因的关联度，判断基因所属关系</li>
+<li><strong>Module membership（MM)</strong>: 给定基因表达谱与给定模型的eigengene的相关性</li>
+<li><strong>Hub gene</strong>: 关键基因 (连接度最多或连接多个模块的基因)</li>
+<li>**Adjacency matrix (邻接矩阵)**：基因和基因之间的加权相关性值构成的矩阵</li>
+<li>**TOM (Topological overlap matrix)**：把邻接矩阵转换为拓扑重叠矩阵，以降低噪音和假相关，获得的新距离矩阵，这个信息可拿来构建网络或绘制TOM图</li>
+</ul>
+<p>按照WGCNA的教程一步步进行了学习.WGCNA确实十分有价值，能够发掘不同临床数据和表达谱数据的关系，寻找驱动基因，pathway，互作基因等等.</p>
+<p><strong>这篇笔记基于WGCNA官方教程复现而来作为记录</strong>，教程一的数据分析是<a target="_blank" rel="noopener" href="https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-Data.zip">这里下载</a>进行的。</p>
+<p>对于WGCNA分析的流程，学完第一个官方教程后，总结一下数据处理的流程：</p>
+<ul>
+<li>数据清洗工作，抛去离群值，无用数据，让数据分析身心愉悦</li>
+<li>网络构建：根本问题还是协相关关系的计算以及加权无尺度网络的形成.算法是对于基因数据应用场景高度适配的</li>
+<li>模块和eigengenes识别</li>
+<li>eigengenes在我眼里就像一个矩阵的特征值一样，数据降维并可以做模块间的比较</li>
+<li>gene和临床表征，模块和临床表征的相关关系分析</li>
+<li>找到模块及基因后的下游注释</li>
+<li>可视化上述流程</li>
+</ul>
+<h2 id="安装WGCNA包"><a href="#安装WGCNA包" class="headerlink" title="安装WGCNA包"></a>安装WGCNA包</h2><h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">install.packages(<span class="built_in">c</span>(<span class="string">&quot;matrixStats&quot;</span>, <span class="string">&quot;Hmisc&quot;</span>, <span class="string">&quot;splines&quot;</span>, <span class="string">&quot;foreach&quot;</span>, <span class="string">&quot;doParallel&quot;</span>, <span class="string">&quot;fastcluster&quot;</span>, <span class="string">&quot;dynamicTreeCut&quot;</span>, <span class="string">&quot;survival&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> (!requireNamespace(<span class="string">&quot;BiocManager&quot;</span>, quietly = <span class="literal">TRUE</span>))</span><br><span class="line">     install.packages(<span class="string">&quot;BiocManager&quot;</span>)</span><br><span class="line">BiocManager::install(<span class="built_in">c</span>(<span class="string">&quot;GO.db&quot;</span>, <span class="string">&quot;preprocessCore&quot;</span>, <span class="string">&quot;impute&quot;</span>))</span><br></pre></td></tr></table></figure>
+<p>如果打算使用注释功能比如(GOenrichmentAnalysis)，推荐安装注释包：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">orgCodes = <span class="built_in">c</span>(<span class="string">&quot;Hs&quot;</span>, <span class="string">&quot;Mm&quot;</span>, <span class="string">&quot;Rn&quot;</span>, <span class="string">&quot;Pf&quot;</span>, <span class="string">&quot;Sc&quot;</span>, <span class="string">&quot;Dm&quot;</span>, <span class="string">&quot;Bt&quot;</span>, <span class="string">&quot;Ce&quot;</span>, <span class="string">&quot;Cf&quot;</span>, <span class="string">&quot;Dr&quot;</span>, <span class="string">&quot;Gg&quot;</span>);</span><br><span class="line">orgExtensions = <span class="built_in">c</span>(<span class="built_in">rep</span>(<span class="string">&quot;.eg&quot;</span>, <span class="number">4</span>), <span class="string">&quot;.sgd&quot;</span>, <span class="built_in">rep</span>(<span class="string">&quot;.eg&quot;</span>, <span class="number">6</span>));</span><br><span class="line">packageNames = paste(<span class="string">&quot;org.&quot;</span>, orgCodes, orgExtensions, <span class="string">&quot;.db&quot;</span>, sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line">BiocManager::install(<span class="built_in">c</span>(<span class="string">&quot;GO.db&quot;</span>, <span class="string">&quot;KEGG.db&quot;</span>, <span class="string">&quot;topGO&quot;</span>, packageNames, <span class="string">&quot;hgu133a.db&quot;</span>, <span class="string">&quot;hgu95av2.db&quot;</span>, <span class="string">&quot;annotate&quot;</span>, <span class="string">&quot;hgu133plus2.db&quot;</span>, <span class="string">&quot;SNPlocs.Hsapiens.dbSNP.20100427&quot;</span>, <span class="string">&quot;minet&quot;</span>, <span class="string">&quot;OrderedList&quot;</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="安装WGCNA-Package"><a href="#安装WGCNA-Package" class="headerlink" title="安装WGCNA Package"></a>安装WGCNA Package</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">install.packages(<span class="string">&quot;BiocManager&quot;</span>)</span><br><span class="line">BiocManager::install(<span class="string">&quot;WGCNA&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="数据导入，清洗和预处理"><a href="#数据导入，清洗和预处理" class="headerlink" title="数据导入，清洗和预处理"></a>数据导入，清洗和预处理</h2><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">setwd(workingDir);</span><br><span class="line">library(WGCNA);</span><br><span class="line"><span class="comment"># The following setting is important, do not omit.</span></span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line"><span class="comment">#Read in the female liver data set</span></span><br><span class="line">femData = read.csv(<span class="string">&quot;LiverFemale3600.csv&quot;</span>);</span><br><span class="line"><span class="comment"># 查看数据集:</span></span><br><span class="line"><span class="built_in">dim</span>(femData);</span><br><span class="line"><span class="built_in">names</span>(femData);</span><br><span class="line"><span class="comment"># 移除无用数据，转置矩阵.</span></span><br><span class="line">datExpr0 = as.data.frame(t(femData[, -<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)]));</span><br><span class="line"><span class="built_in">names</span>(datExpr0) = femData$substanceBXH;</span><br><span class="line">rownames(datExpr0) = <span class="built_in">names</span>(femData)[-<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">8</span>)];</span><br></pre></td></tr></table></figure>
+<h3 id="识别离群值-空值"><a href="#识别离群值-空值" class="headerlink" title="识别离群值/空值"></a>识别离群值/空值</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">gsg = goodSamplesGenes(datExpr0, verbose = <span class="number">3</span>);</span><br><span class="line">gsg$allOK</span><br><span class="line"><span class="comment"># 如果最后的返回值为TRUE,所有的基因都通过了检验，否则移除offending genes和样本</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!gsg$allOK)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment"># Optionally, print the gene and sample names that were removed:</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">sum</span>(!gsg$goodGenes)&gt;<span class="number">0</span>)</span><br><span class="line">		printFlush(paste(<span class="string">&quot;Removing genes:&quot;</span>, paste(<span class="built_in">names</span>(datExpr0)[!gsg$goodGenes], collapse = <span class="string">&quot;, &quot;</span>)));</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">sum</span>(!gsg$goodSamples)&gt;<span class="number">0</span>)</span><br><span class="line">		printFlush(paste(<span class="string">&quot;Removing samples:&quot;</span>, paste(rownames(datExpr0)[!gsg$goodSamples], collapse = <span class="string">&quot;, &quot;</span>)));</span><br><span class="line"><span class="comment"># 移除offending genes和样本:</span></span><br><span class="line">	datExpr0 = datExpr0[gsg$goodSamples, gsg$goodGenes]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>样本聚类(不同于基因聚类)来查看是否有一些明显的异常值</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sampleTree = hclust(dist(datExpr0), method = <span class="string">&quot;average&quot;</span>);</span><br><span class="line"><span class="comment"># Plot the sample tree: Open a graphic output window of size 12 by 9 inches</span></span><br><span class="line"><span class="comment"># The user should change the dimensions if the window is too large or too small.</span></span><br><span class="line">sizeGrWindow(<span class="number">12</span>,<span class="number">9</span>)</span><br><span class="line"><span class="comment">#pdf(file = &quot;Plots/sampleClustering.pdf&quot;, width = 12, height = 9);</span></span><br><span class="line">par(cex = <span class="number">0.6</span>);</span><br><span class="line">par(mar = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">0</span>))</span><br><span class="line">plot(sampleTree, main = <span class="string">&quot;Sample clustering to detect outliers&quot;</span>, sub=<span class="string">&quot;&quot;</span>, xlab=<span class="string">&quot;&quot;</span>, cex.lab = <span class="number">1.5</span>,</span><br><span class="line">cex.axis = <span class="number">1.5</span>, cex.main = <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>似乎有一个异常值（sample F2_221），可以手动移除或者使用自动移除方法：选择一个高度来截断移除不符合条件的样本，使用这个高度来进行剪枝（<em>这里我也不知道如何翻译，就使用剪枝这个词来翻译tree cut，决策树也有剪枝，这个剪枝和决策树不同</em>）</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Plot a line to show the cut</span></span><br><span class="line">abline(h = <span class="number">15</span>, col = <span class="string">&quot;red&quot;</span>);</span><br><span class="line"><span class="comment"># Determine cluster under the line</span></span><br><span class="line">clust = cutreeStatic(sampleTree, cutHeight = <span class="number">15</span>, minSize = <span class="number">10</span>)</span><br><span class="line">table(clust)</span><br><span class="line"><span class="comment"># clust 1 contains the samples we want to keep.</span></span><br><span class="line">keepSamples = (clust==<span class="number">1</span>)</span><br><span class="line">datExpr = datExpr0[keepSamples, ]</span><br><span class="line">nGenes = ncol(datExpr)</span><br><span class="line">nSamples = nrow(datExpr)</span><br><span class="line"><span class="comment"># 数据集datExpr包含的表达数据将用于后续的网络分析</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/2.png" alt="2"></p>
+<h3 id="导入临床数据"><a href="#导入临床数据" class="headerlink" title="导入临床数据"></a>导入临床数据</h3><p>读进临床数据并和表达谱数据的样本对应</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">traitData = read.csv(<span class="string">&quot;ClinicalTraits.csv&quot;</span>);</span><br><span class="line"><span class="built_in">dim</span>(traitData)</span><br><span class="line"><span class="built_in">names</span>(traitData)</span><br><span class="line"><span class="comment"># 除去不需要的数据.</span></span><br><span class="line">allTraits = traitData[, -<span class="built_in">c</span>(<span class="number">31</span>, <span class="number">16</span>)];</span><br><span class="line">allTraits = allTraits[, <span class="built_in">c</span>(<span class="number">2</span>, <span class="number">11</span>:<span class="number">36</span>) ];</span><br><span class="line"><span class="built_in">dim</span>(allTraits)</span><br><span class="line"><span class="built_in">names</span>(allTraits)</span><br><span class="line"><span class="comment"># Form a data frame analogous to expression data that will hold the clinical traits.</span></span><br><span class="line">femaleSamples = rownames(datExpr);</span><br><span class="line">traitRows = match(femaleSamples, allTraits$Mice);</span><br><span class="line">datTraits = allTraits[traitRows, -<span class="number">1</span>]; <span class="comment">#第一列是行名</span></span><br><span class="line">rownames(datTraits) = allTraits[traitRows, <span class="number">1</span>]; <span class="comment">#添加行名</span></span><br><span class="line">collectGarbage();</span><br></pre></td></tr></table></figure>
+<p>在<code>datExpr</code>中为表达谱数据，相对应的临床数据在<code>datTraits</code>中，在进行模块分析前，我们看一下临床数据和样本树状图的关系：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Re-cluster samples</span></span><br><span class="line">sampleTree2 = hclust(dist(datExpr), method = <span class="string">&quot;average&quot;</span>)</span><br><span class="line"><span class="comment"># Convert traits to a color representation: white means low, red means high, grey means missing entry</span></span><br><span class="line">traitColors = numbers2colors(datTraits, signed = <span class="literal">FALSE</span>);</span><br><span class="line"><span class="comment"># Plot the sample dendrogram and the colors underneath.</span></span><br><span class="line">plotDendroAndColors(sampleTree2, traitColors,</span><br><span class="line">groupLabels = <span class="built_in">names</span>(datTraits),</span><br><span class="line">main = <span class="string">&quot;Sample dendrogram and trait heatmap&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/3.png" alt="3"><br>在图中，白色代表低值，红色为高，灰色代表缺失值.最后一步是保存相关表达和临床数据来进行后续的教程.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save(datExpr, datTraits, file = <span class="string">&quot;FemaleLiver-01-dataInput.RData&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="网络构建和模块检测"><a href="#网络构建和模块检测" class="headerlink" title="网络构建和模块检测"></a>网络构建和模块检测</h2><h3 id="自动化一步构建网络和模块检测"><a href="#自动化一步构建网络和模块检测" class="headerlink" title="自动化一步构建网络和模块检测"></a>自动化一步构建网络和模块检测</h3><blockquote>
+<p>下面的代码使用多核进行计算，在终端或者图形化(GUI)界面都可以，但是在Rstudio或者其他第三方R环境中无法使用.如果你使用的是Rstudio或者其他第三方环境，跳过<code>enableWGCNAThreads()</code>命令</p>
+</blockquote>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">getwd();</span><br><span class="line">workingDir = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">setwd(workingDir);</span><br><span class="line">library(WGCNA)</span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许WGCNA的多线程计算.这会加速你的计算，任何升级WGCNA的提示可以忽略</span></span><br><span class="line"><span class="comment"># 如果你使用的是Rstudio或者其他第三方环境，跳过enableWGCNAThreads()命令</span></span><br><span class="line">enableWGCNAThreads()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the data saved in the first part</span></span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-01-dataInput.RData&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="自动化构建基因网络和识别模块"><a href="#自动化构建基因网络和识别模块" class="headerlink" title="自动化构建基因网络和识别模块"></a>自动化构建基因网络和识别模块</h3><p><strong>这一步是WGCNA分析的基础</strong>，有三种方式可选，读者选择一个看就行（或者俩都看），官方推荐逐步进行自定义：</p>
+<ul>
+<li>一步网络构建和模块检测函数，适合想要花费较少精力快速得到结果</li>
+<li>Step-by-step网络构建和模块检测，适合想要自定义方法的users</li>
+<li>逐块分析，数据量太大无法一次分析(<strong>我觉得一般很少面临这种情况，所以跳过了</strong>)</li>
+</ul>
+<h4 id="自动化构建基因网络和识别模块-1"><a href="#自动化构建基因网络和识别模块-1" class="headerlink" title="自动化构建基因网络和识别模块"></a>自动化构建基因网络和识别模块</h4><h5 id="选择软阈值指数：拓扑网络分析"><a href="#选择软阈值指数：拓扑网络分析" class="headerlink" title="选择软阈值指数：拓扑网络分析"></a>选择软阈值指数：拓扑网络分析</h5><p>构建一个权重基因网络需要选择一个软阈值指数 Beta 来计算邻接共表达相似性，按照我的理解，作者基于无尺度网络的理念提出一种选择软阈值指数的方法，来使得基因表达网络达到无尺度网络的状态.使用函数<code>pickSoftThreshold</code>来进行网络拓扑分析，该函数可以帮助使用者选择合适的软阈值指数.使用者选择一系列的待定指数，然后函数返回一系列的即将被检测到的网络指数.示例如下：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Choose a set of soft-thresholding powers</span></span><br><span class="line">powers = <span class="built_in">c</span>(<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">10</span>), seq(from = <span class="number">12</span>, to=<span class="number">20</span>, by=<span class="number">2</span>))</span><br><span class="line"><span class="comment"># Call the network topology analysis function</span></span><br><span class="line">sft = pickSoftThreshold(datExpr, powerVector = powers, verbose = <span class="number">5</span>)</span><br><span class="line"><span class="comment"># 绘制结果</span></span><br><span class="line">sizeGrWindow(<span class="number">9</span>, <span class="number">5</span>)</span><br><span class="line">par(mfrow = <span class="built_in">c</span>(<span class="number">1</span>,<span class="number">2</span>));</span><br><span class="line">cex1 = <span class="number">0.9</span>;</span><br><span class="line"><span class="comment"># 找一个软阈值指数来使得数据契合无尺度网络的状态，然后这个指数尽量小</span></span><br><span class="line">plot(sft$fitIndices[,<span class="number">1</span>], -<span class="built_in">sign</span>(sft$fitIndices[,<span class="number">3</span>])*sft$fitIndices[,<span class="number">2</span>],</span><br><span class="line">	xlab=<span class="string">&quot;Soft Threshold (power)&quot;</span>,ylab=<span class="string">&quot;Scale Free Topology Model Fit,signed R^2&quot;</span>,type=<span class="string">&quot;n&quot;</span>,main = paste(<span class="string">&quot;Scale independence&quot;</span>));</span><br><span class="line">text(sft$fitIndices[,<span class="number">1</span>], -<span class="built_in">sign</span>(sft$fitIndices[,<span class="number">3</span>])*sft$fitIndices[,<span class="number">2</span>],</span><br><span class="line">labels=powers,cex=cex1,col=<span class="string">&quot;red&quot;</span>);</span><br><span class="line"><span class="comment"># this line corresponds to using an R^2 cut-off of h</span></span><br><span class="line">abline(h=<span class="number">0.90</span>,col=<span class="string">&quot;red&quot;</span>)</span><br><span class="line"><span class="comment"># Mean connectivity as a function of the soft-thresholding power</span></span><br><span class="line">plot(sft$fitIndices[,<span class="number">1</span>], sft$fitIndices[,<span class="number">5</span>],</span><br><span class="line">xlab=<span class="string">&quot;Soft Threshold (power)&quot;</span>,ylab=<span class="string">&quot;Mean Connectivity&quot;</span>, type=<span class="string">&quot;n&quot;</span>,</span><br><span class="line">main = paste(<span class="string">&quot;Mean connectivity&quot;</span>))</span><br><span class="line">text(sft$fitIndices[,<span class="number">1</span>], sft$fitIndices[,<span class="number">5</span>], labels=powers, cex=cex1,col=<span class="string">&quot;red&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>我们选择指数6，6是使得<strong>契合无尺度网络并且达到一个较高的分值的最小指数</strong>（在此，大约是0.90）<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/4.png" alt="4"></p>
+<h5 id="一步构建网络和检测模块"><a href="#一步构建网络和检测模块" class="headerlink" title="一步构建网络和检测模块"></a>一步构建网络和检测模块</h5><p>现在构建基因网络并识别出网络只需要一个简单的函数：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">net = blockwiseModules(datExpr, power = <span class="number">6</span>,</span><br><span class="line">	TOMType = <span class="string">&quot;unsigned&quot;</span>, minModuleSize = <span class="number">30</span>,</span><br><span class="line">	reassignThreshold = <span class="number">0</span>, mergeCutHeight = <span class="number">0.25</span>,</span><br><span class="line">	numericLabels = <span class="literal">TRUE</span>, pamRespectsDendro = <span class="literal">FALSE</span>,</span><br><span class="line">	saveTOMs = <span class="literal">TRUE</span>,</span><br><span class="line">	saveTOMFileBase = <span class="string">&quot;femaleMouseTOM&quot;</span>,</span><br><span class="line">	verbose = <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p>在这里，选择软阈值指数为6，一个相对较大的最小模块size为30，一个中等灵敏度(deepSplit=2)来进行聚类拆分，参数<code>mergeCutHeight</code>是合并模块的阈值，我们指定这个函数返回模块数值(而非颜色或者标签)并保存TOM(Topological Overlap Matrix),这个函数的输出看似神秘却非常好用，例如<code>net$colors</code>保存着模块的分配，<code>net$MEs</code>保存着模块的eigegenes.</p>
+<blockquote>
+<p><strong>需要注意的是</strong>有些读者会那这个代码来用于自己的数据，这个<code>blockwiseModules</code>函数有很多参数，在这个例子中大部分都设置为<strong>默认</strong>，WGCNA尝试提供了合理的默认参数但是对于特定的数据集来说还是可能不太合适，需要读者仔细阅读帮助文档并调整网络构建和模块检测参数，方向往着生物学相关方向调整就行.</p>
+</blockquote>
+<p><strong>第二个需要注意的是</strong>参数<code>maxBlockSize</code>制定了函数这个电脑能处理的最大block大小，对个人PC而言默认值是5000，如果代码想要分析超过5000个记录，函数<code>blockwiseModules</code>会拆开数据为多个blocks，这回使得绘图代码失效，想要分析更大的数据集需要做：</p>
+<ul>
+<li>内存够大，修改<code>maxBlockSize</code>：4G内存对应5000，以此类推</li>
+<li>内存不够，分开计算</li>
+</ul>
+<p>在这里我们已经返回了网络分析结果，如果想看多少模块被识别出来，可以使用<code>table(net$colors)</code>,返回值为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18 </span><br><span class="line">99 609 460 409 316 312 221 211 157 123 106 100  94  91  77  76  58  47  34</span><br></pre></td></tr></table></figure>
+<p> 这表明18个模块被识别，1-18模块大小递减，609-34个基因数目的顺次变化.<strong>label 0被保留，代表模块外的基因.</strong><br> 用于识别模块的分级聚类的树图保存在<code>net$dendrograms[[1]]</code>中，该图可以用以下代码展示：</p>
+ <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># open a graphics window</span></span><br><span class="line">sizeGrWindow(<span class="number">12</span>, <span class="number">9</span>)</span><br><span class="line"><span class="comment"># Convert labels to colors for plotting</span></span><br><span class="line">mergedColors = labels2colors(net$colors)</span><br><span class="line"><span class="comment"># Plot the dendrogram and the module colors underneath</span></span><br><span class="line">plotDendroAndColors(net$dendrograms[[<span class="number">1</span>]], mergedColors[net$blockGenes[[<span class="number">1</span>]]],</span><br><span class="line"><span class="string">&quot;Module colors&quot;</span>,dendroLabels = <span class="literal">FALSE</span>, hang = <span class="number">0.03</span>,</span><br><span class="line">addGuide = <span class="literal">TRUE</span>, guideHang = <span class="number">0.05</span>)</span><br></pre></td></tr></table></figure>
+<p>如果读者想要改变树的截切值，模块关系或者模块合并的标准，函数<code>recutBlockwiseTrees</code>可以使用并且不需要重新计算网络和聚类图，可以节约很多时间.现在我们保存模块分配和模块的eigengene信息，用于下游的分析.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">moduleLabels = net$colors</span><br><span class="line">moduleColors = labels2colors(net$colors)</span><br><span class="line">MEs = net$MEs;</span><br><span class="line">geneTree = net$dendrograms[[<span class="number">1</span>]];</span><br><span class="line">save(MEs, moduleLabels, moduleColors, geneTree,</span><br><span class="line">file = <span class="string">&quot;FemaleLiver-02-networkConstruction-auto.RData&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/5.png" alt="5"></p>
+<h3 id="Step-by-step网络构建和模块识别"><a href="#Step-by-step网络构建和模块识别" class="headerlink" title="Step-by-step网络构建和模块识别"></a>Step-by-step网络构建和模块识别</h3><h4 id="导入数据，配置环境"><a href="#导入数据，配置环境" class="headerlink" title="导入数据，配置环境"></a>导入数据，配置环境</h4><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">getwd();</span><br><span class="line">workingDir = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">setwd(workingDir);</span><br><span class="line">library(WGCNA)</span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许WGCNA的多线程计算.这会加速你的计算，任何升级WGCNA的提示可以忽略</span></span><br><span class="line"><span class="comment"># 如果你使用的是Rstudio或者其他第三方环境，跳过enableWGCNAThreads()命令</span></span><br><span class="line">enableWGCNAThreads()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the data saved in the first part</span></span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-01-dataInput.RData&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="逐步构建网络和模块检测"><a href="#逐步构建网络和模块检测" class="headerlink" title="逐步构建网络和模块检测"></a>逐步构建网络和模块检测</h4><h5 id="选择软阈值指数：拓扑网络分析-1"><a href="#选择软阈值指数：拓扑网络分析-1" class="headerlink" title="选择软阈值指数：拓扑网络分析"></a>选择软阈值指数：拓扑网络分析</h5><p>构建一个权重基因网络需要选择一个软阈值指数Beta来计算邻接共表达相似性.作者基于无尺度网络的理念提出一种选择软阈值指数的方法.使用函数<code>pickSoftThreshold</code>来进行网络拓扑分析，该函数可以帮助使用者选择合适的软阈值指数.使用者选择一系列的待定指数，然后函数返回一系列的即将被检测到的网络指数.示例如下：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Choose a set of soft-thresholding powers</span></span><br><span class="line">powers = <span class="built_in">c</span>(<span class="built_in">c</span>(<span class="number">1</span>:<span class="number">10</span>), seq(from = <span class="number">12</span>, to=<span class="number">20</span>, by=<span class="number">2</span>))</span><br><span class="line"><span class="comment"># Call the network topology analysis function</span></span><br><span class="line">sft = pickSoftThreshold(datExpr, powerVector = powers, verbose = <span class="number">5</span>)</span><br><span class="line"><span class="comment"># 绘制结果</span></span><br><span class="line">sizeGrWindow(<span class="number">9</span>, <span class="number">5</span>)</span><br><span class="line">par(mfrow = <span class="built_in">c</span>(<span class="number">1</span>,<span class="number">2</span>));</span><br><span class="line">cex1 = <span class="number">0.9</span>;</span><br><span class="line"><span class="comment"># Scale-free topology fit index as a function of the soft-thresholding power</span></span><br><span class="line">plot(sft$fitIndices[,<span class="number">1</span>], -<span class="built_in">sign</span>(sft$fitIndices[,<span class="number">3</span>])*sft$fitIndices[,<span class="number">2</span>],</span><br><span class="line">xlab=<span class="string">&quot;Soft Threshold (power)&quot;</span>,ylab=<span class="string">&quot;Scale Free Topology Model Fit,signed R^2&quot;</span>,type=<span class="string">&quot;n&quot;</span>,</span><br><span class="line">main = paste(<span class="string">&quot;Scale independence&quot;</span>));</span><br><span class="line">text(sft$fitIndices[,<span class="number">1</span>], -<span class="built_in">sign</span>(sft$fitIndices[,<span class="number">3</span>])*sft$fitIndices[,<span class="number">2</span>],</span><br><span class="line">labels=powers,cex=cex1,col=<span class="string">&quot;red&quot;</span>);</span><br><span class="line"><span class="comment"># this line corresponds to using an R^2 cut-off of h</span></span><br><span class="line">abline(h=<span class="number">0.90</span>,col=<span class="string">&quot;red&quot;</span>)</span><br><span class="line"><span class="comment"># Mean connectivity as a function of the soft-thresholding power</span></span><br><span class="line">plot(sft$fitIndices[,<span class="number">1</span>], sft$fitIndices[,<span class="number">5</span>],</span><br><span class="line">xlab=<span class="string">&quot;Soft Threshold (power)&quot;</span>,ylab=<span class="string">&quot;Mean Connectivity&quot;</span>, type=<span class="string">&quot;n&quot;</span>,</span><br><span class="line">main = paste(<span class="string">&quot;Mean connectivity&quot;</span>))</span><br><span class="line">text(sft$fitIndices[,<span class="number">1</span>], sft$fitIndices[,<span class="number">5</span>], labels=powers, cex=cex1,col=<span class="string">&quot;red&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>我们选择指数6，6是使得<strong>契合无尺度网络并且达到一个较高的分值的最小指数</strong>（在此，大约是0.90）</p>
+<h5 id="共表达相似性和邻接值"><a href="#共表达相似性和邻接值" class="headerlink" title="共表达相似性和邻接值"></a>共表达相似性和邻接值</h5><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">softPower = <span class="number">6</span>;</span><br><span class="line">adjacency = adjacency(datExpr, power = softPower);</span><br></pre></td></tr></table></figure>
+<h5 id="Topological-Overlap-Matrix-TOM-计算"><a href="#Topological-Overlap-Matrix-TOM-计算" class="headerlink" title="Topological Overlap Matrix (TOM)计算"></a>Topological Overlap Matrix (TOM)计算</h5><p>为了最小化噪音和伪相关性，我们转化邻接邻接矩阵为TOM，并计算相对应的dissimilarity(<code>dissTOM</code>)</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Turn adjacency into topological overlap</span></span><br><span class="line">TOM = TOMsimilarity(adjacency);</span><br><span class="line">dissTOM = <span class="number">1</span>-TOM</span><br></pre></td></tr></table></figure>
+<h5 id="使用TOM聚类"><a href="#使用TOM聚类" class="headerlink" title="使用TOM聚类"></a>使用TOM聚类</h5><p>使用分级聚类来产生基因的分级聚类树(<em>dendrogram</em>)</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Call the hierarchical clustering function</span></span><br><span class="line">geneTree = hclust(as.dist(dissTOM), method = <span class="string">&quot;average&quot;</span>);</span><br><span class="line"><span class="comment"># Plot the resulting clustering tree (dendrogram)</span></span><br><span class="line">sizeGrWindow(<span class="number">12</span>,<span class="number">9</span>)</span><br><span class="line">plot(geneTree, xlab=<span class="string">&quot;&quot;</span>, sub=<span class="string">&quot;&quot;</span>, main = <span class="string">&quot;Gene clustering on TOM-based dissimilarity&quot;</span>,</span><br><span class="line">labels = <span class="literal">FALSE</span>, hang = <span class="number">0.04</span>);</span><br></pre></td></tr></table></figure>
+<p>聚类树图中，每一个叶子（一个竖线）代表一个gene，高度共表达的基因的枝干被合在一组，模块识别就是识别这些独立的枝干（dendrogram的剪切），有很多种方法可以做剪枝，WGCNA使用的标准方法是<code>dynamicTreeCut</code>包中的动态剪枝，代码为：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># We like large modules, so we set the minimum module size relatively high:</span></span><br><span class="line">minModuleSize = <span class="number">30</span>;</span><br><span class="line"><span class="comment"># Module identification using dynamic tree cut:</span></span><br><span class="line">dynamicMods = cutreeDynamic(dendro = geneTree, distM = dissTOM,</span><br><span class="line">deepSplit = <span class="number">2</span>, pamRespectsDendro = <span class="literal">FALSE</span>,</span><br><span class="line">minClusterSize = minModuleSize);</span><br><span class="line">table(dynamicMods)</span><br></pre></td></tr></table></figure>
+<p>这个函数返回22个模块，标记为1-22，0保留用于未分配的基因，我们可以绘画出模块：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Convert numeric lables into colors</span></span><br><span class="line">dynamicColors = labels2colors(dynamicMods)</span><br><span class="line">table(dynamicColors)</span><br><span class="line"><span class="comment"># Plot the dendrogram and colors underneath</span></span><br><span class="line">sizeGrWindow(<span class="number">8</span>,<span class="number">6</span>)</span><br><span class="line">plotDendroAndColors(geneTree, dynamicColors, <span class="string">&quot;Dynamic Tree Cut&quot;</span>,</span><br><span class="line">dendroLabels = <span class="literal">FALSE</span>, hang = <span class="number">0.03</span>,</span><br><span class="line">addGuide = <span class="literal">TRUE</span>, guideHang = <span class="number">0.05</span>,</span><br><span class="line">main = <span class="string">&quot;Gene dendrogram and module colors&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="合并表达谱相似的模块"><a href="#合并表达谱相似的模块" class="headerlink" title="合并表达谱相似的模块"></a>合并表达谱相似的模块</h5><p>动态剪枝方法可以识别出表达谱类似的模块并合并.为了定量描述模块间的相似性，我们计算eigengenes的协相关关系来聚类：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Calculate eigengenes</span></span><br><span class="line">MEList = moduleEigengenes(datExpr, colors = dynamicColors)</span><br><span class="line">MEs = MEList$eigengenes</span><br><span class="line"><span class="comment"># Calculate dissimilarity of module eigengenes</span></span><br><span class="line">MEDiss = <span class="number">1</span>-cor(MEs);</span><br><span class="line"><span class="comment"># Cluster module eigengenes</span></span><br><span class="line">METree = hclust(as.dist(MEDiss), method = <span class="string">&quot;average&quot;</span>);</span><br><span class="line"><span class="comment"># Plot the result</span></span><br><span class="line">sizeGrWindow(<span class="number">7</span>, <span class="number">6</span>)</span><br><span class="line">plot(METree, main = <span class="string">&quot;Clustering of module eigengenes&quot;</span>,</span><br><span class="line">xlab = <span class="string">&quot;&quot;</span>, sub = <span class="string">&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>我们选择剪枝高度0.25，也就是协相关值0.75来合并模块：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MEDissThres = <span class="number">0.25</span></span><br><span class="line"><span class="comment"># Plot the cut line into the dendrogram</span></span><br><span class="line">abline(h=MEDissThres, col = <span class="string">&quot;red&quot;</span>)</span><br><span class="line"><span class="comment"># Call an automatic merging function</span></span><br><span class="line">merge = mergeCloseModules(datExpr, dynamicColors, cutHeight = MEDissThres, verbose = <span class="number">3</span>)</span><br><span class="line"><span class="comment"># The merged module colors</span></span><br><span class="line">mergedColors = merge$colors;</span><br><span class="line"><span class="comment"># Eigengenes of the new merged modules:</span></span><br><span class="line">mergedMEs = merge$newMEs;</span><br></pre></td></tr></table></figure>
+<p>为了查看合并后的样子，我们重新绘制树图，将原始的颜色和合并后的颜色放在下面：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sizeGrWindow(<span class="number">12</span>, <span class="number">9</span>)</span><br><span class="line"><span class="comment">#pdf(file = &quot;Plots/geneDendro-3.pdf&quot;, wi = 9, he = 6)</span></span><br><span class="line">plotDendroAndColors(geneTree, cbind(dynamicColors, mergedColors),</span><br><span class="line"><span class="built_in">c</span>(<span class="string">&quot;Dynamic Tree Cut&quot;</span>, <span class="string">&quot;Merged dynamic&quot;</span>),</span><br><span class="line">dendroLabels = <span class="literal">FALSE</span>, hang = <span class="number">0.03</span>,</span><br><span class="line">addGuide = <span class="literal">TRUE</span>, guideHang = <span class="number">0.05</span>)</span><br></pre></td></tr></table></figure>
+<p>在后续的分析中，我们会用到<code>mergedColors</code>,我们保存这个变量：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Rename to moduleColors</span></span><br><span class="line">moduleColors = mergedColors</span><br><span class="line"><span class="comment"># Construct numerical labels corresponding to the colors</span></span><br><span class="line">colorOrder = <span class="built_in">c</span>(<span class="string">&quot;grey&quot;</span>, standardColors(<span class="number">50</span>));</span><br><span class="line">moduleLabels = match(moduleColors, colorOrder)-<span class="number">1</span>;</span><br><span class="line">MEs = mergedMEs;</span><br><span class="line"><span class="comment"># Save module colors and labels for use in subsequent parts</span></span><br><span class="line">save(MEs, moduleLabels, moduleColors, geneTree, file = <span class="string">&quot;FemaleLiver-02-networkConstruction-stepByStep.RData&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="联系模块-外部信息，识别重要基因"><a href="#联系模块-外部信息，识别重要基因" class="headerlink" title="联系模块-外部信息，识别重要基因"></a>联系模块-外部信息，识别重要基因</h2><p>假定刚启动了R，我们加载WGCNA包和前面教程的数据：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getwd();</span><br><span class="line">workingDir = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">setwd(workingDir);</span><br><span class="line">library(WGCNA)</span><br><span class="line"><span class="comment"># The following setting is important, do not omit.</span></span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-01-dataInput.RData&quot;</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-02-networkConstruction-auto.RData&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>使用<strong>step-by-step</strong>构建出的网络模块结果来分析</p>
+<h3 id="将模块和外部临床数据联系"><a href="#将模块和外部临床数据联系" class="headerlink" title="将模块和外部临床数据联系"></a>将模块和外部临床数据联系</h3><h4 id="定量模块-临床关系"><a href="#定量模块-临床关系" class="headerlink" title="定量模块-临床关系"></a>定量模块-临床关系</h4><p>在这个分析中，我们将识别出和临床表征相关的模块.我们已经有了每个**模块总结性的数据(eigengene)**，我们将eigengenes和临床数据关联来查看最重要的联系.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Define numbers of genes and samples</span></span><br><span class="line">nGenes = ncol(datExpr);</span><br><span class="line">nSamples = nrow(datExpr);</span><br><span class="line"><span class="comment"># Recalculate MEs with color labels</span></span><br><span class="line">MEs0 = moduleEigengenes(datExpr, moduleColors)$eigengenes</span><br><span class="line">MEs = orderMEs(MEs0)</span><br><span class="line">moduleTraitCor = cor(MEs, datTraits, use = <span class="string">&quot;p&quot;</span>);</span><br><span class="line">moduleTraitPvalue = corPvalueStudent(moduleTraitCor, nSamples);</span><br></pre></td></tr></table></figure>
+<p>由于模块和临床特征比较多，绘图查看，我们把每个相关数值转化为颜色：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">sizeGrWindow(<span class="number">10</span>,<span class="number">6</span>)</span><br><span class="line"><span class="comment"># Will display correlations and their p-values</span></span><br><span class="line">textMatrix = paste(<span class="built_in">signif</span>(moduleTraitCor, <span class="number">2</span>), <span class="string">&quot;\n(&quot;</span>,</span><br><span class="line"><span class="built_in">signif</span>(moduleTraitPvalue, <span class="number">1</span>), <span class="string">&quot;)&quot;</span>, sep = <span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="built_in">dim</span>(textMatrix) = <span class="built_in">dim</span>(moduleTraitCor)</span><br><span class="line">par(mar = <span class="built_in">c</span>(<span class="number">6</span>, <span class="number">8.5</span>, <span class="number">3</span>, <span class="number">3</span>));</span><br><span class="line"><span class="comment"># Display the correlation values within a heatmap plot</span></span><br><span class="line">labeledHeatmap(Matrix = moduleTraitCor,</span><br><span class="line">xLabels = <span class="built_in">names</span>(datTraits),</span><br><span class="line">yLabels = <span class="built_in">names</span>(MEs),</span><br><span class="line">ySymbols = <span class="built_in">names</span>(MEs),</span><br><span class="line">colorLabels = <span class="literal">FALSE</span>,</span><br><span class="line">colors = greenWhiteRed(<span class="number">50</span>),</span><br><span class="line">textMatrix = textMatrix,</span><br><span class="line">setStdMargins = <span class="literal">FALSE</span>,</span><br><span class="line">cex.text = <span class="number">0.5</span>,</span><br><span class="line">zlim = <span class="built_in">c</span>(-<span class="number">1</span>,<span class="number">1</span>),</span><br><span class="line">main = paste(<span class="string">&quot;Module-trait relationships&quot;</span>))</span><br></pre></td></tr></table></figure>
+<p>这个分析识别出了几个比较重要的模块-表征相关性，我们会聚焦这些表征（<strong>在这个例子里，我们研究体重</strong>）.<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/6.png" alt="6"></p>
+<h4 id="基因和临床表征和重要模块的关系：gene显著性和模块关系"><a href="#基因和临床表征和重要模块的关系：gene显著性和模块关系" class="headerlink" title="基因和临床表征和重要模块的关系：gene显著性和模块关系"></a>基因和临床表征和重要模块的关系：gene显著性和模块关系</h4><p>在定量每个基因和感兴趣的临床表征（体重）的联系时，WGCNA定义了<strong>基因显著性（Gene Significance，GS）</strong>作为基因和表征之间的相关性(绝对值).对于每一个模块，WGCNA也定义了<strong>模块成员关系（module membership MM）</strong>作为模块的engengene和基因表达谱的相关性.这样我们可以对每个模块定量所有基因的相似度.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Define variable weight containing the weight column of datTrait</span></span><br><span class="line">weight = as.data.frame(datTraits$weight_g);</span><br><span class="line"><span class="built_in">names</span>(weight) = <span class="string">&quot;weight&quot;</span></span><br><span class="line"><span class="comment"># names (colors) of the modules</span></span><br><span class="line">modNames = substring(<span class="built_in">names</span>(MEs), <span class="number">3</span>)</span><br><span class="line">geneModuleMembership = as.data.frame(cor(datExpr, MEs, use = <span class="string">&quot;p&quot;</span>));</span><br><span class="line">MMPvalue = as.data.frame(corPvalueStudent(as.matrix(geneModuleMembership), nSamples));</span><br><span class="line"><span class="built_in">names</span>(geneModuleMembership) = paste(<span class="string">&quot;MM&quot;</span>, modNames, sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="built_in">names</span>(MMPvalue) = paste(<span class="string">&quot;p.MM&quot;</span>, modNames, sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line">geneTraitSignificance = as.data.frame(cor(datExpr, weight, use = <span class="string">&quot;p&quot;</span>));</span><br><span class="line">GSPvalue = as.data.frame(corPvalueStudent(as.matrix(geneTraitSignificance), nSamples));</span><br><span class="line"><span class="built_in">names</span>(geneTraitSignificance) = paste(<span class="string">&quot;GS.&quot;</span>, <span class="built_in">names</span>(weight), sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line"><span class="built_in">names</span>(GSPvalue) = paste(<span class="string">&quot;p.GS.&quot;</span>, <span class="built_in">names</span>(weight), sep=<span class="string">&quot;&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="模块内分析：识别具有高GS和MM的gene"><a href="#模块内分析：识别具有高GS和MM的gene" class="headerlink" title="模块内分析：识别具有高GS和MM的gene"></a>模块内分析：识别具有高GS和MM的gene</h4><p>使用GS和MM，我们可以识别一些基因既对体重有重要意义，其所在模块也有高的模块成员关系.例如，我们观测到棕色模块和体重有较高的联系，我们在棕色模块内绘制GS vs. MM的散点图</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">module = <span class="string">&quot;brown&quot;</span></span><br><span class="line">column = match(module, modNames);</span><br><span class="line">moduleGenes = moduleColors==module;</span><br><span class="line">sizeGrWindow(<span class="number">7</span>, <span class="number">7</span>);</span><br><span class="line">par(mfrow = <span class="built_in">c</span>(<span class="number">1</span>,<span class="number">1</span>));</span><br><span class="line">verboseScatterplot(<span class="built_in">abs</span>(geneModuleMembership[moduleGenes, column]),</span><br><span class="line">	<span class="built_in">abs</span>(geneTraitSignificance[moduleGenes, <span class="number">1</span>]),</span><br><span class="line">	xlab = paste(<span class="string">&quot;Module Membership in&quot;</span>, module, <span class="string">&quot;module&quot;</span>),</span><br><span class="line">	ylab = <span class="string">&quot;Gene significance for body weight&quot;</span>,</span><br><span class="line">	main = paste(<span class="string">&quot;Module membership vs. gene significance\n&quot;</span>),</span><br><span class="line">	cex.main = <span class="number">1.2</span>, cex.lab = <span class="number">1.2</span>, cex.axis = <span class="number">1.2</span>, col = module)</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/7.png" alt="7"><br>在图中可以看到，<strong>GS和MM时高度协相关的，也就是对表征有重要意义的基因就在和该表征关系最密切的模块内.</strong></p>
+<h4 id="输出网络分析结果"><a href="#输出网络分析结果" class="headerlink" title="输出网络分析结果"></a>输出网络分析结果</h4><p>我们已经找出了和临床表征具有高相关性的模块，识别出了模块内的中心成员.现在把统计信息和基因注释合并，输出到文本中.在这里，表达数据仅通过probe ID names注释:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">names</span>(datExpr)</span><br><span class="line"><span class="comment"># names(datExpr)[moduleColors==&quot;brown&quot;] 会返回棕色模块的基因probe IDs，我们使用GeneAnnotation.csv来注释</span></span><br><span class="line">annot = read.csv(file = <span class="string">&quot;GeneAnnotation.csv&quot;</span>);</span><br><span class="line"><span class="built_in">dim</span>(annot)</span><br><span class="line"><span class="built_in">names</span>(annot)</span><br><span class="line">probes = <span class="built_in">names</span>(datExpr)</span><br><span class="line">probes2annot = match(probes, annot$substanceBXH)</span><br><span class="line"><span class="comment"># The following is the number or probes without annotation:</span></span><br><span class="line"><span class="built_in">sum</span>(<span class="built_in">is.na</span>(probes2annot))</span><br><span class="line"><span class="comment"># Should return 0.</span></span><br></pre></td></tr></table></figure>
+<p>我们现在创建一个数据框包含所有probes信息：probe ID, gene symbol, Locus Link ID(Entrez code), module color, gene significance for weight,  module membership , p-values in all modules.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create the starting data frame</span></span><br><span class="line">geneInfo0 = data.frame(substanceBXH = probes,</span><br><span class="line">geneSymbol = annot$gene_symbol[probes2annot],</span><br><span class="line">LocusLinkID = annot$LocusLinkID[probes2annot],</span><br><span class="line">moduleColor = moduleColors,</span><br><span class="line">geneTraitSignificance,</span><br><span class="line">GSPvalue)</span><br><span class="line"><span class="comment"># Order modules by their significance for weight</span></span><br><span class="line">modOrder = order(-<span class="built_in">abs</span>(cor(MEs, weight, use = <span class="string">&quot;p&quot;</span>)));</span><br><span class="line"><span class="comment"># Add module membership information in the chosen order</span></span><br><span class="line"><span class="keyword">for</span> (mod <span class="keyword">in</span> <span class="number">1</span>:ncol(geneModuleMembership))</span><br><span class="line">&#123;</span><br><span class="line">oldNames = <span class="built_in">names</span>(geneInfo0)</span><br><span class="line">geneInfo0 = data.frame(geneInfo0, geneModuleMembership[, modOrder[mod]],</span><br><span class="line">MMPvalue[, modOrder[mod]]);</span><br><span class="line"><span class="built_in">names</span>(geneInfo0) = <span class="built_in">c</span>(oldNames, paste(<span class="string">&quot;MM.&quot;</span>, modNames[modOrder[mod]], sep=<span class="string">&quot;&quot;</span>),</span><br><span class="line">paste(<span class="string">&quot;p.MM.&quot;</span>, modNames[modOrder[mod]], sep=<span class="string">&quot;&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Order the genes in the geneInfo variable first by module color, then by geneTraitSignificance</span></span><br><span class="line">geneOrder = order(geneInfo0$moduleColor, -<span class="built_in">abs</span>(geneInfo0$GS.weight));</span><br><span class="line">geneInfo = geneInfo0[geneOrder, ]</span><br><span class="line">write.csv(geneInfo, file = <span class="string">&quot;geneInfo.csv&quot;</span>)  <span class="comment">## output</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="和其他数据结合，接口网络分析-功能注释，GO"><a href="#和其他数据结合，接口网络分析-功能注释，GO" class="headerlink" title="和其他数据结合，接口网络分析(功能注释，GO)"></a>和其他数据结合，接口网络分析(功能注释，GO)</h2><h3 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h3><p>使用<strong>step-by-step</strong>构建出的网络模块结果来分析</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getwd();</span><br><span class="line">workingDir = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">setwd(workingDir);</span><br><span class="line"><span class="comment"># Load the WGCNA package</span></span><br><span class="line">library(WGCNA)</span><br><span class="line"><span class="comment"># The following setting is important, do not omit.</span></span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-02-networkConstruction-auto.RData&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="输出基因列表在线分析"><a href="#输出基因列表在线分析" class="headerlink" title="输出基因列表在线分析"></a>输出基因列表在线分析</h3><p>一个选则时简单导出一个基因列表可以用于几个常见的GO和功能分析套件，如DAVID和AmiGO.举例而言，我们把棕色模块的LocusLinkID(entrez) codes写进一个文件</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Read in the probe annotation</span></span><br><span class="line">annot = read.csv(file = <span class="string">&quot;GeneAnnotation.csv&quot;</span>);</span><br><span class="line"><span class="comment"># Match probes in the data set to the probe IDs in the annotation file</span></span><br><span class="line">probes = <span class="built_in">names</span>(datExpr)</span><br><span class="line">probes2annot = match(probes, annot$substanceBXH)</span><br><span class="line"><span class="comment"># Get the corresponding Locuis Link IDs</span></span><br><span class="line">allLLIDs = annot$LocusLinkID[probes2annot];</span><br><span class="line"><span class="comment"># $ Choose interesting modules</span></span><br><span class="line">intModules = <span class="built_in">c</span>(<span class="string">&quot;brown&quot;</span>, <span class="string">&quot;red&quot;</span>, <span class="string">&quot;salmon&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> (module <span class="keyword">in</span> intModules)</span><br><span class="line">&#123;</span><br><span class="line"><span class="comment"># Select module probes</span></span><br><span class="line">modGenes = (moduleColors==module)</span><br><span class="line"><span class="comment"># Get their entrez ID codes</span></span><br><span class="line">modLLIDs = allLLIDs[modGenes];</span><br><span class="line"><span class="comment"># Write them into a file</span></span><br><span class="line">fileName = paste(<span class="string">&quot;LocusLinkIDs-&quot;</span>, module, <span class="string">&quot;.txt&quot;</span>, sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line">write.table(as.data.frame(modLLIDs), file = fileName,</span><br><span class="line">row.names = <span class="literal">FALSE</span>, col.names = <span class="literal">FALSE</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># As background in the enrichment analysis, we will use all probes in the analysis.</span></span><br><span class="line">fileName = paste(<span class="string">&quot;LocusLinkIDs-all.txt&quot;</span>, sep=<span class="string">&quot;&quot;</span>);</span><br><span class="line">write.table(as.data.frame(allLLIDs), file = fileName,</span><br><span class="line">row.names = <span class="literal">FALSE</span>, col.names = <span class="literal">FALSE</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="直接使用R进行功能富集分析"><a href="#直接使用R进行功能富集分析" class="headerlink" title="直接使用R进行功能富集分析"></a>直接使用R进行功能富集分析</h3><p>WGCNA包现在包含进行GO富集分析的功能，分析很简单.一些Biconductor包包括GO.db, AnnotationDBI，和合适的物种特异的注释包(org.Xx.eg.db)需要安装.<code>org.Xx.eg.db</code>中的XX是物种代码，Mm就是老鼠，Hs就是人类，例外的就是酵母没有注释包而是<code>org.Sc.sgd.db</code>.在这里我们研究老鼠的基因表达谱，所以代码使用<code> org.Mm.eg.db</code>，使用GO富集分析函数<code>GOenrichmentAnalysis</code>就可以，这个函数将模块标签和<code>Entrez code</code> (a.k.a. Locus Link)来作为基因Label输入.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BiocManager::install(<span class="string">&quot;org.Mm.eg.db&quot;</span>)</span><br><span class="line">GOenr = GOenrichmentAnalysis(moduleColors, allLLIDs, organism = <span class="string">&quot;mouse&quot;</span>, nBestP = <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<p>这个函数会运行一会儿并返回一个长列表，最有意义的成分是:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tab = GOenr$bestPTerms[[<span class="number">4</span>]]$enrich</span><br></pre></td></tr></table></figure>
+<p>这个<code>tab</code>包含每个模块所拥有的10个最好的GO term,表格的列名可用<code>names(tab)</code>查看,我们可以使用<code>write.table(tab, file = &quot;GOEnrichmentTable.csv&quot;, sep = &quot;,&quot;, quote = TRUE, row.names = FALSE)</code>保存表格<br>另一方面，为了快速查看结果，我们可以看一小部分:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">keepCols = <span class="built_in">c</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">12</span>, <span class="number">13</span>);</span><br><span class="line">screenTab = tab[, keepCols];</span><br><span class="line"><span class="comment"># Round the numeric columns to 2 decimal places:</span></span><br><span class="line">numCols = <span class="built_in">c</span>(<span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line">screenTab[, numCols] = <span class="built_in">signif</span>(apply(screenTab[, numCols], <span class="number">2</span>, <span class="built_in">as.numeric</span>), <span class="number">2</span>)</span><br><span class="line"><span class="comment"># Truncate the the term name to at most 40 characters</span></span><br><span class="line">screenTab[, <span class="number">7</span>] = substring(screenTab[, <span class="number">7</span>], <span class="number">1</span>, <span class="number">40</span>)</span><br><span class="line"><span class="comment"># Shorten the column names:</span></span><br><span class="line">colnames(screenTab) = <span class="built_in">c</span>(<span class="string">&quot;module&quot;</span>, <span class="string">&quot;size&quot;</span>, <span class="string">&quot;p-val&quot;</span>, <span class="string">&quot;Bonf&quot;</span>, <span class="string">&quot;nInTerm&quot;</span>, <span class="string">&quot;ont&quot;</span>, <span class="string">&quot;term name&quot;</span>);</span><br><span class="line">rownames(screenTab) = <span class="literal">NULL</span>;</span><br><span class="line"><span class="comment"># Set the width of R’s output. The reader should play with this number to obtain satisfactory output.</span></span><br><span class="line">options(width=<span class="number">95</span>)</span><br><span class="line"><span class="comment"># Finally, display the enrichment table:</span></span><br><span class="line">screenTab</span><br></pre></td></tr></table></figure>
+<p>这个表格很长，有一个模块有非常高的富集效果，如blue, brown和salmon模块</p>
+<h2 id="WGCNA网络可视化"><a href="#WGCNA网络可视化" class="headerlink" title="WGCNA网络可视化"></a>WGCNA网络可视化</h2><h3 id="载入数据"><a href="#载入数据" class="headerlink" title="载入数据"></a>载入数据</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">getwd();</span><br><span class="line">workingDir = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">setwd(workingDir);</span><br><span class="line"><span class="comment"># Load the WGCNA package</span></span><br><span class="line">library(WGCNA)</span><br><span class="line"><span class="comment"># The following setting is important, do not omit.</span></span><br><span class="line">options(stringsAsFactors = <span class="literal">FALSE</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-01-dataInput.RData&quot;</span>);</span><br><span class="line">lnames = load(file = <span class="string">&quot;FemaleLiver-02-networkConstruction-auto.RData&quot;</span>);</span><br><span class="line">nGenes = ncol(datExpr)</span><br><span class="line">nSamples = nrow(datExpr)</span><br></pre></td></tr></table></figure>
+<h3 id="使用R进行网络可视化"><a href="#使用R进行网络可视化" class="headerlink" title="使用R进行网络可视化"></a>使用R进行网络可视化</h3><p>一个可视化权重网络的方法是绘制热图，每一行和每一列对应一个gene，热图可以是邻接的或者拓扑重叠的，亮色代表低的overlap，暗色代表高overlap.另外，gene的树状图和模块颜色分别位于热图的上方和左侧.WGCNA提供了很方便的绘图函数:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Calculate topological overlap anew: this could be done more efficiently by saving the TOM</span></span><br><span class="line"><span class="comment"># calculated during module detection, but let us do it again here.</span></span><br><span class="line">dissTOM = <span class="number">1</span>-TOMsimilarityFromExpr(datExpr, power = <span class="number">6</span>);</span><br><span class="line"><span class="comment"># Transform dissTOM with a power to make moderately strong connections more visible in the heatmap</span></span><br><span class="line">plotTOM = dissTOM^<span class="number">7</span>;</span><br><span class="line"><span class="comment"># Set diagonal to NA for a nicer plot</span></span><br><span class="line">diag(plotTOM) = <span class="literal">NA</span>;</span><br><span class="line"><span class="comment"># Call the plot function</span></span><br><span class="line">sizeGrWindow(<span class="number">9</span>,<span class="number">9</span>)</span><br><span class="line">TOMplot(plotTOM, geneTree, moduleColors, main = <span class="string">&quot;Network heatmap plot, all genes&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>注意到产生热图可能会需要很长时间，限制基因数目可以加速绘图；<strong>但是此时的gene树状图可能就和全部的树状图不太一样了</strong>.下面的代码绘制了400个基因的热图：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">nSelect = <span class="number">400</span></span><br><span class="line"><span class="comment"># For reproducibility, we set the random seed</span></span><br><span class="line">set.seed(<span class="number">10</span>);</span><br><span class="line">select = sample(nGenes, size = nSelect);</span><br><span class="line">selectTOM = dissTOM[select, select];</span><br><span class="line"><span class="comment"># There’s no simple way of restricting a clustering tree to a subset of genes, so we must re-cluster.</span></span><br><span class="line">selectTree = hclust(as.dist(selectTOM), method = <span class="string">&quot;average&quot;</span>)</span><br><span class="line">selectColors = moduleColors[select];</span><br><span class="line"><span class="comment"># Open a graphical window</span></span><br><span class="line">sizeGrWindow(<span class="number">9</span>,<span class="number">9</span>)</span><br><span class="line"><span class="comment"># Taking the dissimilarity to a power, say 10, makes the plot more informative by effectively changing</span></span><br><span class="line"><span class="comment"># the color palette; setting the diagonal to NA also improves the clarity of the plot</span></span><br><span class="line">plotDiss = selectTOM^<span class="number">7</span>;</span><br><span class="line">diag(plotDiss) = <span class="literal">NA</span>;</span><br><span class="line">TOMplot(plotDiss, selectTree, selectColors, main = <span class="string">&quot;Network heatmap plot, selected genes&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/8.png" alt="8"></p>
+<h3 id="可视化网络的eigengenes"><a href="#可视化网络的eigengenes" class="headerlink" title="可视化网络的eigengenes"></a>可视化网络的eigengenes</h3><p>研究模块间的关系是很有价值的，我们可以使用eigengenes来定量研究模块.这个包提供了<code>plotEigengeneNetworks</code>使用eigengenes快速绘制eigengene网络图.通常加上临床表征（或多表征）会很有意义：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Recalculate module eigengenes</span></span><br><span class="line">MEs = moduleEigengenes(datExpr, moduleColors)$eigengenes</span><br><span class="line"><span class="comment"># Isolate weight from the clinical traits</span></span><br><span class="line">weight = as.data.frame(datTraits$weight_g);</span><br><span class="line"><span class="built_in">names</span>(weight) = <span class="string">&quot;weight&quot;</span></span><br><span class="line"><span class="comment"># Add the weight to existing module eigengenes</span></span><br><span class="line">MET = orderMEs(cbind(MEs, weight))</span><br><span class="line"><span class="comment"># Plot the relationships among the eigengenes and the trait</span></span><br><span class="line">sizeGrWindow(<span class="number">5</span>,<span class="number">7.5</span>);</span><br><span class="line">par(cex = <span class="number">0.9</span>)</span><br><span class="line">plotEigengeneNetworks(MET, <span class="string">&quot;&quot;</span>, marDendro = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span>), marHeatmap = <span class="built_in">c</span>(<span class="number">3</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">2</span>), cex.lab = <span class="number">0.8</span>, xLabelsAngle= <span class="number">90</span>)</span><br></pre></td></tr></table></figure>
+<p>这个函数产生了eigengenes和表征数据的树状图以及他们的相关关系热图.如果你只想画一部分如树状图或者是是热图</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Plot the dendrogram</span></span><br><span class="line">sizeGrWindow(<span class="number">6</span>,<span class="number">6</span>);</span><br><span class="line">par(cex = <span class="number">1.0</span>)</span><br><span class="line">plotEigengeneNetworks(MET, <span class="string">&quot;Eigengene dendrogram&quot;</span>, marDendro = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">0</span>),</span><br><span class="line">plotHeatmaps = <span class="literal">FALSE</span>)</span><br><span class="line"><span class="comment"># Plot the heatmap matrix (note: this plot will overwrite the dendrogram plot)</span></span><br><span class="line">par(cex = <span class="number">1.0</span>)</span><br><span class="line">plotEigengeneNetworks(MET, <span class="string">&quot;Eigengene adjacency heatmap&quot;</span>, marHeatmap = <span class="built_in">c</span>(<span class="number">3</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">2</span>),</span><br><span class="line">plotDendrograms = <span class="literal">FALSE</span>, xLabelsAngle = <span class="number">90</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/WGCNA/9.png" alt="9"><br>这个树状图和热图识别出了具有相关关系的<em>meta-modules</em>,例如树状图中red, brown and blue模块是高度相关的，他们的相关性和其他模块的相关性高很多，另一方面，salmon模块和weight是高度相关的，如果说几个模块被紧密的聚在了一起，那么他们之间的eigengenes相关性至少会大于0.5.</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/">Tutorials for the WGCNA package</a></p>
+<p><a href="%5Bhttp://blog.genesino.com/2018/04/wgcna/#%E5%8F%AF%E8%A7%86%E5%8C%96%E5%9F%BA%E5%9B%A0%E7%BD%91%E7%BB%9C-tom-plot%5D(http://blog.genesino.com/2018/04/wgcna/#%E5%8F%AF%E8%A7%86%E5%8C%96%E5%9F%BA%E5%9B%A0%E7%BD%91%E7%BB%9C-tom-plot)">WGCNA分析，简单全面的最新教程</a></p>
+
+    
+  </div>
+
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持forsigner</div>
+        <ul>
+        
+          <li class="item">
+            
+              <span>微信扫一扫</span>
+            
+            <img src="/images/qr-wechat.png" alt="">
+          </li>
+        
+          <li class="item">
+            
+              <span>支付宝扫一扫</span>
+            
+            <img src="/images/qr-alipay.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/graphlan">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/wgcna1">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">Close</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/category/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              分类
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/link/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              友链
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/atom.xml"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              RSS
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+<!-- Gitalk评论插件通用代码 -->
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script>
+const gitalk = new Gitalk({
+  clientID: '277317290454635afa73',
+  clientSecret: '78223c859304da5e8d71bfce136d436c6ff95c37',
+  repo: 'blog-comment',
+  owner: 'forsigner',
+  // 在这里设置一下截取前50个字符串, 这是因为 github 对 label 的长度有了要求, 如果超过
+  // 50个字符串则会报错.
+  // id: location.pathname.split('/').pop().substring(0, 49),
+  id: md5(location.pathname),
+  admin: ['forsigner'],
+  // facebook-like distraction free mode
+  distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+<!-- Gitalk代码结束 -->
+
+
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
