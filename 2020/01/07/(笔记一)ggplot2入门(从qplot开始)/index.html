@@ -164,7 +164,7 @@ ga('send', 'pageview');
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">Posts List</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E9%A2%9C%E8%89%B2%EF%BC%8C%E5%A4%A7%E5%B0%8F%EF%BC%8C%E5%BD%A2%E7%8A%B6%E5%92%8C%E5%85%B6%E4%BB%96%E5%9B%BE%E5%BD%A2%E5%B1%9E%E6%80%A7"><span class="toc-text">2.4 颜色，大小，形状和其他图形属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-1-%E5%9B%BE%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%B9%B3%E6%BB%91%E6%9B%B2%E7%BA%BF"><span class="toc-text">2.5.1 图中添加平滑曲线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-6-%E5%88%86%E9%9D%A2"><span class="toc-text">2.6 分面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="toc-text">2.7 其他选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-qplot%E5%92%8Cplot%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">2.8 qplot和plot函数的区别</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E9%A2%9C%E8%89%B2%EF%BC%8C%E5%A4%A7%E5%B0%8F%EF%BC%8C%E5%BD%A2%E7%8A%B6%E5%92%8C%E5%85%B6%E4%BB%96%E5%9B%BE%E5%BD%A2%E5%B1%9E%E6%80%A7"><span class="toc-text">2.4 颜色，大小，形状和其他图形属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-7-%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="toc-text">2.7 其他选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-8-qplot%E5%92%8Cplot%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">2.8 qplot和plot函数的区别</span></a></li></ol>
   </div>
 
 
@@ -218,30 +218,23 @@ ga('send', 'pageview');
 <li>如何设定基本选项来调整图形的外观</li>
 <li>qplot()和plot()之间的一些重要区别</li>
 </ul>
-<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>数据集使用的diamonds数据集，包含了约54000颗钻石的价格和质量信息，数据已经放在ggplot2包中，涵盖了反映钻石质量的克拉重量(carat)，切工(cut)，颜色(color)和净度(clarity)和五个物理指标–深度(depth)，钻石宽度(table)，x，y，z。我们可以查看：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">head(diamonds)</span><br><span class="line"><span class="comment"># # A tibble: 6 x 10</span></span><br><span class="line"><span class="comment">#   carat cut       color clarity depth table price     x     y     z</span></span><br><span class="line"><span class="comment"># 1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43</span></span><br><span class="line"><span class="comment"># 2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31</span></span><br><span class="line"><span class="comment"># 3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31</span></span><br><span class="line"><span class="comment"># 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63</span></span><br><span class="line"><span class="comment"># 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75</span></span><br><span class="line"><span class="comment"># 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</span></span><br></pre></td></tr></table></figure>
-<p>我们使用其子集<code>dsmall</code>来进行作图</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1410</span>)</span><br><span class="line">dsmall &lt;- diamonds[sample(nrow(diamonds),<span class="number">100</span>),]</span><br></pre></td></tr></table></figure>
-<h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><p>和plot类似，qplot的前两个参数是x和y，代表图中的x和y坐标，此外还有一个可选的data参数，如绘制散点图，展现钻石价格和重量之间的关系：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data=diamonds)</span><br></pre></td></tr></table></figure>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>数据集使用的diamonds数据集，包含了约54000颗钻石的价格和质量信息，数据已经放在ggplot2包中，涵盖了反映钻石质量的克拉重量(carat)，切工(cut)，颜色(color)和净度(clarity)和五个物理指标—深度(depth)，钻石宽度(table)，x，y，z。我们可以查看：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">head(diamonds)</span><br><span class="line"><span class="comment"># # A tibble: 6 x 10</span></span><br><span class="line"><span class="comment">#   carat cut       color clarity depth table price     x     y     z</span></span><br><span class="line"><span class="comment"># 1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43</span></span><br><span class="line"><span class="comment"># 2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31</span></span><br><span class="line"><span class="comment"># 3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31</span></span><br><span class="line"><span class="comment"># 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63</span></span><br><span class="line"><span class="comment"># 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75</span></span><br><span class="line"><span class="comment"># 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</span></span><br></pre></td></tr></table></figure><br>我们使用其子集<code>dsmall</code>来进行作图<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1410</span>)</span><br><span class="line">dsmall &lt;- diamonds[sample(nrow(diamonds),<span class="number">100</span>),]</span><br></pre></td></tr></table></figure></p>
+<h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><p>和plot类似，qplot的前两个参数是x和y，代表图中的x和y坐标，此外还有一个可选的data参数，如绘制散点图，展现钻石价格和重量之间的关系：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data=diamonds)</span><br></pre></td></tr></table></figure></p>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/1.png"/>
 </div>
 
-<p>我们看到变量之间有很强的相关性和一些异常值，关系似乎是指数相关，我们绘制log转化后的图：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(<span class="built_in">log</span>(carat), <span class="built_in">log</span>(price), data = diamonds)</span><br></pre></td></tr></table></figure>
+<p>我们看到变量之间有很强的相关性和一些异常值，关系似乎是指数相关，我们绘制log转化后的图：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(<span class="built_in">log</span>(carat), <span class="built_in">log</span>(price), data = diamonds)</span><br></pre></td></tr></table></figure></p>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/2.png"/>
 </div>
 
-<p>函数的参数可以时已有变量的组合，如钻石的体积(用x<em>y</em>z近似)和重量间的关系：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, x*y*z, data = diamonds)</span><br></pre></td></tr></table></figure>
+<p>函数的参数可以时已有变量的组合，如钻石的体积(用x<em>y</em>z近似)和重量间的关系：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, x*y*z, data = diamonds)</span><br></pre></td></tr></table></figure></p>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/3.png"/>
 </div>
 
-<h2 id="2-4-颜色，大小，形状和其他图形属性"><a href="#2-4-颜色，大小，形状和其他图形属性" class="headerlink" title="2.4 颜色，大小，形状和其他图形属性"></a>2.4 颜色，大小，形状和其他图形属性</h2><p>在plot中，用户需要将数据的分类变量转化为plot能理解的类型(如”red”,”yellow”,”green”)，qplot可以自动完成并生成图例：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat,price,data = dsmall, colour = color,shape = cut)</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-颜色，大小，形状和其他图形属性"><a href="#2-4-颜色，大小，形状和其他图形属性" class="headerlink" title="2.4 颜色，大小，形状和其他图形属性"></a>2.4 颜色，大小，形状和其他图形属性</h2><p>在plot中，用户需要将数据的分类变量转化为plot能理解的类型(如”red”,”yellow”,”green”)，qplot可以自动完成并生成图例：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat,price,data = dsmall, colour = color,shape = cut)</span><br></pre></td></tr></table></figure></p>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/4.png"/>
 </div>
@@ -256,7 +249,8 @@ ga('send', 'pageview');
 - `geom = "histogram"`，绘制直方图，"density"则为密度图，"freqpoly"为频率多边形
 - `geom = "bar"`,绘制条形图 
 
-<h3 id="2-5-1-图中添加平滑曲线"><a href="#2-5-1-图中添加平滑曲线" class="headerlink" title="2.5.1 图中添加平滑曲线"></a>2.5.1 图中添加平滑曲线</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data = dsmall, geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>))</span><br></pre></td></tr></table></figure>
+### 2.5.1 图中添加平滑曲线
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qplot(carat, price, data = dsmall, geom = <span class="built_in">c</span>(<span class="string">&quot;point&quot;</span>,<span class="string">&quot;smooth&quot;</span>))</span><br></pre></td></tr></table></figure>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/5.png"/>
 </div>
@@ -278,7 +272,9 @@ ga('send', 'pageview');
 </div>
 可以看出来失业率和事业时间是高度相关的。
 
-<h2 id="2-6-分面"><a href="#2-6-分面" class="headerlink" title="2.6 分面"></a>2.6 分面</h2><p>分面将数据分割成若干子集，然后创建一个图形矩阵，将每一个子集绘制到图形矩阵的窗格中，所有子图采用相同的图形类型，并进行了一定的设计，使得它们之间易于比较。<br>qplot()默认的分面方法是将图形拆分为若干窗格，可通过形如<code>row_var ~ col_var</code>的表达式指定。如果只想指定一行或者一列，可以使用<code>.</code>作占位符，如<code>row_var ~ .</code>，会创建一个单列多行的图形矩阵。</p>
+## 2.6 分面
+分面将数据分割成若干子集，然后创建一个图形矩阵，将每一个子集绘制到图形矩阵的窗格中，所有子图采用相同的图形类型，并进行了一定的设计，使得它们之间易于比较。
+qplot()默认的分面方法是将图形拆分为若干窗格，可通过形如`row_var ~ col_var`的表达式指定。如果只想指定一行或者一列，可以使用`.`作占位符，如`row_var ~ .`，会创建一个单列多行的图形矩阵。
 <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 以颜色为条件的比例直方图</span></span><br><span class="line"><span class="comment">## ..density.. 告诉ggplot2将密度而不是频数映射到y轴</span></span><br><span class="line">qplot(carat, ..density.., data = diamonds, facets =  color ~ .,geom = <span class="string">&quot;histogram&quot;</span>,binwidth = <span class="number">0.1</span>, xlim = <span class="built_in">c</span>(<span class="number">0</span>,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/ggplot/%E4%B8%80/8.png"/>

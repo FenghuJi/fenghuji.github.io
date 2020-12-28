@@ -204,7 +204,6 @@ ga('send', 'pageview');
       <h3 id="购买VPS"><a href="#购买VPS" class="headerlink" title="购买VPS"></a>购买VPS</h3><p>VPS的购买有以下选择，根据个人体会，认为搬瓦工的KVM框架较快，但搬瓦工现在的套餐较为昂贵，Host US的KVM也较为昂贵，同于需要注意的是OVZ框架提供了多个IPv6地址。当前风声较紧的情况下，我推荐的VPS为HostUS的OVZ框架，16刀每年。   </p>
 <p>具体购买与前期准备请参考：<a target="_blank" rel="noopener" href="https://my.oschina.net/u/3743915/blog/1586615">使用搬瓦工bandwagonhost VPS安装Shadowsocks Server 完全指南</a>的前半部分。   </p>
 <a id="more"></a>
-
 <p>关于OVZ和KVM框架请参考本文最后一部分。</p>
 <h3 id="安装pip"><a href="#安装pip" class="headerlink" title="安装pip"></a>安装pip</h3><p><a target="_blank" rel="noopener" href="https://pip.pypa.io/en/stable/installing/">pip</a>是 python 的包管理工具。在本文中将使用 python 版本的 shadowsocks，此版本的 shadowsocks 已发布到 pip 上，因此我们需要通过 pip 命令来安装。   </p>
 <p>在控制台执行以下命令安装 pip：   </p>
@@ -214,15 +213,11 @@ ga('send', 'pageview');
 <h3 id="创建配置文件"><a href="#创建配置文件" class="headerlink" title="创建配置文件"></a>创建配置文件</h3><ul>
 <li><p>使用IPv4</p>
 <figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</span><br><span class="line">    &quot;server_port&quot;: 443,</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;passwd&quot;,</span><br><span class="line">    &quot;timeout&quot;:300,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 </li>
 </ul>
 <ul>
 <li><p>使用IPv6</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;server&quot;:&quot;::&quot;,</span><br><span class="line">    &quot;server_port&quot;: 443,</span><br><span class="line">    &quot;local_address&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">    &quot;local_port&quot;:1080,</span><br><span class="line">    &quot;password&quot;:&quot;passwd&quot;,</span><br><span class="line">    &quot;timeout&quot;:300,</span><br><span class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;,</span><br><span class="line">    &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 </li>
 </ul>
 <h3 id="配置自启动"><a href="#配置自启动" class="headerlink" title="配置自启动"></a>配置自启动</h3><p>新建启动脚本文件<code>/etc/systemd/system/shadowsocks.service</code>，内容如下：</p>
@@ -243,8 +238,6 @@ ga('send', 'pageview');
 <p>c.国内国外都<code>ping</code>的通，考虑更换端口   </p>
 <p>d.<code>ping</code>命令：   </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Windows,Linux下 IPv4：ping</span><br><span class="line">Linux IPv6: ping6</span><br><span class="line">Windows IPv6: ping -6</span><br></pre></td></tr></table></figure>
-
-
 </li>
 </ol>
 <h3 id="Open-VZ-和-KVM"><a href="#Open-VZ-和-KVM" class="headerlink" title="Open VZ 和 KVM"></a>Open VZ 和 KVM</h3><p>服务器架构一般分OVZ和KVM，如何选择：   </p>
@@ -268,15 +261,12 @@ ga('send', 'pageview');
 </ul>
 <p><strong>窃以为KVM提供的BBR加速十分好用，OVZ提供的IPv6地址可以在IPv4被封时作为备用，具体选择看个人</strong>   </p>
 <h3 id="扩展链接："><a href="#扩展链接：" class="headerlink" title="扩展链接："></a>扩展链接：</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://blog.linuxeye.com/400.html">systemd 详解</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://github.com/tcp-nanqinlang">南琴浪BBR魔改</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://eveaz.com/1094.html">搬瓦工vps的IP被封(4) Cloudflare+V2Ray+Caddy+WebSocket+TLS</a></p>
-</li>
+<li><a target="_blank" rel="noopener" href="https://blog.linuxeye.com/400.html">systemd 详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/tcp-nanqinlang">南琴浪BBR魔改</a></li>
+<li><a target="_blank" rel="noopener" href="https://eveaz.com/1094.html">搬瓦工vps的IP被封(4) Cloudflare+V2Ray+Caddy+WebSocket+TLS</a></li>
 <li><p><a target="_blank" rel="noopener" href="https://my.oschina.net/u/3743915/blog/1586615">使用搬瓦工bandwagonhost VPS安装Shadowsocks Server 完全指南</a></p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://my.hostus.us/cart.php?a=confproduct&i=0">hostus $16/year 购买链接</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://my.hostus.us/cart.php?a=confproduct&amp;i=0">hostus $16/year 购买链接</a></p>
 </li>
 </ul>
 

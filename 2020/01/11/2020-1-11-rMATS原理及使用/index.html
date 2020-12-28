@@ -162,7 +162,7 @@ ga('send', 'pageview');
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">Posts List</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="toc-text">简单介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inclusion-Level%E7%9A%84%E8%AE%A1%E7%AE%97-Unpaired-Replicates"><span class="toc-text">Inclusion Level的计算(Unpaired Replicates)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inclusion-Level%E7%9A%84%E8%AE%A1%E7%AE%97-Paired-Replicates"><span class="toc-text">Inclusion Level的计算(Paired Replicates)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8F%AF%E5%8F%98%E5%89%AA%E5%88%87%E8%AE%A1%E7%AE%97"><span class="toc-text">其他类型的可变剪切计算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8"><span class="toc-text">软件使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%92%8C%E4%BE%9D%E8%B5%96"><span class="toc-text">下载和依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%8F%82%E6%95%B0"><span class="toc-text">使用参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6"><span class="toc-text">结果文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="toc-text">简单介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inclusion-Level%E7%9A%84%E8%AE%A1%E7%AE%97-Paired-Replicates"><span class="toc-text">Inclusion Level的计算(Paired Replicates)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8F%AF%E5%8F%98%E5%89%AA%E5%88%87%E8%AE%A1%E7%AE%97"><span class="toc-text">其他类型的可变剪切计算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8"><span class="toc-text">软件使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%92%8C%E4%BE%9D%E8%B5%96"><span class="toc-text">下载和依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%8F%82%E6%95%B0"><span class="toc-text">使用参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6"><span class="toc-text">结果文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
   </div>
 
 
@@ -227,8 +227,11 @@ $$
 |\Delta \psi|=\left|\psi_{i 1}-\psi_{i 2}\right|>5 \%
 $$
 
-<p>其中$ \psi $代表某个isoform的外显子inclusion level，含义类似于常规可变剪切的PSI。<br>这种检测相对于直接计算两组的数据均值是否相等（差值为0）具有更好的统计显著性，需要注意的是，rMATS考虑了可变剪切事件的长度并进行标准化，而且计算的$ \psi $很大程度上和比例类似。</p>
-<h2 id="Inclusion-Level的计算-Unpaired-Replicates"><a href="#Inclusion-Level的计算-Unpaired-Replicates" class="headerlink" title="Inclusion Level的计算(Unpaired Replicates)"></a>Inclusion Level的计算(Unpaired Replicates)</h2><p>我们以Skipped Exon的计算为例，针对下图</p>
+其中$ \psi $代表某个isoform的外显子inclusion level，含义类似于常规可变剪切的PSI。
+这种检测相对于直接计算两组的数据均值是否相等（差值为0）具有更好的统计显著性，需要注意的是，rMATS考虑了可变剪切事件的长度并进行标准化，而且计算的$ \psi $很大程度上和比例类似。
+
+## Inclusion Level的计算(Unpaired Replicates)
+我们以Skipped Exon的计算为例，针对下图
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/rmats/2.png"/>
 </div>
@@ -237,8 +240,17 @@ $$
 \hat{\psi}=\left(I / l_{I}\right) /\left(I / l_{I}+S / l_{S}\right)
 $$
 
-<p><strong>rMATS</strong>假设$I$对应的count服从二项分布，总read count $n = I+S$,有：<br>$$<br>I | \psi \sim \text { Binomial }\left(n=I+S, p=f(\psi)=\frac{l_{l} \psi}{l_{l} \psi+l_{S}(1-\psi)}\right)<br>$$<br>那么$ \psi $就受到read count的影响，inclusion isoforms是经过有效长度标准化过的。<br>在生物重复实验中，组1有$ M_1 $样本，组2有$ M_2 $样本，推导有：<br>$$<br>\operatorname{logit}\left(\psi_{i j k}\right) \sim \operatorname{Normal}\left(\mu=\operatorname{logit}\left(\psi_{i j}\right), \sigma^{2}=\sigma_{i j}^{2}\right)<br>$$</p>
-<p>上文即解释了rMATS对于生物重复的预估离散度或者说不确定性的估计（estimation uncertainty），使用<strong>likelihood-ratio test</strong>来计算两者的均值差是否超过阈值。一张图表示就是：</p>
+**rMATS**假设$I$对应的count服从二项分布，总read count $n = I+S$,有：
+$$
+I | \psi \sim \text { Binomial }\left(n=I+S, p=f(\psi)=\frac{l_{l} \psi}{l_{l} \psi+l_{S}(1-\psi)}\right)
+$$
+那么$ \psi $就受到read count的影响，inclusion isoforms是经过有效长度标准化过的。
+在生物重复实验中，组1有$ M_1 $样本，组2有$ M_2 $样本，推导有：
+$$
+\operatorname{logit}\left(\psi_{i j k}\right) \sim \operatorname{Normal}\left(\mu=\operatorname{logit}\left(\psi_{i j}\right), \sigma^{2}=\sigma_{i j}^{2}\right)
+$$
+
+上文即解释了rMATS对于生物重复的预估离散度或者说不确定性的估计（estimation uncertainty），使用**likelihood-ratio test**来计算两者的均值差是否超过阈值。一张图表示就是：
 <div style="text-align: center">
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/rmats/3.png"/>
 </div>
@@ -257,10 +269,7 @@ $$
 <img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/rmats/5.png"/>
 </div>
 
-<h2 id="软件使用"><a href="#软件使用" class="headerlink" title="软件使用"></a>软件使用</h2><p>具体使用参考<a href="%5Bhttps://www.bioinfo-scrounger.com/archives/346/%5D(https://www.bioinfo-scrounger.com/archives/346/)">rMATS差异可变剪切分析</a>这篇博文或者<a target="_blank" rel="noopener" href="http://rnaseq-mats.sourceforge.net/user_guide.htm">rMATS Document</a>。<br><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/rnaseq-mats/files/MATS/rMATS.4.0.1.tgz/download">下载网站</a>在这里，需要安装一些python库</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># For CentOS 6:</span></span><br><span class="line">pip install numpy</span><br><span class="line">yum install lapack-devel blas-devel</span><br><span class="line">yum install gsl-devel.x86_64</span><br><span class="line">yum install gcc-gfortran</span><br><span class="line"></span><br><span class="line"><span class="comment"># For Ubuntu 14:</span></span><br><span class="line">pip install numpy</span><br><span class="line">sudo apt-get install libblas-dev liblapack-dev</span><br><span class="line">sudo apt-get install libgsl0ldbl</span><br><span class="line">sudo apt-get install gfortran</span><br><span class="line"></span><br><span class="line"><span class="comment"># For Mac OS X Yosemite 10.10.5 (Using Homebrew for package management):</span></span><br><span class="line">brew install gcc@5</span><br><span class="line">brew install gsl</span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure>
-<p>新版rMATS下载解压后，你会发现有两个rmats.py执行脚本，这是由于rMATS v4.0.1 (turbo) was built with two different settings of Python interpreter，所以我们需要先测试下自己的系统支持那种，进入python，输入下述命令</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span> sys.maxunicode</span><br></pre></td></tr></table></figure>
+<h2 id="软件使用"><a href="#软件使用" class="headerlink" title="软件使用"></a>软件使用</h2><p>具体使用参考<a href="[https://www.bioinfo-scrounger.com/archives/346/](https://www.bioinfo-scrounger.com/archives/346/">rMATS差异可变剪切分析</a>)这篇博文或者<a target="_blank" rel="noopener" href="http://rnaseq-mats.sourceforge.net/user_guide.htm">rMATS Document</a>。<br><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/rnaseq-mats/files/MATS/rMATS.4.0.1.tgz/download">下载网站</a>在这里，需要安装一些python库<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># For CentOS 6:</span></span><br><span class="line">pip install numpy</span><br><span class="line">yum install lapack-devel blas-devel</span><br><span class="line">yum install gsl-devel.x86_64</span><br><span class="line">yum install gcc-gfortran</span><br><span class="line"></span><br><span class="line"><span class="comment"># For Ubuntu 14:</span></span><br><span class="line">pip install numpy</span><br><span class="line">sudo apt-get install libblas-dev liblapack-dev</span><br><span class="line">sudo apt-get install libgsl0ldbl</span><br><span class="line">sudo apt-get install gfortran</span><br><span class="line"></span><br><span class="line"><span class="comment"># For Mac OS X Yosemite 10.10.5 (Using Homebrew for package management):</span></span><br><span class="line">brew install gcc@5</span><br><span class="line">brew install gsl</span><br><span class="line">pip install numpy</span><br></pre></td></tr></table></figure><br>新版rMATS下载解压后，你会发现有两个rmats.py执行脚本，这是由于rMATS v4.0.1 (turbo) was built with two different settings of Python interpreter，所以我们需要先测试下自己的系统支持那种，进入python，输入下述命令<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span> sys.maxunicode</span><br></pre></td></tr></table></figure></p>
 <ul>
 <li>出现1114111则说明需要使用rMATS-turbo-Linux-UCS4文件夹下rmats.py</li>
 <li>出现65535则说明使用rMATS-turbo-Linux-UCS2文件夹下rmats.py</li>
@@ -274,8 +283,7 @@ $$
 <p>–b1 b1.txt 输入sample1的txt格式的文件，文件内以逗号分隔重复样本的bam文件名<br>–b2 b2.txt 输入sample2的txt格式的文件，文件内以逗号分隔重复样本的bam文件名<br>-t readType 双端测序则readType为paired，单端测序则为single<br>–readLength 测序reads的长度<br>–gtf gtfFile 需要输入的gtf文件<br>–od outDir 所有输出文件的路径（文件夹）<br>–nthread 设置线程数<br>–cstat 上文的阈值c，代表的是两个样本中inclusion level的差值，0.1表示两个样本中该可变剪切事件的inclusion level相差10%</p>
 </blockquote>
 <p>bam文件需要通过比对得到，对于RNA数据而言，STAR的2-pass Mode是比较好的。</p>
-<p>示例命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python rMATS-turbo-Linux-UCS4&#x2F;rmats.py --b1 b1.txt \</span><br><span class="line">--b2 b2.txt --gtf Homo_sapiens.Ensembl.GRCh37.72.gtf \</span><br><span class="line">--od AS -t paired --readLength 151 --cstat 0.0001 --nthread 10</span><br></pre></td></tr></table></figure>
+<p>示例命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python rMATS-turbo-Linux-UCS4&#x2F;rmats.py --b1 b1.txt \</span><br><span class="line">--b2 b2.txt --gtf Homo_sapiens.Ensembl.GRCh37.72.gtf \</span><br><span class="line">--od AS -t paired --readLength 151 --cstat 0.0001 --nthread 10</span><br></pre></td></tr></table></figure></p>
 <h3 id="结果文件"><a href="#结果文件" class="headerlink" title="结果文件"></a>结果文件</h3><p>rMATS的结果文件是以各个可变剪切事件的分布的，主要由AS_Event.MATS.JC.txt，AS_Event.MATS.JCEC.txt，fromGTF.AS_Event.txt，JC.raw.input.AS_Event.txt，JCEC.raw.input.AS_Event.txt这几类；其中JC和JCEC的区别在于前者计算中使用的长度是junction length，而后者考虑junction length 和exon length，但是我们一般使用JC的结果就够了（如果只是单纯的比较两组样品间可变剪切的差异的话）。具体的长度计算见上文的<code>其他类型的可变剪切计算</code>。</p>
 <p>下面几列信息比较重要：</p>
 <ul>
@@ -288,7 +296,7 @@ $$
 <li>IncLevelDifference ： average(IncLevel1) - average(IncLevel2)</li>
 </ul>
 <p>那实际上很多时候我们也就看看FDR，还有一些坐标信息有时候也是我们需要的。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="rMATS%E5%B7%AE%E5%BC%82%E5%8F%AF%E5%8F%98%E5%89%AA%E5%88%87%E5%88%86%E6%9E%90">rMATS差异可变剪切分析</a><br><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E9%80%89%E6%8B%A9%E6%80%A7%E5%89%AA%E6%8E%A5/3648412?fromtitle=%E5%8F%AF%E5%8F%98%E5%89%AA%E6%8E%A5&fromid=277930">可变剪切百度百科</a><br><a target="_blank" rel="noopener" href="https://www.ncbi.nlm.nih.gov/pubmed/25480548">文章原文及附件</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/98bb7a7d6077">使用rmats进行可变剪切的分析</a><br><a target="_blank" rel="noopener" href="http://rnaseq-mats.sourceforge.net/user_guide.htm">rMATS Document</a></p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="rMATS差异可变剪切分析">rMATS差异可变剪切分析</a><br><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E9%80%89%E6%8B%A9%E6%80%A7%E5%89%AA%E6%8E%A5/3648412?fromtitle=%E5%8F%AF%E5%8F%98%E5%89%AA%E6%8E%A5&amp;fromid=277930">可变剪切百度百科</a><br><a target="_blank" rel="noopener" href="https://www.ncbi.nlm.nih.gov/pubmed/25480548">文章原文及附件</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/98bb7a7d6077">使用rmats进行可变剪切的分析</a><br><a target="_blank" rel="noopener" href="http://rnaseq-mats.sourceforge.net/user_guide.htm">rMATS Document</a></p>
 
     
   </div>

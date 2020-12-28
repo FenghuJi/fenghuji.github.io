@@ -203,7 +203,6 @@ ga('send', 'pageview');
     
       <h2 id="情景"><a href="#情景" class="headerlink" title="情景"></a>情景</h2><p>实验室新配置了一台机器，一块固态硬盘和一块机械硬盘，在安装双系统的时候出现了许多问题，搞得十分崩溃，现记录一些出现的问题如下：<br><strong>目的：在固态硬盘上选取两个区域安装引导区，再划出150G用于ubuntu系统的安装。</strong><br><strong>具体的流程如下：</strong></p>
 <a id="more"></a>
-
 <h4 id="一、安装Windows"><a href="#一、安装Windows" class="headerlink" title="一、安装Windows"></a>一、安装Windows</h4><p>1.制作系统盘，使用<code>ultraiso</code>制作<br>2.插入电脑，开机按F2，选择boot顺序，以U盘启动盘启动<br>3.安装Windows<br>4.安装必要的软件<br>5.<code>Win+X</code>，选择磁盘，分出150G空间用于ubuntu的安装   </p>
 <h4 id="二、安装ubuntu（实际上此次我安装的是linux-mint）"><a href="#二、安装ubuntu（实际上此次我安装的是linux-mint）" class="headerlink" title="二、安装ubuntu（实际上此次我安装的是linux mint）"></a>二、安装ubuntu（实际上此次我安装的是linux mint）</h4><p>1.制作系统盘：安装过程中，使用了ultraiso等多种系统盘制作软件，但都不能使用，最后使用了rufus制作，选择8192的块大小并选择bios或uefi的系统盘制作方式。<br>使用<code>rufus</code>制作的系统盘在分区的时候会多出来一个EFI分区选项，这个分区用于boot，这个很关键，其余的软件都不行，都不能实现uefi双boot选项的目的。<br>2.安装ubuntu，进行ubuntu安装选项，选择分区。<br>在分区过程的细节如下：<br>分出500M，主分区，作为<code>EFI分区</code>，这个区域用于boot<br>分出30G，逻辑分区，挂载<code>/</code><br>剩余空间，逻辑分区，挂在<code>/home</code>   </p>
 <h6 id="为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）"><a href="#为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）" class="headerlink" title="为什么不分出swap：（据师兄说，swap分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）"></a>为什么不分出<code>swap</code>：（据师兄说，<code>swap</code>分区在内存用完的时候才会使用，一般用在server，如果是PC不必要设置，因为用到swap的时候电脑都会卡死不动，不如不设置直接让任务终止）</h6><p>开始安装，断网，如未断网，在下载时及时skip以节约时间。   </p>

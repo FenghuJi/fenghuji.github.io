@@ -15,12 +15,12 @@
     <meta name="keywords" content="Statistics," />
   
 
-  <meta name="description" content="数学中的常见的距离公式欧氏距离最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x &#x3D; (x_1,…,x_n)$ 和 $y &#x3D; (y_1,…,y_n) $之间的距离为：$$d(x, y):&#x3D;\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-">
+  <meta name="description" content="数学中的常见的距离公式欧氏距离最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x &#x3D; (x_1,…,x_n)$ 和 $y &#x3D; (y_1,…,y_n) $之间的距离为：  d(x, y):&#x3D;\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="距离度量和Beta多样性">
 <meta property="og:url" content="https://fenghuji.github.io/2019/12/18/distance/index.html">
 <meta property="og:site_name" content="Hugo&#39;s Note">
-<meta property="og:description" content="数学中的常见的距离公式欧氏距离最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x &#x3D; (x_1,…,x_n)$ 和 $y &#x3D; (y_1,…,y_n) $之间的距离为：$$d(x, y):&#x3D;\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-">
+<meta property="og:description" content="数学中的常见的距离公式欧氏距离最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x &#x3D; (x_1,…,x_n)$ 和 $y &#x3D; (y_1,…,y_n) $之间的距离为：  d(x, y):&#x3D;\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Math/chebyshev.svg">
 <meta property="article:published_time" content="2019-12-17T16:00:00.000Z">
@@ -203,15 +203,23 @@ ga('send', 'pageview');
 
   <div class="article-content">
     
-      <h2 id="数学中的常见的距离公式"><a href="#数学中的常见的距离公式" class="headerlink" title="数学中的常见的距离公式"></a>数学中的常见的距离公式</h2><h3 id="欧氏距离"><a href="#欧氏距离" class="headerlink" title="欧氏距离"></a>欧氏距离</h3><p>最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x = (x_1,…,x_n)$ 和 $y = (y_1,…,y_n) $之间的距离为：<br>$$<br>d(x, y):=\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-y_{n}\right)^{2}}=\sqrt{\sum_{i=1}^{n}\left(x_{i}-y_{i}\right)^{2}}<br>$$</p>
-<h3 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h3><p>我们可以定义曼哈顿距离的正式意义为L1-距离或城市区块距离，也就是在欧几里得空间的固定直角坐标系上两点所形成的线段对轴产生的投影的距离总和。例如在平面上，坐标（x1, y1）的点P1与坐标（x2, y2）的点P2的曼哈顿距离为：$|x_1-x_2|+|y_1-y_2|$，要注意的是，曼哈顿距离依赖座标系统的转度，而非系统在座标轴上的平移或映射。<br>两个n维向量a$(x_{11},x_{12},…,x_{1n})$与 b$(x_{21},x_{22},…,x_{2n})$间的曼哈顿距离<br>$$<br>d_{12}=\sum_{i=1}^{k}|x_{ik}-x_{2k}|<br>$$</p>
-<h3 id="切比雪夫距离"><a href="#切比雪夫距离" class="headerlink" title="切比雪夫距离"></a>切比雪夫距离</h3><p>若二个向量或二个点$p$ 、$q$，其座标分别为$p_i$和$q_i$，则两者之间的切比雪夫距离定义如下：</p>
-<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Math/chebyshev.svg"></p>
-<h3 id="夹角余弦-Cosine"><a href="#夹角余弦-Cosine" class="headerlink" title="夹角余弦(Cosine)"></a>夹角余弦(Cosine)</h3><p>$$<br>cos（\theta）= \frac{a·b}{|a||b|}<br>$$<br>夹角余弦取值范围为[-1,1]。夹角余弦越大表示两个向量的夹角越小，夹角余弦越小表示两向量的夹角越大。当两个向量的方向重合时夹角余弦取最大值1，当两个向量的方向完全相反夹角余弦取最小值-1。</p>
-<h3 id="Hellinger距离"><a href="#Hellinger距离" class="headerlink" title="Hellinger距离"></a>Hellinger距离</h3><p>在概率论和统计理论中，Hellinger距离被用来度量两个概率分布的相似度。它是f散度的一种（f散度——度量两个概率分布相似度的指标）。Hellinger距离被定义成Hellinger积分的形式，这种形式由<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Ernst_Hellinger" title="Ernst Hellinger">Ernst Hellinger</a>在1909年引进。<br>为了从度量理论的角度定义Hellinger距离，我们假设P和Q是两个概率测度，并且它们对于第三个概率测度λ来说是绝对连续的，则P和Q的Hellinger距离的平方被定义如下：<br>$$<br>H^{2}(P, Q)=\frac{1}{2} \int(\sqrt{\frac{d P}{d \lambda}}-\sqrt{\frac{d Q}{d \lambda}})^{2} d \lambda<br>$$<br>这里的<em>dP</em> / <em>dλ</em> 和 <em>dQ</em> / <em>d</em>λ分别是P和Q的<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Radon%E2%80%93Nikodym_derivative" title="Radon–Nikodym derivative">Radon–Nikodym</a>微分。这里的定义是与λ无关的，因此当我们用另外一个概率测度替换λ时，只要P和Q关于它绝对连续，那么上式就不变。为了简单起见，我们通常把上式改写为：<br>$$<br>H^{2}(P, Q)=\frac{1}{2} \int(\sqrt{dP}-\sqrt{dQ})^{2}<br>$$</p>
-<h3 id="Kullback-Leibler-divergence"><a href="#Kullback-Leibler-divergence" class="headerlink" title="Kullback-Leibler divergence"></a>Kullback-Leibler divergence</h3><p>KL散度（Kullback-Leibler divergence，简称KLD）在信息系统中称为相对熵（relative entropy），在连续时间序列中称为随机性（randomness），在统计模型推断中称为信息增益（information gain）。也称信息散度（information divergence）。</p>
+      <h2 id="数学中的常见的距离公式"><a href="#数学中的常见的距离公式" class="headerlink" title="数学中的常见的距离公式"></a>数学中的常见的距离公式</h2><h3 id="欧氏距离"><a href="#欧氏距离" class="headerlink" title="欧氏距离"></a>欧氏距离</h3><p>最常见的两点之间或多点之间的距离表示法，又称之为欧几里得度量，它定义于欧几里得空间中，如点 $x = (x_1,…,x_n)$ 和 $y = (y_1,…,y_n) $之间的距离为：</p>
+<script type="math/tex; mode=display">
+d(x, y):=\sqrt{\left(x_{1}-y_{1}\right)^{2}+\left(x_{2}-y_{2}\right)^{2}+\cdots+\left(x_{n}-y_{n}\right)^{2}}=\sqrt{\sum_{i=1}^{n}\left(x_{i}-y_{i}\right)^{2}}</script><h3 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h3><p>我们可以定义曼哈顿距离的正式意义为L1-距离或城市区块距离，也就是在欧几里得空间的固定直角坐标系上两点所形成的线段对轴产生的投影的距离总和。例如在平面上，坐标（x1, y1）的点P1与坐标（x2, y2）的点P2的曼哈顿距离为：$|x_1-x_2|+|y_1-y_2|$，要注意的是，曼哈顿距离依赖座标系统的转度，而非系统在座标轴上的平移或映射。<br>两个n维向量a$(x_{11},x_{12},…,x_{1n})$与 b$(x_{21},x_{22},…,x_{2n})$间的曼哈顿距离 </p>
+<script type="math/tex; mode=display">
+d_{12}=\sum_{i=1}^{k}|x_{ik}-x_{2k}|</script><h3 id="切比雪夫距离"><a href="#切比雪夫距离" class="headerlink" title="切比雪夫距离"></a>切比雪夫距离</h3><p>若二个向量或二个点$p$ 、$q$，其座标分别为$p_i$和$q_i$，则两者之间的切比雪夫距离定义如下：</p>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Math/chebyshev.svg" alt=""></p>
+<h3 id="夹角余弦-Cosine"><a href="#夹角余弦-Cosine" class="headerlink" title="夹角余弦(Cosine)"></a>夹角余弦(Cosine)</h3><script type="math/tex; mode=display">
+cos（\theta）= \frac{a·b}{|a||b|}</script><p>夹角余弦取值范围为[-1,1]。夹角余弦越大表示两个向量的夹角越小，夹角余弦越小表示两向量的夹角越大。当两个向量的方向重合时夹角余弦取最大值1，当两个向量的方向完全相反夹角余弦取最小值-1。</p>
+<h3 id="Hellinger距离"><a href="#Hellinger距离" class="headerlink" title="Hellinger距离"></a>Hellinger距离</h3><p>在概率论和统计理论中，Hellinger距离被用来度量两个概率分布的相似度。它是f散度的一种（f散度——度量两个概率分布相似度的指标）。Hellinger距离被定义成Hellinger积分的形式，这种形式由<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Ernst_Hellinger" title="Ernst Hellinger">Ernst Hellinger</a>在1909年引进。<br>为了从度量理论的角度定义Hellinger距离，我们假设P和Q是两个概率测度，并且它们对于第三个概率测度λ来说是绝对连续的，则P和Q的Hellinger距离的平方被定义如下：</p>
+<script type="math/tex; mode=display">
+H^{2}(P, Q)=\frac{1}{2} \int(\sqrt{\frac{d P}{d \lambda}}-\sqrt{\frac{d Q}{d \lambda}})^{2} d \lambda</script><p>这里的<em>dP</em> / <em>dλ</em> 和 <em>dQ</em> / <em>d</em>λ分别是P和Q的<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Radon%E2%80%93Nikodym_derivative" title="Radon–Nikodym derivative">Radon–Nikodym</a>微分。这里的定义是与λ无关的，因此当我们用另外一个概率测度替换λ时，只要P和Q关于它绝对连续，那么上式就不变。为了简单起见，我们通常把上式改写为：</p>
+<script type="math/tex; mode=display">
+H^{2}(P, Q)=\frac{1}{2} \int(\sqrt{dP}-\sqrt{dQ})^{2}</script><h3 id="Kullback-Leibler-divergence"><a href="#Kullback-Leibler-divergence" class="headerlink" title="Kullback-Leibler divergence"></a>Kullback-Leibler divergence</h3><p>KL散度（Kullback-Leibler divergence，简称KLD）在信息系统中称为相对熵（relative entropy），在连续时间序列中称为随机性（randomness），在统计模型推断中称为信息增益（information gain）。也称信息散度（information divergence）。</p>
 <p>KL散度是两个概率分布P和Q差别的非对称性的度量。 KL散度是用来度量使用基于Q的分布来编码服从P的分布的样本所需的额外的平均比特数。典型情况下，P表示数据的真实分布，Q表示数据的理论分布、估计的模型分布、或P的近似分布。</p>
-<p>对于离散随机变量”，其概率分布<em>P</em> 和 <em>Q</em>的KL散度可按下式定义为:<br>$$<br>D_{KL}(P||Q)= - \sum P_{(i)}ln\frac{Q(i)}{P(i)} =  \sum P_{(i)}ln\frac{P(i)}{Q(i)}<br>$$<br>对于连续随机变量，其概率分布<em>P</em>和<em>Q</em>可按积分方式定义</p>
+<p>对于离散随机变量”，其概率分布<em>P</em> 和 <em>Q</em>的KL散度可按下式定义为:</p>
+<script type="math/tex; mode=display">
+D_{KL}(P||Q)= - \sum P_{(i)}ln\frac{Q(i)}{P(i)} =  \sum P_{(i)}ln\frac{P(i)}{Q(i)}</script><p>对于连续随机变量，其概率分布<em>P</em>和<em>Q</em>可按积分方式定义</p>
 <h2 id="β-多样性"><a href="#β-多样性" class="headerlink" title="β 多样性"></a>β 多样性</h2><p>α多样性是群集内的物种歧异程度，而  β多样性则是群集间的物种歧异程度。β多样性常用于描述群集在不同环境或干扰前后的差异，群集随时间或其他环境因子的梯度变化，或是检验样本间的重复性。由于微生物研究涉及很多样本和物种，在计算样本间的  β多样性后，通常会以PCA、PCoA、NMDS等排序方法进一步分析并绘图呈现以利理解。这些研究项目意在厘清外在因素对群集结构的影响，所以良好的指标有助于研究者从观察中发现模式，继而提出假说并检验之。</p>
 <p>尽管可以利用不同群集的  α多样性差异作为β多样性指标，但此指标无法忠实呈现群集间的组成差异。以两个由不同物种组成的群集为例，假设两者的richness和evenness一致，此时α多样性的差异为0 ，这结果只能表示两个群集的物种数和物种的均匀程度相同，无法区别两群集的物种类型或是亲缘关系。因此，过往的研究者已针对不同的特征和研究需求发展出多种 β多样性指标。  </p>
 <p>良好的β多样性指标要能直观地反映群集的组成差异，尽管相异指标侧重的群集特征各异，对于同笔资料也许有不同的诠释，可是这些指标至少要能呈现理想的测试资料的差异。例如在两相等的群集（物种类型、数量、均匀皆同）的任一者添加新个体必然会扩大两者组成差异，若指标能通过这样测试，代表该指标具有monotonicity特性。另一项特性density invariance表示指标只与物种的相对数量有关，不因群集规模而异，故能泛用不同尺度的环境中。</p>
@@ -222,9 +230,11 @@ ga('send', 'pageview');
 <li>Unweighted UniFrac : 距离是基于物种（即OTUs）系统发生树进行计算的样本间的距离，只考虑了物种的有无。</li>
 <li>Weighted UniFrac   : 距离是结合OTUs的丰度信息和物种系统发生树的信息来获得的样本间的距离。</li>
 </ul>
-<h3 id="Jaccard-index-amp-Sorensen–Dice-coefficient"><a href="#Jaccard-index-amp-Sorensen–Dice-coefficient" class="headerlink" title="Jaccard index &amp; Sørensen–Dice coefficient"></a>Jaccard index &amp; Sørensen–Dice coefficient</h3><p>$$<br>Jaccard\ index:\quad \frac{S_{12}}{S_1+S_2-S_{12}}<br>$$<br>$$<br>Sørensen–Dice\ coefficient:\quad \frac{2S_{12}}{S_1+S_2}<br>$$<br>$S_{1}$:群集1的物种数<br>$S_{2}$:群集2的物种数<br>$S_{12}$:群集1和群集2共有的物种数<br>量度β多样性的基本方法就是比较两群集共有物种的数量，共有物种数量愈多，两群集的相似性愈高。Jaccard index计算两群集物种交集和联集的比值， Sørensen–Dice coefficient则是共有物种数与两群集平均物种数的比值，皆只需定性资料。虽然此处以两群集为例，Jaccard index和Sørensen–Dice coefficient都能推广成计算多群集的β多样性指标</p>
-<h3 id="Bray–Curtis-similarity"><a href="#Bray–Curtis-similarity" class="headerlink" title="Bray–Curtis similarity"></a>Bray–Curtis similarity</h3><p>$$<br>S_{BC}=\frac{2\sum_{i=1}^Smin(M_{i1},M_{i2})}{\sum_{i=1}^S(M_{i1}+M_{i2})}=1-\frac{\sum_{i=1}^S|M_{i1}-M_{i2}|}{\sum_{i=1}^S(M_{i1}+M_{i2})}<br>$$</p>
-<blockquote>
+<h3 id="Jaccard-index-amp-Sorensen–Dice-coefficient"><a href="#Jaccard-index-amp-Sorensen–Dice-coefficient" class="headerlink" title="Jaccard index &amp; Sørensen–Dice coefficient"></a>Jaccard index &amp; Sørensen–Dice coefficient</h3><script type="math/tex; mode=display">
+Jaccard\ index:\quad \frac{S_{12}}{S_1+S_2-S_{12}}</script><script type="math/tex; mode=display">
+Sørensen–Dice\ coefficient:\quad \frac{2S_{12}}{S_1+S_2}</script><p>$S_{1}$:群集1的物种数<br>$S_{2}$:群集2的物种数<br>$S_{12}$:群集1和群集2共有的物种数<br>量度β多样性的基本方法就是比较两群集共有物种的数量，共有物种数量愈多，两群集的相似性愈高。Jaccard index计算两群集物种交集和联集的比值， Sørensen–Dice coefficient则是共有物种数与两群集平均物种数的比值，皆只需定性资料。虽然此处以两群集为例，Jaccard index和Sørensen–Dice coefficient都能推广成计算多群集的β多样性指标</p>
+<h3 id="Bray–Curtis-similarity"><a href="#Bray–Curtis-similarity" class="headerlink" title="Bray–Curtis similarity"></a>Bray–Curtis similarity</h3><script type="math/tex; mode=display">
+S_{BC}=\frac{2\sum_{i=1}^Smin(M_{i1},M_{i2})}{\sum_{i=1}^S(M_{i1}+M_{i2})}=1-\frac{\sum_{i=1}^S|M_{i1}-M_{i2}|}{\sum_{i=1}^S(M_{i1}+M_{i2})}</script><blockquote>
 <p>$S$:两群集合并后的物种数<br>$M_{i1}$:第i 种物种在群集1 的数量<br>$M_{i1}$:第i 种物种在群集2 的数量<br>$min(M_{i1},M_{i2})$:两群集第i 个物种共有的个体数。<br>$\sum_{i=1}^Smin(M_{i1},M_{i2})$:两群集各物种共有的个体数之和<br>$\sum_{i=1}^S(M_{i1}+M_{i2})$:两群集合并后的个体总数</p>
 </blockquote>
 <p>Bray-Curtis similarity 是Sørensen–Dice coefficient 的延伸，其含义为物种共有的个体数与两群集规模平均的比值，不仅考量物种组成也采计了各物种的数量。当两群集各自的物种分布皆完全均匀的时候，Bray-Curtis dissimilarity 可简化为Sørensen index，所以Bray-Curtis dissimilarity 又称为quantitative Sørensen index。</p>
@@ -233,12 +243,13 @@ ga('send', 'pageview');
 <li>两群集没有共同物种，因此公式的分子为0 。</li>
 <li>两群集规模差距相当大，导致指标的分母极大，分子极小。</li>
 </ul>
-<h3 id="UniFrac"><a href="#UniFrac" class="headerlink" title="UniFrac"></a>UniFrac</h3><h4 id="unweighted-UniFrac-distance"><a href="#unweighted-UniFrac-distance" class="headerlink" title="unweighted UniFrac distance"></a>unweighted UniFrac distance</h4><p>UniFrac的全名为Unique Fraction，即特定群集在系统发生树上独占节点的比率，独占的比率愈高，群集间的重叠愈少，β多样性也愈高。由于公式中计入了系统发生树上的枝长，因此UniFrac是评估群集间物种亲缘关系的多样性指标。而UniFrac又根据是否采计族群规模分为没采计的unweighted UniFrac distance和有采计的weighted UniFrac distance 计算多样本间的unweighted UniFrac distance的流程是：<br>$$<br>U_{uw}= \frac{\sum_{i=1}^{N} l_i | A_i - B_i |} {\sum_{i=1}^{N} l_i \max(A_i, B_i)}=\frac{unique}{observed}<br>$$</p>
-<blockquote>
+<h3 id="UniFrac"><a href="#UniFrac" class="headerlink" title="UniFrac"></a>UniFrac</h3><h4 id="unweighted-UniFrac-distance"><a href="#unweighted-UniFrac-distance" class="headerlink" title="unweighted UniFrac distance"></a>unweighted UniFrac distance</h4><p>UniFrac的全名为Unique Fraction，即特定群集在系统发生树上独占节点的比率，独占的比率愈高，群集间的重叠愈少，β多样性也愈高。由于公式中计入了系统发生树上的枝长，因此UniFrac是评估群集间物种亲缘关系的多样性指标。而UniFrac又根据是否采计族群规模分为没采计的unweighted UniFrac distance和有采计的weighted UniFrac distance 计算多样本间的unweighted UniFrac distance的流程是：</p>
+<script type="math/tex; mode=display">
+U_{uw}= \frac{\sum_{i=1}^{N} l_i | A_i - B_i |} {\sum_{i=1}^{N} l_i \max(A_i, B_i)}=\frac{unique}{observed}</script><blockquote>
 <p>$observed$:系统发生树上仅含有于两群集之一的枝长和<br>$N$:系统发生树的节点数l<br>$l_i$:第i节点与母节点的距离<br>$A_i$:第i节点含有源于样本A的物种则数值为1 ，反之为0<br>$B_i$:第i节点含有源于样本B的物种则数值为1 ，反之为0 </p>
 </blockquote>
-<h4 id="weighted-UniFrac-distance"><a href="#weighted-UniFrac-distance" class="headerlink" title="weighted UniFrac distance"></a>weighted UniFrac distance</h4><p>$$<br>u=\sum_{i}^{n} b_{i} \times\left|\frac{A_{i}}{A_{T}}-\frac{B_{i}}{B_{T}}\right|<br>$$</p>
-<blockquote>
+<h4 id="weighted-UniFrac-distance"><a href="#weighted-UniFrac-distance" class="headerlink" title="weighted UniFrac distance"></a>weighted UniFrac distance</h4><script type="math/tex; mode=display">
+u=\sum_{i}^{n} b_{i} \times\left|\frac{A_{i}}{A_{T}}-\frac{B_{i}}{B_{T}}\right|</script><blockquote>
 <p>$N$ : 为树中的所有分支<br>$b_{i}$ : 分支i的长度<br>$A_{i}$和$B_{i}$: 样本A和B中来源分支i序列数<br>$A_{T}$和$B_{T}$: 样本A和B中的序列数</p>
 </blockquote>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://summer-inequality.blogspot.com/2019/02/beta-diversity.html">微生物多样性分析｜β 多样性（beta diversity）的含意与指标</a></p>

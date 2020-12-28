@@ -221,7 +221,7 @@ ga('send', 'pageview');
 </ul>
 <h3 id="3-1-gt-向右操作符-forward-pipe-operator"><a href="#3-1-gt-向右操作符-forward-pipe-operator" class="headerlink" title="3.1 %&gt;% 向右操作符(forward-pipe operator)"></a>3.1 %&gt;% 向右操作符(forward-pipe operator)</h3><p>%&gt;%是最常用的一个操作符，就是把左侧准备的数据或表达式，传递给右侧的函数调用或表达式进行运行，可以连续操作就像一个链条一样。</p>
 <p>现实原理如下图所示，使用%&gt;%把左侧的程序的数据集A传递右侧程序的B函数，B函数的结果数据集再向右侧传递给C函数，最后完成数据计算。</p>
-<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/1.png"></p>
+<p><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/1.png" alt=""></p>
 <p>假定任务为：</p>
 <blockquote>
 <ul>
@@ -232,11 +232,9 @@ ga('send', 'pageview');
 <li>把结果除以7求余数，并话出余数的直方图。</li>
 </ul>
 </blockquote>
-<p>使用向右操作符<code>%&gt;%</code>的代码为：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1</span>)</span><br><span class="line">rnorm(<span class="number">10000</span>) %&gt;% </span><br><span class="line"> <span class="built_in">abs</span> %&gt;% `*` (<span class="number">50</span>) %&gt;%</span><br><span class="line"> matrix(ncol=<span class="number">100</span>) %&gt;%</span><br><span class="line"> rowMeans %&gt;% <span class="built_in">round</span> %&gt;%</span><br><span class="line"> `%%`(<span class="number">7</span>) %&gt;% hist</span><br></pre></td></tr></table></figure>
-<p>输出为：<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/2.png"></p>
+<p>使用向右操作符<code>%&gt;%</code>的代码为：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1</span>)</span><br><span class="line">rnorm(<span class="number">10000</span>) %&gt;% </span><br><span class="line"> <span class="built_in">abs</span> %&gt;% `*` (<span class="number">50</span>) %&gt;%</span><br><span class="line"> matrix(ncol=<span class="number">100</span>) %&gt;%</span><br><span class="line"> rowMeans %&gt;% <span class="built_in">round</span> %&gt;%</span><br><span class="line"> `%%`(<span class="number">7</span>) %&gt;% hist</span><br></pre></td></tr></table></figure><br>输出为：<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/2.png" alt=""></p>
 <h3 id="3-2-T-gt-向左操作符-tee-operator"><a href="#3-2-T-gt-向左操作符-tee-operator" class="headerlink" title="3.2 %T&gt;% 向左操作符(tee operator)"></a>3.2 %T&gt;% 向左操作符(tee operator)</h3><p>%T&gt;%向左操作符，其实功能和 %&gt;% 基本是一样的，只不过它是把左边的值做为传递的值，而不是右边的值。这种情况的使用场景也是很多的，比如，你在数据处理的中间过程，需要打印输出或图片输出，这时整个过程就会被中断，用向左操作符，就可以解决这样的问题。</p>
-<p>现实原理如下图所示，使用%T&gt;%把左侧的程序的数据集A传递右侧程序的B函数，，B函数的结果数据集不再向右侧传递，而是把B左侧的A数据集再次向右传递给C函数，最后完成数据计算。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/3.png"><br>修改上例的需求为：</p>
+<p>现实原理如下图所示，使用%T&gt;%把左侧的程序的数据集A传递右侧程序的B函数，，B函数的结果数据集不再向右侧传递，而是把B左侧的A数据集再次向右传递给C函数，最后完成数据计算。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/3.png" alt=""><br>修改上例的需求为：</p>
 <blockquote>
 <ul>
 <li>取10000个随机数符合，符合正态分布。</li>
@@ -247,132 +245,131 @@ ga('send', 'pageview');
 <li>对余数求和</li>
 </ul>
 </blockquote>
-<p>代码为：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10000</span>) %&gt;%</span><br><span class="line"><span class="built_in">abs</span> %&gt;% `*` (<span class="number">50</span>)  %&gt;%</span><br><span class="line">matrix(ncol=<span class="number">100</span>)  %&gt;%</span><br><span class="line">rowMeans %&gt;% <span class="built_in">round</span> %&gt;% </span><br><span class="line">`%%`(<span class="number">7</span>) %T&gt;% hist %&gt;% <span class="built_in">sum</span></span><br><span class="line"><span class="comment"># [1] 292</span></span><br></pre></td></tr></table></figure>
+<p>代码为：<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10000</span>) %&gt;%</span><br><span class="line"><span class="built_in">abs</span> %&gt;% `*` (<span class="number">50</span>)  %&gt;%</span><br><span class="line">matrix(ncol=<span class="number">100</span>)  %&gt;%</span><br><span class="line">rowMeans %&gt;% <span class="built_in">round</span> %&gt;% </span><br><span class="line">`%%`(<span class="number">7</span>) %T&gt;% hist %&gt;% <span class="built_in">sum</span></span><br><span class="line"><span class="comment"># [1] 292</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="3-3-解释操作符-exposition-pipe-operator"><a href="#3-3-解释操作符-exposition-pipe-operator" class="headerlink" title="3.3 %$% 解释操作符(exposition pipe-operator)"></a>3.3 %$% 解释操作符(exposition pipe-operator)</h3><p>%$% 的作用是把左侧数据的属性名传给右侧，让右侧的调用函数直接通过名字，就可以获取左侧的数据。比如，我们获得一个data.frame类型的数据集，通过使用 %$%，在右侧的函数中可以直接使用列名操作数据。</p>
-<p>现实原理如下图所示，使用%$%把左侧的程序的数据集A传递右侧程序的B函数，同时传递数据集A的属性名，作为B函数的内部变量方便对A数据集进行处理，最后完成数据计算。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/4.png"></p>
-<p>定义一个3列10行的data.frame，列名分别为x,y,z，获取x列大于5的数据集。使用 %$% 把列名x直接传到右侧进行判断。这里.代表左侧的完整数据对象。一行代码就实现了需求，而且这里不需要显示的定义中间变量。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1</span>)</span><br><span class="line">data.frame(x=<span class="number">1</span>:<span class="number">10</span>,y=rnorm(<span class="number">10</span>),z=<span class="built_in">letters</span>[<span class="number">1</span>:<span class="number">10</span>]) %$% .[which(x&gt;<span class="number">5</span>),]</span><br><span class="line"><span class="comment">#     x          y z</span></span><br><span class="line"><span class="comment"># 6   6 -0.8204684 f</span></span><br><span class="line"><span class="comment"># 7   7  0.4874291 g</span></span><br><span class="line"><span class="comment"># 8   8  0.7383247 h</span></span><br><span class="line"><span class="comment"># 9   9  0.5757814 i</span></span><br><span class="line"><span class="comment"># 10 10 -0.3053884 j</span></span><br></pre></td></tr></table></figure>
+<p>现实原理如下图所示，使用%$%把左侧的程序的数据集A传递右侧程序的B函数，同时传递数据集A的属性名，作为B函数的内部变量方便对A数据集进行处理，最后完成数据计算。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/4.png" alt=""></p>
+<p>定义一个3列10行的data.frame，列名分别为x,y,z，获取x列大于5的数据集。使用 %$% 把列名x直接传到右侧进行判断。这里.代表左侧的完整数据对象。一行代码就实现了需求，而且这里不需要显示的定义中间变量。<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">set.seed(<span class="number">1</span>)</span><br><span class="line">data.frame(x=<span class="number">1</span>:<span class="number">10</span>,y=rnorm(<span class="number">10</span>),z=<span class="built_in">letters</span>[<span class="number">1</span>:<span class="number">10</span>]) %$% .[which(x&gt;<span class="number">5</span>),]</span><br><span class="line"><span class="comment">#     x          y z</span></span><br><span class="line"><span class="comment"># 6   6 -0.8204684 f</span></span><br><span class="line"><span class="comment"># 7   7  0.4874291 g</span></span><br><span class="line"><span class="comment"># 8   8  0.7383247 h</span></span><br><span class="line"><span class="comment"># 9   9  0.5757814 i</span></span><br><span class="line"><span class="comment"># 10 10 -0.3053884 j</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="3-4-lt-gt-复合赋值操作符-compound-assignment-pipe-operator"><a href="#3-4-lt-gt-复合赋值操作符-compound-assignment-pipe-operator" class="headerlink" title="3.4 %&lt;&gt;% 复合赋值操作符(compound assignment pipe-operator)"></a>3.4 %&lt;&gt;% 复合赋值操作符(compound assignment pipe-operator)</h3><p>%&lt;&gt;%复合赋值操作符， 功能与 %&gt;% 基本是一样的，对了一项额外的操作，就是把结果写到左侧对象。比如，我们需要对一个数据集进行排序，那么需要获得排序的结果，用%&lt;&gt;%就是非常方便的。</p>
-<p>现实原理如下图所示，使用%&lt;&gt;%把左侧的程序的数据集A传递右侧程序的B函数，B函数的结果数据集再向右侧传递给C函数，C函数结果的数据集再重新赋值给A，完成整个过程。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/5.png"><br>定义一个符合正态分布的100个随机数，计算绝对值，并按从小到大的顺序排序，获得并取前10个数字赋值给x。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x&lt;-rnorm(<span class="number">100</span>) </span><br><span class="line">x %&lt;&gt;% <span class="built_in">abs</span> %&gt;% sort %&gt;% head(<span class="number">10</span>)</span><br><span class="line">x</span><br><span class="line"><span class="comment"># [1] 0.002415809 0.014017252 0.019752007 0.036402623 0.060921227 0.071280652 0.075445931 0.089998681 0.143087030 0.145106631</span></span><br></pre></td></tr></table></figure>
+<p>现实原理如下图所示，使用%&lt;&gt;%把左侧的程序的数据集A传递右侧程序的B函数，B函数的结果数据集再向右侧传递给C函数，C函数结果的数据集再重新赋值给A，完成整个过程。<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Images/R_magrittr/5.png" alt=""><br>定义一个符合正态分布的100个随机数，计算绝对值，并按从小到大的顺序排序，获得并取前10个数字赋值给x。<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x&lt;-rnorm(<span class="number">100</span>) </span><br><span class="line">x %&lt;&gt;% <span class="built_in">abs</span> %&gt;% sort %&gt;% head(<span class="number">10</span>)</span><br><span class="line">x</span><br><span class="line"><span class="comment"># [1] 0.002415809 0.014017252 0.019752007 0.036402623 0.060921227 0.071280652 0.075445931 0.089998681 0.143087030 0.145106631</span></span><br></pre></td></tr></table></figure></p>
 <h2 id="4-magrittr包的扩展功能"><a href="#4-magrittr包的扩展功能" class="headerlink" title="4. magrittr包的扩展功能"></a>4. magrittr包的扩展功能</h2><h3 id="4-1-符号操作符定义"><a href="#4-1-符号操作符定义" class="headerlink" title="4.1 符号操作符定义"></a>4.1 符号操作符定义</h3><p>为了让链条传递看起来更友好，magrittr对于常见的计算符号操作符进行的重新定义，让每个操作都对应用一个函数，这样所有的传递调用代码都是风格统一的。比如，add()函数和<code>+</code>是等价的。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">函数</th>
-<th align="center">符号</th>
+<th style="text-align:center">函数</th>
+<th style="text-align:center">符号</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">extract</td>
-<td align="center">`[`</td>
+<tbody>
+<tr>
+<td style="text-align:center">extract</td>
+<td style="text-align:center">`[`</td>
 </tr>
 <tr>
-<td align="center">extract2</td>
-<td align="center">`[[`</td>
+<td style="text-align:center">extract2</td>
+<td style="text-align:center">`[[`</td>
 </tr>
 <tr>
-<td align="center">inset</td>
-<td align="center">`[&lt;-`</td>
+<td style="text-align:center">inset</td>
+<td style="text-align:center">`[&lt;-`</td>
 </tr>
 <tr>
-<td align="center">inset2</td>
-<td align="center">`[[&lt;-`</td>
+<td style="text-align:center">inset2</td>
+<td style="text-align:center">`[[&lt;-`</td>
 </tr>
 <tr>
-<td align="center">use_series</td>
-<td align="center">`$`</td>
+<td style="text-align:center">use_series</td>
+<td style="text-align:center">`$`</td>
 </tr>
 <tr>
-<td align="center">add</td>
-<td align="center">`+`</td>
+<td style="text-align:center">add</td>
+<td style="text-align:center">`+`</td>
 </tr>
 <tr>
-<td align="center">subtract</td>
-<td align="center">`-`</td>
+<td style="text-align:center">subtract</td>
+<td style="text-align:center">`-`</td>
 </tr>
 <tr>
-<td align="center">multiply_by</td>
-<td align="center">`*`</td>
+<td style="text-align:center">multiply_by</td>
+<td style="text-align:center">`*`</td>
 </tr>
 <tr>
-<td align="center">raise_to_power</td>
-<td align="center">`^`</td>
+<td style="text-align:center">raise_to_power</td>
+<td style="text-align:center">`^`</td>
 </tr>
 <tr>
-<td align="center">multiply_by_matrix</td>
-<td align="center">`%*%`</td>
+<td style="text-align:center">multiply_by_matrix</td>
+<td style="text-align:center">`%*%`</td>
 </tr>
 <tr>
-<td align="center">divide_by</td>
-<td align="center">`/`</td>
+<td style="text-align:center">divide_by</td>
+<td style="text-align:center">`/`</td>
 </tr>
 <tr>
-<td align="center">divide_by_int</td>
-<td align="center">`%/%`</td>
+<td style="text-align:center">divide_by_int</td>
+<td style="text-align:center">`%/%`</td>
 </tr>
 <tr>
-<td align="center">mod</td>
-<td align="center">`%%`</td>
+<td style="text-align:center">mod</td>
+<td style="text-align:center">`%%`</td>
 </tr>
 <tr>
-<td align="center">is_in</td>
-<td align="center">`%in%`</td>
+<td style="text-align:center">is_in</td>
+<td style="text-align:center">`%in%`</td>
 </tr>
 <tr>
-<td align="center">and</td>
-<td align="center">`&amp;`</td>
+<td style="text-align:center">and</td>
+<td style="text-align:center">`&amp;`</td>
 </tr>
 <tr>
-<td align="center">or</td>
-<td align="center">`</td>
+<td style="text-align:center">or</td>
+<td style="text-align:center">`</td>
 </tr>
 <tr>
-<td align="center">equals</td>
-<td align="center">`==`</td>
+<td style="text-align:center">equals</td>
+<td style="text-align:center">`==`</td>
 </tr>
 <tr>
-<td align="center">is_greater_than</td>
-<td align="center">`&gt;`</td>
+<td style="text-align:center">is_greater_than</td>
+<td style="text-align:center">`&gt;`</td>
 </tr>
 <tr>
-<td align="center">is_weakly_greater_than</td>
-<td align="center">`&gt;=`</td>
+<td style="text-align:center">is_weakly_greater_than</td>
+<td style="text-align:center">`&gt;=`</td>
 </tr>
 <tr>
-<td align="center">is_less_than</td>
-<td align="center">`&lt;`</td>
+<td style="text-align:center">is_less_than</td>
+<td style="text-align:center">`&lt;`</td>
 </tr>
 <tr>
-<td align="center">is_weakly_less_than</td>
-<td align="center">`&lt;=`</td>
+<td style="text-align:center">is_weakly_less_than</td>
+<td style="text-align:center">`&lt;=`</td>
 </tr>
 <tr>
-<td align="center">not (`n’est pas`)</td>
-<td align="center">`!`</td>
+<td style="text-align:center">not (`n’est pas`)</td>
+<td style="text-align:center">`!`</td>
 </tr>
 <tr>
-<td align="center">set_colnames</td>
-<td align="center">`colnames&lt;-`</td>
+<td style="text-align:center">set_colnames</td>
+<td style="text-align:center">`colnames&lt;-`</td>
 </tr>
 <tr>
-<td align="center">set_rownames</td>
-<td align="center">`rownames&lt;-`</td>
+<td style="text-align:center">set_rownames</td>
+<td style="text-align:center">`rownames&lt;-`</td>
 </tr>
 <tr>
-<td align="center">set_names</td>
-<td align="center">`names&lt;-`</td>
+<td style="text-align:center">set_names</td>
+<td style="text-align:center">`names&lt;-`</td>
 </tr>
-</tbody></table>
-<p>对一个包括10个随机数的向量的先*5再+5。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10</span>) %&gt;% `*`(<span class="number">5</span>) %&gt;% `+`(<span class="number">5</span>)</span><br><span class="line"><span class="comment"># [1] 12.841824 11.483778  3.812019 -1.120751  3.360937 -7.062251  3.431036 13.299394  5.654766 10.479443</span></span><br></pre></td></tr></table></figure>
+</tbody>
+</table>
+</div>
+<p>对一个包括10个随机数的向量的先*5再+5。<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10</span>) %&gt;% `*`(<span class="number">5</span>) %&gt;% `+`(<span class="number">5</span>)</span><br><span class="line"><span class="comment"># [1] 12.841824 11.483778  3.812019 -1.120751  3.360937 -7.062251  3.431036 13.299394  5.654766 10.479443</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="4-2-gt-传递到代码块"><a href="#4-2-gt-传递到代码块" class="headerlink" title="4.2 %&gt;%传递到代码块"></a>4.2 %&gt;%传递到代码块</h3><p>有些时候，我们对同一个数据的处理，一条语句是很难完成的，这些就需要一个代码块来帮助。把数据集传递到{}代码块中，传入的数据集以.来表示，通过一段代码来完成操作，而不是一句话完成操作。</p>
-<p>对一个包括10个随机数的向量的先*5再+5，求出向量的均值和标准差，并从小到大排序后返回前5条。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10</span>)    %&gt;%</span><br><span class="line">multiply_by(<span class="number">5</span>) %&gt;%</span><br><span class="line">add(<span class="number">5</span>)         %&gt;%</span><br><span class="line">&#123;</span><br><span class="line">  cat(<span class="string">&quot;Mean:&quot;</span>, mean(.), </span><br><span class="line">  <span class="string">&quot;Var:&quot;</span>, var(.), <span class="string">&quot;\n&quot;</span>)</span><br><span class="line">  sort(.) %&gt;% head</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Mean: 4.981338 Var: 22.99599 </span></span><br><span class="line"><span class="comment"># [1] -2.592998  0.122231  1.105449  3.226093  4.608064  5.353299</span></span><br></pre></td></tr></table></figure>
+<p>对一个包括10个随机数的向量的先*5再+5，求出向量的均值和标准差，并从小到大排序后返回前5条。<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rnorm(<span class="number">10</span>)    %&gt;%</span><br><span class="line">multiply_by(<span class="number">5</span>) %&gt;%</span><br><span class="line">add(<span class="number">5</span>)         %&gt;%</span><br><span class="line">&#123;</span><br><span class="line">  cat(<span class="string">&quot;Mean:&quot;</span>, mean(.), </span><br><span class="line">  <span class="string">&quot;Var:&quot;</span>, var(.), <span class="string">&quot;\n&quot;</span>)</span><br><span class="line">  sort(.) %&gt;% head</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># Mean: 4.981338 Var: 22.99599 </span></span><br><span class="line"><span class="comment"># [1] -2.592998  0.122231  1.105449  3.226093  4.608064  5.353299</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="4-3-gt-传递到函数"><a href="#4-3-gt-传递到函数" class="headerlink" title="4.3 %&gt;%传递到函数"></a>4.3 %&gt;%传递到函数</h3><p>传递到函数和传递到代码块设计是类似的，是把一个数据集传给一个匿名函数，进行复杂的数据操作。在这里，我们会显示的定义数据集的名字作为匿名函数的参数。</p>
-<p>比如，对鸢尾花数据集进行处理，只保留第一行和最后一行作为结果。</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iris %&gt;%</span><br><span class="line">(<span class="keyword">function</span>(x) &#123;</span><br><span class="line">  <span class="keyword">if</span> (nrow(x) &gt; <span class="number">2</span>) </span><br><span class="line">    rbind(head(x, <span class="number">1</span>), tail(x, <span class="number">1</span>))</span><br><span class="line">  <span class="keyword">else</span> x</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">#     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species</span></span><br><span class="line"><span class="comment"># 1       2.258318         3.5          1.4         0.2    setosa</span></span><br><span class="line"><span class="comment"># 150     2.428992         3.0          5.1         1.8 virginica</span></span><br></pre></td></tr></table></figure>
+<p>比如，对鸢尾花数据集进行处理，只保留第一行和最后一行作为结果。<br><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iris %&gt;%</span><br><span class="line">(<span class="keyword">function</span>(x) &#123;</span><br><span class="line">  <span class="keyword">if</span> (nrow(x) &gt; <span class="number">2</span>) </span><br><span class="line">    rbind(head(x, <span class="number">1</span>), tail(x, <span class="number">1</span>))</span><br><span class="line">  <span class="keyword">else</span> x</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">#     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species</span></span><br><span class="line"><span class="comment"># 1       2.258318         3.5          1.4         0.2    setosa</span></span><br><span class="line"><span class="comment"># 150     2.428992         3.0          5.1         1.8 virginica</span></span><br></pre></td></tr></table></figure></p>
+
     
   </div>
 
@@ -402,10 +399,10 @@ ga('send', 'pageview');
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2020/01/03/bashparallel/">
+    <a class="show pull-left" href="/2020/01/04/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BC%96%E7%A8%8BS3%E7%B1%BB/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2020/01/04/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BC%96%E7%A8%8BS3%E7%B1%BB/">
+    <a class="show pull-right" href="/2020/01/06/R%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98memoise/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
