@@ -22,13 +22,13 @@
 <meta property="og:site_name" content="Hugo&#39;s Note">
 <meta property="og:description" content="GitBook可以直接用于产生PDF或者进行书本的发行，在平时的工作中，我们更多的是使用GitBook把自己的研究内容系统性的写成书籍，以Markdown为基础的文档更适合我们阅读和日常的工程记载。在本文将阐述如何在Windows环境下，使用Gitbook Editor,从GitBook导出PDF。 GitBook编辑器GitHub下面有一个用于即使效果呈现的Markdown编辑器，即GitBoo">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="c:/Users/Hugo/AppData/Roaming/Typora/typora-user-images/image-20210415193716117.png">
+<meta property="og:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Gitbook/Gitbook%E9%A2%84%E8%A7%88.png">
 <meta property="article:published_time" content="2021-04-14T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-04-14T16:00:00.000Z">
 <meta property="article:author" content="Hugo Ji">
 <meta property="article:tag" content="Markdown">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="c:/Users/Hugo/AppData/Roaming/Typora/typora-user-images/image-20210415193716117.png">
+<meta name="twitter:image" content="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Gitbook/Gitbook%E9%A2%84%E8%A7%88.png">
 
   
 
@@ -205,8 +205,7 @@ ga('send', 'pageview');
     
       <p>GitBook可以直接用于产生PDF或者进行书本的发行，在平时的工作中，我们更多的是使用GitBook把自己的研究内容系统性的写成书籍，以Markdown为基础的文档更适合我们阅读和日常的工程记载。在本文将阐述如何在Windows环境下，使用<code>Gitbook Editor</code>,从GitBook导出PDF。</p>
 <h2 id="GitBook编辑器"><a href="#GitBook编辑器" class="headerlink" title="GitBook编辑器"></a>GitBook编辑器</h2><p>GitHub下面有一个用于即使效果呈现的Markdown编辑器，即<a target="_blank" rel="noopener" href="https://github.com/GitbookIO/editor-legacy/releases">GitBook Editor</a>,从上述的链接可以下载指定平台的版本，下载后的程序经过解压就可以直接运行，一般而言，在解压的文件夹下新建一个快捷方式使得其指向GitBook.exe即可。</p>
-<p>打开GitBook.exe就可以进行书籍的撰写。其预览界面如下：</p>
-<p><img src="C:\Users\Hugo\AppData\Roaming\Typora\typora-user-images\image-20210415193716117.png" alt=""></p>
+<p>打开GitBook.exe就可以进行书籍的撰写。其预览界面如下：<br><img src="https://hugo-blog-1256988836.cos.ap-chengdu.myqcloud.com/Blog/Gitbook/Gitbook%E9%A2%84%E8%A7%88.png" alt=""></p>
 <p>GitBook编辑器确实可以帮助我们更好的写文档并即时预览，但是实际上，大部分选手都是使用<code>nodejs</code> 安装<code>gitbook</code>然后书写。从而进行书籍的发布，如果想要导出PDF来共享的话，需要在本地安装一些程序来运行。<code>nodejs</code>的安装这里不再多讲。</p>
 <p>我的安装环境为Windows下的Ubuntu子系统。已经安装了<code>nodejs</code>。</p>
 <h2 id="GitBook安装"><a href="#GitBook安装" class="headerlink" title="GitBook安装"></a>GitBook安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install gitbook -g</span><br><span class="line">npm install gitbook-cli -g</span><br></pre></td></tr></table></figure>
